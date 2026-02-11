@@ -1,0 +1,62 @@
+{
+  "number": 128,
+  "title": "Ol gara biyya gubbaa Waaqaa,",
+  "sections": [
+    {
+      "type": "VRS1",
+      "lines": [
+        "Ol gara biyya gubbaa Waaqaa,",
+        "nuyi amantiidhaan achi ilaalla,",
+        "Biyyi tokko achi fagoo jira,",
+        "Kan Gooftaan Yesuus",
+        "nuuf qopheesse.",
+        "Bara yartuu booddee",
+        "Nu'i achitti wal in argina,",
+        "bara yartuu booddee",
+        "Nu'i achitti wal in argina"
+      ]
+    },
+    {
+      "type": "VRS2",
+      "lines": [
+        "Nus immoo biyya haaraa sanatti,",
+        "Faarfannaa galataa in faarfanna,",
+        "Funyoo du'aattii kan hiikamne,",
+        "Fayyisaa kkeenyatti in gammadna."
+      ]
+    },
+    {
+      "type": "CHR",
+      "lines": [
+        "Barayartuu boodde..."
+      ]
+    },
+    {
+      "type": "VRS3",
+      "lines": [
+        "kan jaallatame uumaa keenyaaf,",
+        "Galataa fi hooqubaa dhi'eessina,",
+        "jaalala isaatii fi kennaa isaatti,",
+        "Lubbuun keenya danuu gammada."
+      ]
+    },
+    {
+      "type": "CHR",
+      "lines": [
+        "Barayartuu boodde..."
+      ]
+    },
+    {
+      "type": "VRS4",
+      "lines": [
+        "Bara yartuu booddee..."
+      ]
+    },
+    {
+      "type": "CHR",
+      "lines": [
+        "Barayartuu boodde..."
+      ]
+    }
+  ]
+}

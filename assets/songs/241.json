@@ -1,0 +1,33 @@
+{
+  "number": 241,
+  "title": "Yaa Waaqayyoo yaa Gooftaa",
+  "sections": [
+    {
+      "type": "VRS1",
+      "lines": [
+        "Yaa Waaqayyoo yaa Gooftaa",
+        "Galatni siif haa ta'u,",
+        "Yaa tiksee saba hundaa,",
+        "Bobbaaftee kan galchitu."
+      ]
+    },
+    {
+      "type": "VRS2",
+      "lines": [
+        "Namni ifa kee qabu",
+        "Kan dhugaa keetiin deemmu,",
+        "Matumaa hin gatantaru,",
+        "Tikseen isaa utuu jiruu."
+      ]
+    },
+    {
+      "type": "VRS3",
+      "lines": [
+        "Balbalichi jireenyaa",
+        "Abdiin jireenyichaa iyyuu,",
+        "Fayyisaan saba hundaa,",
+        "Yesus malee hin jiru."
+      ]
+    }
+  ]
+}

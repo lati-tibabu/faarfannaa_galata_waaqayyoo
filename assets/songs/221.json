@@ -1,0 +1,38 @@
+{
+  "number": 221,
+  "title": "Galateeffadha isin warri xixinnoon.",
+  "sections": [
+    {
+      "type": "VRS1",
+      "lines": [
+        "Galateeffadha isin warri xixinnoon.",
+        "Waaqayyo jaalala'oo",
+        "Waaqayyo jaalala'oo"
+      ]
+    },
+    {
+      "type": "VRS2",
+      "lines": [
+        "Isaaf hojjedhaa isin warri xixinnoon,",
+        "Waaqayyo jaala'oo",
+        "Waaqayyo jaala'oo"
+      ]
+    },
+    {
+      "type": "VRS3",
+      "lines": [
+        "Galateeffadha isin hundumti keessan,",
+        "Waaqayyo jaalala'oo",
+        "Waaqayyo jaalala'oo"
+      ]
+    },
+    {
+      "type": "VRS4",
+      "lines": [
+        "Isaaf hojjedhaa isin hudumti keessan,",
+        "Waaqayyo jaalala'oo",
+        "Waaqayyo jaalala'oo"
+      ]
+    }
+  ]
+}

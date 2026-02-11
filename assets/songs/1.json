@@ -1,0 +1,45 @@
+{
+  "number": 1,
+  "title": "Iji koo ol ilaala",
+  "sections": [
+    {
+      "type": "VRS1",
+      "lines": [
+        "Iji koo ol ilaala",
+        "Gara Waaqayyoo koo",
+        "Achii gargaarsi in dhufa",
+        "Gooftaa dhugaa biraa",
+        "Inni hundumaa uume",
+        "Kadhata koo hin didu",
+        "Iyya koos hin tuffatu",
+        "In dhaga’a malee"
+      ]
+    },
+    {
+      "type": "VRS2",
+      "lines": [
+        "Miilli koo haa gufatuuf",
+        "Cal jedhee hin ilaalu",
+        "Inni eegduu jabaadha",
+        "Irreensaas cimaadha",
+        "Ayyaanni isaa dhi’oo dha",
+        "Kan isa yaadanuus",
+        "Halkanii fi guyyaa in eega",
+        "Dhibee isaaniis beeka."
+      ]
+    },
+    {
+      "type": "VRS3",
+      "lines": [
+        "Waan hamaa na irraa dhowwa",
+        "Lubbuu koo in fayyisa",
+        "Kan natti dhufu yoo dhufes",
+        "Gaarummaadhaan dhuma",
+        "Ba’uu kootii fi galuu koos",
+        "Jabeessee in eega’oo",
+        "Har’a kanaa jalqabee",
+        "Hamma dhuma baraatti"
+      ]
+    }
+  ]
+}

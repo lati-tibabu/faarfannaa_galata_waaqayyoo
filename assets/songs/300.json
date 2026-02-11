@@ -1,0 +1,78 @@
+{
+  "number": 300,
+  "title": "Kottaa asitti walii gallaa",
+  "sections": [
+    {
+      "type": "VRS1",
+      "lines": [
+        "Kottaa asitti walii gallaa",
+        "Amantoota Gooftaa,",
+        "Qulqulloota isaa wajjinis",
+        "Gammadaa in faarfannaa",
+        "Haallee luyyaa, yaa Ilma Abbaa,",
+        "Golgootaatti nuuf jettee duutee,",
+        "Haallee luyyaa, haallee luyyaa,",
+        "Haallee luyyaa, ameen!"
+      ]
+    },
+    {
+      "type": "VRS2",
+      "lines": [
+        "Waaqayyoof galatni haa ta'u,",
+        "ulfinnii fi guddinnis,",
+        "Lafa irrattii fi waaqa irrattis,",
+        "Baruma baraanuu."
+      ]
+    },
+    {
+      "type": "CHR",
+      "lines": [
+        "Haallee luyyaa..."
+      ]
+    },
+    {
+      "type": "VRS3",
+      "lines": [
+        "Inni nu'iif gorra'amee,",
+        "Dhiigni isaas lola'e,Amma kana kan amanu,",
+        "Fayyina argata."
+      ]
+    },
+    {
+      "type": "CHR",
+      "lines": [
+        "Haallee luyyaa..."
+      ]
+    },
+    {
+      "type": "VRS4",
+      "lines": [
+        "Namoota nana dhaga'aa,",
+        "Dubbii dinqii kana,",
+        "Kan amanan hundumaa iyyuu,",
+        "Waaqayyoo isaan maara."
+      ]
+    },
+    {
+      "type": "CHR",
+      "lines": [
+        "Haallee luyyaa..."
+      ]
+    },
+    {
+      "type": "VRS5",
+      "lines": [
+        "Egaa waaqnii fi biyyi lafaa,",
+        "Isaan walii wajjin,",
+        "Afaan qulqullaa'aa dhaanis,",
+        "Gooftaa haa faarfatan."
+      ]
+    },
+    {
+      "type": "CHR",
+      "lines": [
+        "Haallee luyyaa..."
+      ]
+    }
+  ]
+}
