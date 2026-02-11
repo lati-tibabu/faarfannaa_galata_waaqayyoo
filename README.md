@@ -77,4 +77,4 @@ Contributions are welcome! If you have suggestions or improvements, please fork 
 Distributed under the GNU General Public License v3. See `LICENSE` for more information.
 
 ---
-Developed by **Lati Tibabu**
+Developed by **Lati & Dani**
