@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import '../theme.dart';
 
 class SplashScreen extends StatelessWidget {
-  const SplashScreen({super.key});
+  final double progress;
+  const SplashScreen({super.key, this.progress = 0.0});
 
   @override
   Widget build(BuildContext context) {
@@ -121,7 +122,7 @@ class SplashScreen extends StatelessWidget {
                                 ),
                                 const SizedBox(width: 8),
                                 Text(
-                                  'Loading hymns...',
+                                  'Loading hymns... ${(progress * 100).toInt()}%',
                                   style: TextStyle(
                                     fontSize: 10,
                                     fontWeight: FontWeight.bold,
@@ -143,10 +144,10 @@ class SplashScreen extends StatelessWidget {
                         const SizedBox(height: 12),
                         ClipRRect(
                           borderRadius: BorderRadius.circular(10),
-                          child: const LinearProgressIndicator(
-                            value: 0.66,
+                          child: LinearProgressIndicator(
+                            value: progress,
                             backgroundColor: Colors.white10,
-                            valueColor: AlwaysStoppedAnimation<Color>(
+                            valueColor: const AlwaysStoppedAnimation<Color>(
                               AppColors.primary,
                             ),
                             minHeight: 4,

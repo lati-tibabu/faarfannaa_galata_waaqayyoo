@@ -6,6 +6,8 @@ class CategoriesScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
       body: SafeArea(
         child: Padding(
@@ -26,21 +28,32 @@ class CategoriesScreen extends StatelessWidget {
               Text(
                 'Select a theme to browse hymns',
                 style: TextStyle(
-                  color: Colors.white.withOpacity(0.4),
+                  color: isDark
+                      ? Colors.white.withOpacity(0.4)
+                      : Colors.black54,
                   fontSize: 14,
                 ),
               ),
               const SizedBox(height: 24),
               TextField(
+                style: TextStyle(color: isDark ? Colors.white : Colors.black),
                 decoration: InputDecoration(
                   hintText: 'Search categories...',
-                  hintStyle: TextStyle(color: Colors.white.withOpacity(0.2)),
+                  hintStyle: TextStyle(
+                    color: isDark
+                        ? Colors.white.withOpacity(0.2)
+                        : Colors.black38,
+                  ),
                   prefixIcon: Icon(
                     Icons.search,
-                    color: Colors.white.withOpacity(0.3),
+                    color: isDark
+                        ? Colors.white.withOpacity(0.3)
+                        : Colors.black45,
                   ),
                   filled: true,
-                  fillColor: Colors.white.withOpacity(0.05),
+                  fillColor: isDark
+                      ? Colors.white.withOpacity(0.05)
+                      : Colors.grey.withOpacity(0.1),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                     borderSide: BorderSide.none,
@@ -107,13 +120,28 @@ class _CategoryTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.05),
+        color: isDark ? Colors.white.withOpacity(0.05) : Colors.white,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.white.withOpacity(0.1)),
+        border: Border.all(
+          color: isDark
+              ? Colors.white.withOpacity(0.1)
+              : Colors.black.withOpacity(0.05),
+        ),
+        boxShadow: isDark
+            ? null
+            : [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.05),
+                  blurRadius: 8,
+                  offset: const Offset(0, 4),
+                ),
+              ],
       ),
       child: Row(
         children: [
@@ -143,14 +171,19 @@ class _CategoryTile extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.bold,
-                    color: Colors.white.withOpacity(0.4),
+                    color: isDark
+                        ? Colors.white.withOpacity(0.4)
+                        : Colors.black45,
                     letterSpacing: 1.2,
                   ),
                 ),
               ],
             ),
           ),
-          Icon(Icons.chevron_right, color: Colors.white.withOpacity(0.2)),
+          Icon(
+            Icons.chevron_right,
+            color: isDark ? Colors.white.withOpacity(0.2) : Colors.black12,
+          ),
         ],
       ),
     );

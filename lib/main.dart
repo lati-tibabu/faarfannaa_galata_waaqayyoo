@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 import 'theme.dart';
+import 'services/song_service.dart';
 import 'screens/splash_screen.dart';
 import 'screens/main_layout.dart';
+import 'providers/settings_provider.dart';
+import 'providers/favorites_provider.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -12,7 +16,15 @@ void main() {
       statusBarIconBrightness: Brightness.light,
     ),
   );
-  runApp(const MyApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => SettingsProvider()),
+        ChangeNotifierProvider(create: (_) => FavoritesProvider()),
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -20,11 +32,17 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Faarfannaa Galata Waaqayyoo',
-      debugShowCheckedModeBanner: false,
-      theme: AppTheme.darkTheme,
-      home: const Initializer(),
+    return Consumer<SettingsProvider>(
+      builder: (context, settings, _) {
+        return MaterialApp(
+          title: 'Faarfannaa Galata Waaqayyoo',
+          debugShowCheckedModeBanner: false,
+          theme: AppTheme.lightTheme,
+          darkTheme: AppTheme.darkTheme,
+          themeMode: settings.isDarkMode ? ThemeMode.dark : ThemeMode.light,
+          home: const Initializer(),
+        );
+      },
     );
   }
 }
@@ -37,6 +55,8 @@ class Initializer extends StatefulWidget {
 }
 
 class _InitializerState extends State<Initializer> {
+  double _progress = 0.0;
+
   @override
   void initState() {
     super.initState();
@@ -44,8 +64,25 @@ class _InitializerState extends State<Initializer> {
   }
 
   _navigateToHome() async {
-    await Future.delayed(const Duration(seconds: 3));
+    // Initialize SongService and load data
+    await SongService().loadSongs(
+      onProgress: (p) {
+        if (mounted) {
+          setState(() {
+            _progress = p;
+          });
+        }
+      },
+    );
+
     if (mounted) {
+      // Ensure we show 100% at the end
+      setState(() {
+        _progress = 1.0;
+      });
+      // Small delay to let user see completion
+      await Future.delayed(const Duration(milliseconds: 500));
+
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => const MainLayout()),
@@ -55,6 +92,6 @@ class _InitializerState extends State<Initializer> {
 
   @override
   Widget build(BuildContext context) {
-    return const SplashScreen();
+    return SplashScreen(progress: _progress);
   }
 }

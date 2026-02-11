@@ -22,4 +22,18 @@ class AppTheme {
       background: AppColors.backgroundDark,
     ),
   );
+
+  static ThemeData lightTheme = ThemeData(
+    useMaterial3: true,
+    brightness: Brightness.light,
+    primaryColor: AppColors.primary,
+    scaffoldBackgroundColor: AppColors.backgroundLight,
+    textTheme: GoogleFonts.interTextTheme(ThemeData.light().textTheme),
+    colorScheme: ColorScheme.fromSeed(
+      seedColor: AppColors.primary,
+      brightness: Brightness.light,
+      surface: Colors.white,
+      background: AppColors.backgroundLight,
+    ),
+  );
 }

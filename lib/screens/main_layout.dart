@@ -24,37 +24,53 @@ class _MainLayoutState extends State<MainLayout> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
       body: Stack(
         children: [
           IndexedStack(index: _selectedIndex, children: _screens),
-          Positioned(
-            left: 0,
-            right: 0,
-            bottom: 0,
-            child: Container(
-              height: 100,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Colors.transparent,
-                    AppColors.backgroundDark.withOpacity(0.8),
-                  ],
+          if (isDark)
+            Positioned(
+              left: 0,
+              right: 0,
+              bottom: 0,
+              child: Container(
+                height: 100,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Colors.transparent,
+                      AppColors.backgroundDark.withOpacity(0.8),
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
         ],
       ),
       bottomNavigationBar: Container(
         padding: const EdgeInsets.only(top: 8, bottom: 24),
         decoration: BoxDecoration(
-          color: AppColors.secondary.withOpacity(0.95),
+          color: isDark ? AppColors.secondary.withOpacity(0.95) : Colors.white,
           border: Border(
-            top: BorderSide(color: Colors.white.withOpacity(0.05)),
+            top: BorderSide(
+              color: isDark
+                  ? Colors.white.withOpacity(0.05)
+                  : Colors.black.withOpacity(0.05),
+            ),
           ),
+          boxShadow: isDark
+              ? null
+              : [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.05),
+                    blurRadius: 10,
+                    offset: const Offset(0, -5),
+                  ),
+                ],
         ),
         child: BottomNavigationBar(
           currentIndex: _selectedIndex,
@@ -63,7 +79,9 @@ class _MainLayoutState extends State<MainLayout> {
           backgroundColor: Colors.transparent,
           elevation: 0,
           selectedItemColor: AppColors.primary,
-          unselectedItemColor: Colors.white.withOpacity(0.4),
+          unselectedItemColor: isDark
+              ? Colors.white.withOpacity(0.4)
+              : Colors.black45,
           selectedFontSize: 10,
           unselectedFontSize: 10,
           selectedLabelStyle: const TextStyle(
