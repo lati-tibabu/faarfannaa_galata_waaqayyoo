@@ -33,8 +33,9 @@ class CategoriesScreen extends StatelessWidget {
               Text(
                 'Select a theme to browse hymns',
                 style: TextStyle(
-                  color:
-                      isDark ? Colors.white.withOpacity(0.4) : Colors.black54,
+                  color: isDark
+                      ? Colors.white.withOpacity(0.4)
+                      : Colors.black54,
                   fontSize: 14,
                 ),
               ),
@@ -44,11 +45,15 @@ class CategoriesScreen extends StatelessWidget {
                 decoration: InputDecoration(
                   hintText: 'Search categories...',
                   hintStyle: TextStyle(
-                    color: isDark ? Colors.white.withOpacity(0.2) : Colors.black38,
+                    color: isDark
+                        ? Colors.white.withOpacity(0.2)
+                        : Colors.black38,
                   ),
                   prefixIcon: Icon(
                     Icons.search,
-                    color: isDark ? Colors.white.withOpacity(0.3) : Colors.black45,
+                    color: isDark
+                        ? Colors.white.withOpacity(0.3)
+                        : Colors.black45,
                   ),
                   filled: true,
                   fillColor: isDark
@@ -63,32 +68,36 @@ class CategoriesScreen extends StatelessWidget {
               const SizedBox(height: 24),
               Expanded(
                 child: categories.isEmpty
-                  ? Center(
-                      child: Text(
-                        "No categories found",
-                        style: TextStyle(color: isDark ? Colors.white54 : Colors.black54),
-                      ),
-                    )
-                  : ListView.builder(
-                    itemCount: categories.length,
-                    itemBuilder: (context, index) {
-                      final category = categories[index];
-                      return _CategoryTile(
-                        icon: _getIconForCategory(category),
-                        title: category,
-                        subtitle: '${SongService().getSongsByCategory(category).length} Songs',
-                        color: _getColorForCategory(category),
-                        onTap: () {
-                           Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => CategoryDetailScreen(category: category),
-                            ),
+                    ? Center(
+                        child: Text(
+                          "No categories found",
+                          style: TextStyle(
+                            color: isDark ? Colors.white54 : Colors.black54,
+                          ),
+                        ),
+                      )
+                    : ListView.builder(
+                        itemCount: categories.length,
+                        itemBuilder: (context, index) {
+                          final category = categories[index];
+                          return _CategoryTile(
+                            icon: _getIconForCategory(category),
+                            title: category,
+                            subtitle:
+                                '${SongService().getSongsByCategory(category).length} Songs',
+                            color: _getColorForCategory(category),
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      CategoryDetailScreen(category: category),
+                                ),
+                              );
+                            },
                           );
                         },
-                      );
-                    },
-                  ),
+                      ),
               ),
             ],
           ),
@@ -99,11 +108,16 @@ class CategoriesScreen extends StatelessWidget {
 
   IconData _getIconForCategory(String category) {
     final lower = category.toLowerCase();
-    if (lower.contains('worship') || lower.contains('waaqeffannaa')) return Icons.church;
-    if (lower.contains('praise') || lower.contains('galata')) return Icons.auto_awesome;
-    if (lower.contains('gospel') || lower.contains('wangeela')) return Icons.menu_book;
-    if (lower.contains('salvation') || lower.contains('fayyina')) return Icons.volunteer_activism;
-    if (lower.contains('history') || lower.contains('seenaa')) return Icons.history_edu;
+    if (lower.contains('worship') || lower.contains('waaqeffannaa'))
+      return Icons.church;
+    if (lower.contains('praise') || lower.contains('galata'))
+      return Icons.auto_awesome;
+    if (lower.contains('gospel') || lower.contains('wangeela'))
+      return Icons.menu_book;
+    if (lower.contains('salvation') || lower.contains('fayyina'))
+      return Icons.volunteer_activism;
+    if (lower.contains('history') || lower.contains('seenaa'))
+      return Icons.history_edu;
     if (lower.contains('children')) return Icons.child_care;
     if (lower.contains('love')) return Icons.favorite;
     return Icons.music_note;

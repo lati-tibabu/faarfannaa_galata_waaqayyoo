@@ -26,9 +26,9 @@ class CategoryDetailScreen extends StatelessWidget {
           ? Center(
               child: Text(
                 'No songs in this category',
-                 style: TextStyle(
-                    color: isDark ? Colors.white54 : Colors.black54,
-                 ),
+                style: TextStyle(
+                  color: isDark ? Colors.white54 : Colors.black54,
+                ),
               ),
             )
           : ListView.builder(
@@ -111,9 +111,11 @@ class _HymnTile extends StatelessWidget {
         ),
         subtitle: Text(
           hymn.category,
-           style: TextStyle(
-             color: Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.6), 
-             fontSize: 12
+          style: TextStyle(
+            color: Theme.of(
+              context,
+            ).textTheme.bodySmall?.color?.withOpacity(0.6),
+            fontSize: 12,
           ),
         ),
         trailing: Icon(
