@@ -1,0 +1,19 @@
+FAQ
+
+How do I find a hymn quickly?
+- Use the search box to search by title.
+- Use the number box to jump to a hymn number.
+
+How do favorites work?
+- Open a hymn and tap the heart icon.
+- Favorites are stored on your device.
+
+What are categories?
+- Categories group hymns by theme (for example: worship, praise, gospel, salvation, history).
+
+How do I change the text size?
+- Open Settings and choose a font size.
+
+Is the app offline?
+- Yes. The app works without internet access once installed.
+

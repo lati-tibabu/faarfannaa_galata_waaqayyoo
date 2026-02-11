@@ -1,0 +1,13 @@
+class StorageKeys {
+  static const String favorites = 'favorites';
+
+  static const String isDarkMode = 'isDarkMode';
+  static const String fontSize = 'fontSize';
+  static const String primaryColor = 'primaryColor';
+
+  static const String onboardingComplete = 'onboardingComplete';
+
+  static const String recentlyViewed = 'recentlyViewed';
+
+  static const String collectionsJson = 'collectionsJson';
+}

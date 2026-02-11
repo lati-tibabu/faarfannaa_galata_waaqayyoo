@@ -7,6 +7,12 @@ import 'screens/splash_screen.dart';
 import 'screens/main_layout.dart';
 import 'providers/settings_provider.dart';
 import 'providers/favorites_provider.dart';
+import 'providers/onboarding_provider.dart';
+import 'providers/history_provider.dart';
+import 'providers/collections_provider.dart';
+import 'providers/player_provider.dart';
+import 'screens/load_error_screen.dart';
+import 'screens/onboarding_screen.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -21,6 +27,10 @@ void main() {
       providers: [
         ChangeNotifierProvider(create: (_) => SettingsProvider()),
         ChangeNotifierProvider(create: (_) => FavoritesProvider()),
+        ChangeNotifierProvider(create: (_) => OnboardingProvider()),
+        ChangeNotifierProvider(create: (_) => HistoryProvider()),
+        ChangeNotifierProvider(create: (_) => CollectionsProvider()),
+        ChangeNotifierProvider(create: (_) => PlayerProvider()),
       ],
       child: const MyApp(),
     ),
@@ -34,11 +44,12 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<SettingsProvider>(
       builder: (context, settings, _) {
+        final primaryColor = settings.primaryColor;
         return MaterialApp(
           title: 'Faarfannaa Galata Waaqayyoo',
           debugShowCheckedModeBanner: false,
-          theme: AppTheme.lightTheme,
-          darkTheme: AppTheme.darkTheme,
+          theme: AppTheme.lightTheme(primaryColor),
+          darkTheme: AppTheme.darkTheme(primaryColor),
           themeMode: settings.isDarkMode ? ThemeMode.dark : ThemeMode.light,
           home: const Initializer(),
         );
@@ -56,42 +67,87 @@ class Initializer extends StatefulWidget {
 
 class _InitializerState extends State<Initializer> {
   double _progress = 0.0;
+  bool _isLoading = true;
+  SongLoadReport? _report;
+  bool _showOnboarding = false;
 
   @override
   void initState() {
     super.initState();
-    _navigateToHome();
+    _start();
   }
 
-  _navigateToHome() async {
-    // Initialize SongService and load data
-    await SongService().loadSongs(
+  Future<void> _start({bool forceReload = false}) async {
+    final startedAt = DateTime.now();
+    setState(() {
+      _isLoading = true;
+      _progress = 0.0;
+      _report = null;
+      _showOnboarding = false;
+    });
+
+    final report = await SongService().loadSongs(
+      forceReload: forceReload,
       onProgress: (p) {
-        if (mounted) {
-          setState(() {
-            _progress = p;
-          });
-        }
+        if (!mounted) return;
+        setState(() => _progress = p);
       },
     );
 
-    if (mounted) {
-      // Ensure we show 100% at the end
-      setState(() {
-        _progress = 1.0;
-      });
-      // Small delay to let user see completion
-      await Future.delayed(const Duration(milliseconds: 500));
+    if (!mounted) return;
 
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const MainLayout()),
-      );
+    setState(() {
+      _report = report;
+      _progress = 1.0;
+    });
+
+    const minSplashDuration = Duration(milliseconds: 1500);
+    final elapsed = DateTime.now().difference(startedAt);
+    if (elapsed < minSplashDuration) {
+      await Future.delayed(minSplashDuration - elapsed);
     }
+
+    if (!mounted) return;
+
+    if (!report.isSuccessful) {
+      setState(() => _isLoading = false);
+      return;
+    }
+
+    final onboarding = context.read<OnboardingProvider>();
+    await onboarding.waitForInit();
+    if (!mounted) return;
+
+    setState(() {
+      _showOnboarding = onboarding.shouldAutoShow;
+      _isLoading = false;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return SplashScreen(progress: _progress);
+    if (_isLoading) {
+      return SplashScreen(progress: _progress);
+    }
+
+    final report = _report;
+    if (report != null && !report.isSuccessful) {
+      return LoadErrorScreen(
+        report: report,
+        onRetry: () => _start(forceReload: true),
+      );
+    }
+
+    if (_showOnboarding) {
+      return OnboardingScreen(
+        onFinish: () async {
+          await context.read<OnboardingProvider>().setComplete(true);
+          if (!mounted) return;
+          setState(() => _showOnboarding = false);
+        },
+      );
+    }
+
+    return const MainLayout();
   }
 }

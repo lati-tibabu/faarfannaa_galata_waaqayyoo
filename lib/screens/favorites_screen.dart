@@ -5,9 +5,25 @@ import '../services/song_service.dart';
 import '../models/hymn_model.dart';
 import '../theme.dart';
 import 'song_detail_screen.dart';
+import 'song_index_screen.dart';
 
-class FavoritesScreen extends StatelessWidget {
+class FavoritesScreen extends StatefulWidget {
   const FavoritesScreen({super.key});
+
+  @override
+  State<FavoritesScreen> createState() => _FavoritesScreenState();
+}
+
+class _FavoritesScreenState extends State<FavoritesScreen> {
+  final TextEditingController _search = TextEditingController();
+  bool _searchMode = false;
+  _FavSort _sort = _FavSort.number;
+
+  @override
+  void dispose() {
+    _search.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -19,25 +35,75 @@ class FavoritesScreen extends StatelessWidget {
             .map((id) => songService.getSongByNumber(id))
             .whereType<Hymn>()
             .toList()
-          ..sort((a, b) => a.number.compareTo(b.number));
+          ..sort((a, b) {
+            switch (_sort) {
+              case _FavSort.title:
+                return a.title.toLowerCase().compareTo(b.title.toLowerCase());
+              case _FavSort.number:
+                return a.number.compareTo(b.number);
+            }
+          });
+
+    final query = _search.text.trim().toLowerCase();
+    if (query.isNotEmpty) {
+      favoriteSongs = favoriteSongs.where((song) {
+        return song.title.toLowerCase().contains(query) ||
+            song.number.toString().contains(query);
+      }).toList();
+    }
 
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'Favorite Hymns',
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
+        title: _searchMode
+            ? TextField(
+                controller: _search,
+                autofocus: true,
+                style: TextStyle(color: isDark ? Colors.white : Colors.black),
+                decoration: InputDecoration(
+                  hintText: 'Search favorites...',
+                  hintStyle: TextStyle(
+                    color: isDark ? Colors.white38 : Colors.black38,
+                  ),
+                  border: InputBorder.none,
+                ),
+                onChanged: (_) => setState(() {}),
+              )
+            : const Text(
+                'Favorite Hymns',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
         centerTitle: true,
         actions: [
+          PopupMenuButton<_FavSort>(
+            tooltip: 'Sort',
+            icon: Icon(
+              Icons.sort,
+              color: isDark ? Colors.white : Colors.black54,
+            ),
+            onSelected: (v) => setState(() => _sort = v),
+            itemBuilder: (_) => const [
+              PopupMenuItem(
+                value: _FavSort.number,
+                child: Text('Sort by number'),
+              ),
+              PopupMenuItem(
+                value: _FavSort.title,
+                child: Text('Sort by title'),
+              ),
+            ],
+          ),
           IconButton(
             icon: Icon(
-              Icons.search,
+              _searchMode ? Icons.close : Icons.search,
               color: isDark ? Colors.white : Colors.black54,
             ),
             onPressed: () {
-              // Search Logic or Navigate to Search
+              setState(() {
+                _searchMode = !_searchMode;
+                if (!_searchMode) _search.clear();
+              });
             },
           ),
         ],
@@ -53,14 +119,14 @@ class FavoritesScreen extends StatelessWidget {
                   margin: const EdgeInsets.only(bottom: 8),
                   decoration: BoxDecoration(
                     color: isDark
-                        ? Colors.white.withOpacity(0.02)
+                        ? Colors.white.withValues(alpha: 0.02)
                         : Colors.white,
                     borderRadius: BorderRadius.circular(16),
                     boxShadow: isDark
                         ? null
                         : [
                             BoxShadow(
-                              color: Colors.black.withOpacity(0.05),
+                              color: Colors.black.withValues(alpha: 0.05),
                               blurRadius: 4,
                               offset: const Offset(0, 2),
                             ),
@@ -76,7 +142,7 @@ class FavoritesScreen extends StatelessWidget {
                       height: 40,
                       decoration: BoxDecoration(
                         color: isDark
-                            ? AppColors.secondary.withOpacity(0.5)
+                            ? AppColors.secondary.withValues(alpha: 0.5)
                             : AppColors.backgroundLight,
                         shape: BoxShape.circle,
                       ),
@@ -127,7 +193,7 @@ class FavoritesScreen extends StatelessWidget {
                 height: 150,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: AppColors.primary.withOpacity(0.1),
+                  color: AppColors.primary.withValues(alpha: 0.1),
                 ),
               ),
               Container(
@@ -180,9 +246,10 @@ class FavoritesScreen extends StatelessWidget {
           const SizedBox(height: 32),
           ElevatedButton(
             onPressed: () {
-              // Navigate to home logic is custom, but normally switching tabs via state up
-              // For now, simpler to just let user switch tab manually
-              // But we can try to pop if it was pushed? No this is likely a tab root.
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const SongIndexScreen()),
+              );
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.primary,
@@ -199,3 +266,5 @@ class FavoritesScreen extends StatelessWidget {
     );
   }
 }
+
+enum _FavSort { number, title }

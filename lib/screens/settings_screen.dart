@@ -1,7 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/settings_provider.dart';
+import '../providers/onboarding_provider.dart';
 import '../theme.dart';
+import 'about_screen.dart';
+import 'backup_restore_screen.dart';
+import 'collections_screen.dart';
+import 'help_screen.dart';
+import 'onboarding_screen.dart';
+import 'privacy_policy_screen.dart';
+import 'primary_color_picker_sheet.dart';
+import 'recently_viewed_screen.dart';
+import 'terms_screen.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -37,18 +47,18 @@ class SettingsScreen extends StatelessWidget {
                   trailing: Switch(
                     value: settings.isDarkMode,
                     onChanged: (value) => settings.toggleTheme(value),
-                    activeColor: Colors.green,
+                    activeThumbColor: Colors.green,
                   ),
                 ),
                 Divider(
                   height: 1,
                   indent: 50,
-                  color: Colors.grey.withOpacity(0.2),
+                  color: Colors.grey.withValues(alpha: 0.2),
                 ),
                 _buildListTile(
                   title: 'Font Size',
                   leadingIcon: Icons.format_size,
-                  leadingColor: AppColors.primary,
+                  leadingColor: Theme.of(context).colorScheme.primary,
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -92,6 +102,49 @@ class SettingsScreen extends StatelessWidget {
                     );
                   },
                 ),
+                Divider(
+                  height: 1,
+                  indent: 50,
+                  color: Colors.grey.withValues(alpha: 0.2),
+                ),
+                _buildListTile(
+                  title: 'Primary Color',
+                  leadingIcon: Icons.palette_outlined,
+                  leadingColor: Theme.of(context).colorScheme.primary,
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        width: 18,
+                        height: 18,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: settings.primaryColor,
+                          border: Border.all(
+                            color: isDark
+                                ? Colors.white.withValues(alpha: 0.12)
+                                : Colors.black.withValues(alpha: 0.12),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      const Icon(Icons.chevron_right, color: Colors.grey),
+                    ],
+                  ),
+                  onTap: () {
+                    showModalBottomSheet<void>(
+                      context: context,
+                      isScrollControlled: true,
+                      showDragHandle: true,
+                      backgroundColor:
+                          Theme.of(context).scaffoldBackgroundColor,
+                      builder: (_) => PrimaryColorPickerSheet(
+                        initialColor: settings.primaryColor,
+                        onSave: (color) => settings.setPrimaryColor(color),
+                      ),
+                    );
+                  },
+                ),
               ],
             ),
           ),
@@ -104,20 +157,177 @@ class SettingsScreen extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 24),
-          _buildSectionHeader('ABOUT THE APP'),
+          _buildSectionHeader('LIBRARY'),
           Container(
             decoration: BoxDecoration(
               color: isDark ? const Color(0xFF1C1C1E) : Colors.white,
               borderRadius: BorderRadius.circular(12),
             ),
-            child: _buildListTile(
-              title: 'Version',
-              leadingIcon: Icons.info,
-              leadingColor: Colors.grey,
-              trailing: const Text(
-                "1.0.0",
-                style: TextStyle(color: Colors.grey),
-              ),
+            child: Column(
+              children: [
+                _buildListTile(
+                  title: 'Recently Viewed',
+                  leadingIcon: Icons.history,
+                  leadingColor: Colors.teal,
+                  trailing: const Icon(Icons.chevron_right, color: Colors.grey),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const RecentlyViewedScreen(),
+                      ),
+                    );
+                  },
+                ),
+                Divider(
+                  height: 1,
+                  indent: 50,
+                  color: Colors.grey.withValues(alpha: 0.2),
+                ),
+                _buildListTile(
+                  title: 'Collections',
+                  leadingIcon: Icons.folder_open,
+                  leadingColor: Colors.indigo,
+                  trailing: const Icon(Icons.chevron_right, color: Colors.grey),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const CollectionsScreen(),
+                      ),
+                    );
+                  },
+                ),
+                Divider(
+                  height: 1,
+                  indent: 50,
+                  color: Colors.grey.withValues(alpha: 0.2),
+                ),
+                _buildListTile(
+                  title: 'Backup & Restore',
+                  leadingIcon: Icons.cloud_upload_outlined,
+                  leadingColor: AppColors.primary,
+                  trailing: const Icon(Icons.chevron_right, color: Colors.grey),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const BackupRestoreScreen(),
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 24),
+          _buildSectionHeader('SUPPORT'),
+          Container(
+            decoration: BoxDecoration(
+              color: isDark ? const Color(0xFF1C1C1E) : Colors.white,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Column(
+              children: [
+                _buildListTile(
+                  title: 'Help & Feedback',
+                  leadingIcon: Icons.help_outline,
+                  leadingColor: Colors.blueGrey,
+                  trailing: const Icon(Icons.chevron_right, color: Colors.grey),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const HelpScreen()),
+                    );
+                  },
+                ),
+                Divider(
+                  height: 1,
+                  indent: 50,
+                  color: Colors.grey.withValues(alpha: 0.2),
+                ),
+                _buildListTile(
+                  title: 'Onboarding',
+                  leadingIcon: Icons.play_circle_outline,
+                  leadingColor: Colors.deepPurple,
+                  trailing: const Icon(Icons.chevron_right, color: Colors.grey),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => OnboardingScreen(
+                          onFinish: () async {
+                            await context
+                                .read<OnboardingProvider>()
+                                .setComplete(true);
+                            if (context.mounted) Navigator.pop(context);
+                          },
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 24),
+          _buildSectionHeader('ABOUT'),
+          Container(
+            decoration: BoxDecoration(
+              color: isDark ? const Color(0xFF1C1C1E) : Colors.white,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Column(
+              children: [
+                _buildListTile(
+                  title: 'About the App',
+                  leadingIcon: Icons.info_outline,
+                  leadingColor: Colors.grey,
+                  trailing: const Icon(Icons.chevron_right, color: Colors.grey),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const AboutScreen()),
+                    );
+                  },
+                ),
+                Divider(
+                  height: 1,
+                  indent: 50,
+                  color: Colors.grey.withValues(alpha: 0.2),
+                ),
+                _buildListTile(
+                  title: 'Privacy Policy',
+                  leadingIcon: Icons.privacy_tip_outlined,
+                  leadingColor: Colors.green,
+                  trailing: const Icon(Icons.chevron_right, color: Colors.grey),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const PrivacyPolicyScreen(),
+                      ),
+                    );
+                  },
+                ),
+                Divider(
+                  height: 1,
+                  indent: 50,
+                  color: Colors.grey.withValues(alpha: 0.2),
+                ),
+                _buildListTile(
+                  title: 'Terms',
+                  leadingIcon: Icons.description_outlined,
+                  leadingColor: Colors.orange,
+                  trailing: const Icon(Icons.chevron_right, color: Colors.grey),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const TermsScreen()),
+                    );
+                  },
+                ),
+              ],
             ),
           ),
         ],

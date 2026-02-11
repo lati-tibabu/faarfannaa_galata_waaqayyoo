@@ -18,7 +18,7 @@ class SplashScreen extends StatelessWidget {
             radius: 1.5,
             colors: [
               const Color(0x1FEE7A00),
-              isDark ? Colors.transparent : Colors.white.withOpacity(0.0),
+              isDark ? Colors.transparent : Colors.white.withValues(alpha: 0.0),
             ],
           ),
         ),
@@ -62,16 +62,16 @@ class SplashScreen extends StatelessWidget {
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         color: isDark
-                            ? AppColors.secondary.withOpacity(0.6)
+                            ? AppColors.secondary.withValues(alpha: 0.6)
                             : Colors.white,
                         border: Border.all(
                           color: isDark
                               ? Colors.white10
-                              : Colors.grey.withOpacity(0.1),
+                              : Colors.grey.withValues(alpha: 0.1),
                         ),
                         boxShadow: [
                           BoxShadow(
-                            color: AppColors.primary.withOpacity(0.35),
+                            color: AppColors.primary.withValues(alpha: 0.35),
                             blurRadius: 25,
                           ),
                         ],
@@ -111,7 +111,7 @@ class SplashScreen extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                       letterSpacing: 4,
                       color: isDark
-                          ? Colors.white.withOpacity(0.5)
+                          ? Colors.white.withValues(alpha: 0.5)
                           : Colors.grey,
                     ),
                   ),
@@ -141,7 +141,7 @@ class SplashScreen extends StatelessWidget {
                                     fontSize: 10,
                                     fontWeight: FontWeight.bold,
                                     color: isDark
-                                        ? Colors.white.withOpacity(0.4)
+                                        ? Colors.white.withValues(alpha: 0.4)
                                         : Colors.black54,
                                   ),
                                 ),
@@ -153,7 +153,7 @@ class SplashScreen extends StatelessWidget {
                                 fontSize: 10,
                                 fontWeight: FontWeight.bold,
                                 color: isDark
-                                    ? Colors.white.withOpacity(0.4)
+                                    ? Colors.white.withValues(alpha: 0.4)
                                     : Colors.black54,
                               ),
                             ),
@@ -166,7 +166,7 @@ class SplashScreen extends StatelessWidget {
                             value: progress,
                             backgroundColor: isDark
                                 ? Colors.white10
-                                : Colors.grey.withOpacity(0.2),
+                                : Colors.grey.withValues(alpha: 0.2),
                             valueColor: const AlwaysStoppedAnimation<Color>(
                               AppColors.primary,
                             ),
@@ -182,7 +182,7 @@ class SplashScreen extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 10,
                       color: isDark
-                          ? Colors.white.withOpacity(0.3)
+                          ? Colors.white.withValues(alpha: 0.3)
                           : Colors.black38,
                     ),
                   ),

@@ -55,13 +55,13 @@ class _HymnTile extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
       decoration: BoxDecoration(
-        color: isDark ? Colors.white.withOpacity(0.02) : Colors.white,
+        color: isDark ? Colors.white.withValues(alpha: 0.02) : Colors.white,
         borderRadius: BorderRadius.circular(16),
         boxShadow: isDark
             ? null
             : [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
+                  color: Colors.black.withValues(alpha: 0.05),
                   blurRadius: 4,
                   offset: const Offset(0, 2),
                 ),
@@ -82,13 +82,13 @@ class _HymnTile extends StatelessWidget {
           height: 48,
           decoration: BoxDecoration(
             color: isDark
-                ? AppColors.secondary.withOpacity(0.5)
+                ? AppColors.secondary.withValues(alpha: 0.5)
                 : AppColors.backgroundLight,
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
               color: isDark
-                  ? Colors.white.withOpacity(0.05)
-                  : Colors.grey.withOpacity(0.2),
+                  ? Colors.white.withValues(alpha: 0.05)
+                  : Colors.grey.withValues(alpha: 0.2),
             ),
           ),
           child: Center(
@@ -114,7 +114,7 @@ class _HymnTile extends StatelessWidget {
           style: TextStyle(
             color: Theme.of(
               context,
-            ).textTheme.bodySmall?.color?.withOpacity(0.6),
+            ).textTheme.bodySmall?.color?.withValues(alpha: 0.6),
             fontSize: 12,
           ),
         ),
