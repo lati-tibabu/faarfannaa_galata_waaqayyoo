@@ -178,7 +178,7 @@ class SplashScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 40),
                   Text(
-                    '© 2024 Galatoomaa Apps',
+                    '© 2025 CodeLabs Apps',
                     style: TextStyle(
                       fontSize: 10,
                       color: isDark
