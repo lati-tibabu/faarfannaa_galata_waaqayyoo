@@ -1,6 +1,7 @@
 {
   "number": 46,
   "title": "Kiristos Fayyisaan",
+  "category": "salvation",
   "sections": [
     {
       "type": "VRS1",
@@ -21,16 +22,16 @@
         "Hin irraanfannuu",
         "hin irraanfatinaa",
         "Seenaa nu duraa hin badne",
-        "nuuf ta’ee."
+        "nuuf taâ€™ee."
       ]
     },
     {
       "type": "VRS2",
       "lines": [
         "Muka fannoo irratti",
-        "nuuf jedhee du’e",
+        "nuuf jedhee duâ€™e",
         "Awwaala keessa",
-        "nuuf jedhee bu’e."
+        "nuuf jedhee buâ€™e."
       ]
     },
     {
@@ -43,15 +44,15 @@
         "Hin irraanfannuu",
         "hin irraanfatinaa",
         "Seenaa nu duraa hin badne",
-        "nuuf ta’ee."
+        "nuuf taâ€™ee."
       ]
     },
     {
       "type": "VRS3",
       "lines": [
         "Cubbuu nuuf dhiisuuf",
-        "Yesus du’eera",
-        "Du’aa ka’uu isaan",
+        "Yesus duâ€™eera",
+        "Duâ€™aa kaâ€™uu isaan",
         "nu jabeesseera."
       ]
     },
@@ -65,7 +66,7 @@
         "Hin irraanfannuu",
         "hin irraanfatinaa",
         "Seenaa nu duraa hin badne",
-        "nuuf ta’ee."
+        "nuuf taâ€™ee."
       ]
     }
   ]

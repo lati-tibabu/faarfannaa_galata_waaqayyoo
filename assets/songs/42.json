@@ -1,12 +1,13 @@
 {
   "number": 42,
   "title": "Gooftaa koo yesusiin",
+  "category": "worship",
   "sections": [
     {
       "type": "VRS1",
       "lines": [
         "Gooftaa koo yesusiin",
-        "baay’ee dhiphisan",
+        "baayâ€™ee dhiphisan",
         "Jirmicha fannoodhaa",
         "kophaa baachisan",
         "Gooftaa kabalanii danuu itti qoosan",
@@ -20,7 +21,7 @@
         "Gargaarsa hin arganne",
         "Abbaa isatti himatee",
         "Fayyiinni lubbuu koo",
-        "isumaan waan ta’eef",
+        "isumaan waan taâ€™eef",
         "Anaaf siif anaaf siif *4"
       ]
     },
@@ -29,7 +30,7 @@
       "lines": [
         "Muka fannoo irratti",
         "yommuttii dhiphate",
-        "Lubbuun kessaa ba’uuf",
+        "Lubbuun kessaa baâ€™uuf",
         "yommuttii muddame",
         "nan dheebodhe jedhee",
         "eegdotattii himate",
@@ -39,11 +40,11 @@
     {
       "type": "VRS4",
       "lines": [
-        "Xoofoo isaaf qophaa’ee",
+        "Xoofoo isaaf qophaaâ€™ee",
         "dhugee erga fixee",
-        "Waa’ee keenyaaf jedhee",
-        "du’ee awwaalamee",
-        "Du’a mo’ee ka’ee yaaddoo nurraa fixe",
+        "Waaâ€™ee keenyaaf jedhee",
+        "duâ€™ee awwaalamee",
+        "Duâ€™a moâ€™ee kaâ€™ee yaaddoo nurraa fixe",
         "Anaaf siif anaaf siif *4"
       ]
     }

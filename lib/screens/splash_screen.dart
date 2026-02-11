@@ -7,14 +7,19 @@ class SplashScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
       body: Container(
-        decoration: const BoxDecoration(
-          color: AppColors.backgroundDark,
+        decoration: BoxDecoration(
+          color: isDark ? AppColors.backgroundDark : AppColors.backgroundLight,
           gradient: RadialGradient(
-            center: Alignment(-1.0, -1.0),
+            center: const Alignment(-1.0, -1.0),
             radius: 1.5,
-            colors: [Color(0x1FEE7A00), Colors.transparent],
+            colors: [
+              const Color(0x1FEE7A00),
+              isDark ? Colors.transparent : Colors.white.withOpacity(0.0),
+            ],
           ),
         ),
         child: Stack(
@@ -40,7 +45,7 @@ class SplashScreen extends StatelessWidget {
                 child: Icon(
                   Icons.church,
                   size: 120,
-                  color: AppColors.secondary,
+                  color: isDark ? AppColors.secondary : Colors.grey,
                 ),
               ),
             ),
@@ -56,8 +61,14 @@ class SplashScreen extends StatelessWidget {
                       padding: const EdgeInsets.all(36),
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: AppColors.secondary.withOpacity(0.6),
-                        border: Border.all(color: Colors.white10),
+                        color: isDark
+                            ? AppColors.secondary.withOpacity(0.6)
+                            : Colors.white,
+                        border: Border.all(
+                          color: isDark
+                              ? Colors.white10
+                              : Colors.grey.withOpacity(0.1),
+                        ),
                         boxShadow: [
                           BoxShadow(
                             color: AppColors.primary.withOpacity(0.35),
@@ -74,12 +85,13 @@ class SplashScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 32),
                   // Title
-                  const Text(
+                  Text(
                     'Faarfannaa',
                     style: TextStyle(
                       fontSize: 32,
                       fontWeight: FontWeight.bold,
                       letterSpacing: -0.5,
+                      color: isDark ? Colors.white : Colors.black,
                     ),
                   ),
                   const Text(
@@ -98,7 +110,9 @@ class SplashScreen extends StatelessWidget {
                       fontSize: 10,
                       fontWeight: FontWeight.bold,
                       letterSpacing: 4,
-                      color: Colors.white.withOpacity(0.5),
+                      color: isDark
+                          ? Colors.white.withOpacity(0.5)
+                          : Colors.grey,
                     ),
                   ),
                   const Spacer(),
@@ -126,7 +140,9 @@ class SplashScreen extends StatelessWidget {
                                   style: TextStyle(
                                     fontSize: 10,
                                     fontWeight: FontWeight.bold,
-                                    color: Colors.white.withOpacity(0.4),
+                                    color: isDark
+                                        ? Colors.white.withOpacity(0.4)
+                                        : Colors.black54,
                                   ),
                                 ),
                               ],
@@ -136,7 +152,9 @@ class SplashScreen extends StatelessWidget {
                               style: TextStyle(
                                 fontSize: 10,
                                 fontWeight: FontWeight.bold,
-                                color: Colors.white.withOpacity(0.4),
+                                color: isDark
+                                    ? Colors.white.withOpacity(0.4)
+                                    : Colors.black54,
                               ),
                             ),
                           ],
@@ -146,7 +164,9 @@ class SplashScreen extends StatelessWidget {
                           borderRadius: BorderRadius.circular(10),
                           child: LinearProgressIndicator(
                             value: progress,
-                            backgroundColor: Colors.white10,
+                            backgroundColor: isDark
+                                ? Colors.white10
+                                : Colors.grey.withOpacity(0.2),
                             valueColor: const AlwaysStoppedAnimation<Color>(
                               AppColors.primary,
                             ),
@@ -161,7 +181,9 @@ class SplashScreen extends StatelessWidget {
                     '© 2024 Galatoomaa Apps',
                     style: TextStyle(
                       fontSize: 10,
-                      color: Colors.white.withOpacity(0.3),
+                      color: isDark
+                          ? Colors.white.withOpacity(0.3)
+                          : Colors.black38,
                     ),
                   ),
                   const SizedBox(height: 16),

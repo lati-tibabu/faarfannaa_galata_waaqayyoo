@@ -64,4 +64,16 @@ class SongService {
           song.number.toString().contains(lowerQuery);
     }).toList();
   }
+
+  List<String> getUniqueCategories() {
+    final categories = _songs.map((s) => s.category).toSet().toList();
+    categories.sort();
+    return categories;
+  }
+
+  List<Hymn> getSongsByCategory(String category) {
+    return _songs
+        .where((s) => s.category.toLowerCase() == category.toLowerCase())
+        .toList();
+  }
 }

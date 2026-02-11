@@ -1,13 +1,14 @@
 {
   "number": 39,
   "title": "Ilaalaa hoolaa Waaqayoo",
+  "category": "salvation",
   "sections": [
     {
       "type": "VRS1",
       "lines": [
         "Ilaalaa hoolaa Waaqayoo",
-        "Isaa nuuf jedhe du’e,",
-        "Inni guddaa dhama’ewoo",
+        "Isaa nuuf jedhe duâ€™e,",
+        "Inni guddaa dhamaâ€™ewoo",
         "Siin immoo fayyisuudhaf,",
         "Siin immoo siin immoo",
         "Siin immoo inni in waama."
@@ -16,7 +17,7 @@
     {
       "type": "VRS2",
       "lines": [
-        "Inni namootaaf du’eera,",
+        "Inni namootaaf duâ€™eera,",
         "Cubbuu isaaniis baateera,",
         "Hundumaa ofitti in waama,",
         "Siin immoo siin immoo",
@@ -40,9 +41,9 @@
         "Egaa amma fayyitteetta,",
         "Ayyaanas argatteetta,",
         "Si achi sonaan of eeggadhu,",
-        "Yesus dhuunfa kee ti’oo,",
+        "Yesus dhuunfa kee tiâ€™oo,",
         "Siif immoo siif immoo",
-        "Yesus dhuunfa kee ti’oo."
+        "Yesus dhuunfa kee tiâ€™oo."
       ]
     },
     {
@@ -50,10 +51,10 @@
       "lines": [
         "Yesus dafee dhufuuf jira,",
         "Isa biras in teessa,",
-        "Egaa homaa hin yaadda’in,",
-        "Qannoon siif qophaa’eera,",
+        "Egaa homaa hin yaaddaâ€™in,",
+        "Qannoon siif qophaaâ€™eera,",
         "Siif immoo siif immoo",
-        "Qannoon siif qophaa’eera"
+        "Qannoon siif qophaaâ€™eera"
       ]
     }
   ]

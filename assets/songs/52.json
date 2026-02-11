@@ -1,6 +1,7 @@
 {
   "number": 52,
   "title": "Yesus naaf jedhee dhufe,",
+  "category": "worship",
   "sections": [
     {
       "type": "VRS1",
@@ -23,19 +24,19 @@
     {
       "type": "VRS3",
       "lines": [
-        "Yesus naaf jedhee du’e,",
-        "Naaf jedhee du’e,",
-        "Naaf jedhee du’e",
-        "Yesus naaf jedhee du’e."
+        "Yesus naaf jedhee duâ€™e,",
+        "Naaf jedhee duâ€™e,",
+        "Naaf jedhee duâ€™e",
+        "Yesus naaf jedhee duâ€™e."
       ]
     },
     {
       "type": "VRS4",
       "lines": [
-        "Yesus naaf du’aa ka’e,",
-        "Naaf du’aa ka’e,",
-        "Naaf du’aa ka’e",
-        "Yesus naaf du’aa ka’e."
+        "Yesus naaf duâ€™aa kaâ€™e,",
+        "Naaf duâ€™aa kaâ€™e,",
+        "Naaf duâ€™aa kaâ€™e",
+        "Yesus naaf duâ€™aa kaâ€™e."
       ]
     },
     {

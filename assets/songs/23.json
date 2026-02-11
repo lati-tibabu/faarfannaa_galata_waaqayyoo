@@ -1,6 +1,7 @@
 {
   "number": 23,
   "title": "Namootaa gammadaa",
+  "category": "worship",
   "sections": [
     {
       "type": "CHR",
@@ -12,7 +13,7 @@
         "Yesus nuuf dhalate",
         "Ifa guddaa arganneerra,",
         "Dukkanichis darbee",
-        "Ifnis nuuf ba’eera."
+        "Ifnis nuuf baâ€™eera."
       ]
     },
     {
@@ -38,17 +39,17 @@
         "Yesus nuuf dhalate",
         "Ifa guddaa arganneerra,",
         "Dukkanichis darbee",
-        "Ifnis nuuf ba’eera."
+        "Ifnis nuuf baâ€™eera."
       ]
     },
     {
       "type": "VRS2",
       "lines": [
         "Jarreen ogeessotaa",
-        "baay’ee dhama’anii,",
+        "baayâ€™ee dhamaâ€™anii,",
         "Yommuu Yesuusiin argan",
-        "baay’ee gammadani,",
-        "Urjiin ba’aa biiftuu",
+        "baayâ€™ee gammadani,",
+        "Urjiin baâ€™aa biiftuu",
         "isaaniin gegegessee,",
         "Yesusiin argan",
         "Maariyaam kan deesse."
@@ -64,18 +65,18 @@
         "Yesus nuuf dhalate",
         "Ifa guddaa arganneerra,",
         "Dukkanichis darbee",
-        "Ifnis nuuf ba’eera."
+        "Ifnis nuuf baâ€™eera."
       ]
     },
     {
       "type": "VRS3",
       "lines": [
-        "Halkan gaafa sanaa dukkanni ifa ta’ee",
-        "Waa’een dhalachuu isaa",
-        "biyya hunda ga’e;",
-        "Dukkanichi darbe kunoo ifni nuuf ba’e",
+        "Halkan gaafa sanaa dukkanni ifa taâ€™ee",
+        "Waaâ€™een dhalachuu isaa",
+        "biyya hunda gaâ€™e;",
+        "Dukkanichi darbe kunoo ifni nuuf baâ€™e",
         "Yesus nuuf dhufuun isaa",
-        "gammachuu nuuf ta’e."
+        "gammachuu nuuf taâ€™e."
       ]
     },
     {
@@ -88,7 +89,7 @@
         "Yesus nuuf dhalate",
         "Ifa guddaa arganneerra,",
         "Dukkanichis darbee",
-        "Ifnis nuuf ba’eera."
+        "Ifnis nuuf baâ€™eera."
       ]
     }
   ]

@@ -1,14 +1,21 @@
 class Hymn {
   final int number;
   final String title;
+  final String category;
   final List<HymnSection> sections;
 
-  Hymn({required this.number, required this.title, required this.sections});
+  Hymn({
+    required this.number,
+    required this.title,
+    required this.category,
+    required this.sections,
+  });
 
   factory Hymn.fromJson(Map<String, dynamic> json) {
     return Hymn(
       number: json['number'] as int,
       title: json['title'] as String,
+      category: json['category'] as String? ?? 'General',
       sections: (json['sections'] as List<dynamic>)
           .map((e) => HymnSection.fromJson(e as Map<String, dynamic>))
           .toList(),

@@ -1,6 +1,7 @@
 {
   "number": 48,
   "title": "Yesus na jaallachu isaa",
+  "category": "gospel",
   "sections": [
     {
       "type": "VRS1",
@@ -24,7 +25,7 @@
       "type": "VRS2",
       "lines": [
         "Yesus teessoo isaa dhiisee",
-        "Saba hundaaf du’udhaaf,",
+        "Saba hundaaf duâ€™udhaaf,",
         "Cubbuu koottis na hiikuuf",
         "Dhiiga isaa dhangalaasee"
       ]
@@ -41,7 +42,7 @@
     {
       "type": "VRS3",
       "lines": [
-        "Yesus naaf jedhee du’e,",
+        "Yesus naaf jedhee duâ€™e,",
         "Karaa waaqaas baname,",
         "Cubbuuttis na qulleesse,",
         "Ofittis na fudhate."
@@ -59,10 +60,10 @@
     {
       "type": "VRS4",
       "lines": [
-        "Waaqa irraa gadi naaf bu’ee,",
-        "Na jaallataaf naaf du’e,",
-        "Dhiigni isaa waan naaf bu’eef,",
-        "Yakki koo narraa bu’e."
+        "Waaqa irraa gadi naaf buâ€™ee,",
+        "Na jaallataaf naaf duâ€™e,",
+        "Dhiigni isaa waan naaf buâ€™eef,",
+        "Yakki koo narraa buâ€™e."
       ]
     },
     {
