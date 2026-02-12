@@ -7,9 +7,9 @@ import '../services/song_service.dart';
 import 'collections_screen.dart';
 import 'now_playing_screen.dart';
 import 'recently_viewed_screen.dart';
+import 'search_screen.dart';
 import 'song_detail_screen.dart';
 import 'song_index_screen.dart';
-import 'song_not_found_screen.dart';
 
 class HomeExploreScreen extends StatefulWidget {
   const HomeExploreScreen({super.key});
@@ -19,9 +19,6 @@ class HomeExploreScreen extends StatefulWidget {
 }
 
 class _HomeExploreScreenState extends State<HomeExploreScreen> {
-  final TextEditingController _searchController = TextEditingController();
-  final TextEditingController _numberController = TextEditingController();
-
   List<Hymn> _allSongs = [];
   String _selectedCategory = 'All';
   bool _favoritesOnly = false;
@@ -31,15 +28,6 @@ class _HomeExploreScreenState extends State<HomeExploreScreen> {
   void initState() {
     super.initState();
     _loadSongs();
-    _searchController.addListener(() => setState(() {}));
-    _numberController.addListener(() => setState(() {}));
-  }
-
-  @override
-  void dispose() {
-    _searchController.dispose();
-    _numberController.dispose();
-    super.dispose();
   }
 
   void _loadSongs() {
@@ -70,9 +58,6 @@ class _HomeExploreScreenState extends State<HomeExploreScreen> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final favorites = context.watch<FavoritesProvider>();
 
-    final String query = _searchController.text.trim().toLowerCase();
-    final String numberText = _numberController.text.trim();
-
     List<Hymn> songs = _allSongs;
     if (_selectedCategory != 'All') {
       songs = songs
@@ -83,16 +68,6 @@ class _HomeExploreScreenState extends State<HomeExploreScreen> {
     }
     if (_favoritesOnly) {
       songs = songs.where((s) => favorites.isFavorite(s.number)).toList();
-    }
-
-    if (numberText.isNotEmpty) {
-      songs = songs
-          .where((s) => s.number.toString().startsWith(numberText))
-          .toList();
-    } else if (query.isNotEmpty) {
-      songs = songs
-          .where((s) => s.title.toLowerCase().contains(query))
-          .toList();
     }
 
     songs.sort((a, b) {
@@ -112,199 +87,118 @@ class _HomeExploreScreenState extends State<HomeExploreScreen> {
           SliverAppBar(
             floating: true,
             pinned: true,
-            expandedHeight: 120,
+            toolbarHeight: 68,
+            elevation: 0,
+            scrolledUnderElevation: 0,
             backgroundColor:
                 Theme.of(context).appBarTheme.backgroundColor ??
                 Theme.of(context).scaffoldBackgroundColor,
-            flexibleSpace: FlexibleSpaceBar(
-              background: Container(
-                decoration: BoxDecoration(
-                  border: Border(
-                    bottom: BorderSide(
-                      color: isDark
-                          ? Colors.white.withValues(alpha: 0.05)
-                          : Colors.black.withValues(alpha: 0.05),
+            shape: Border(
+              bottom: BorderSide(
+                color: isDark
+                    ? Colors.white.withValues(alpha: 0.05)
+                    : Colors.black.withValues(alpha: 0.05),
+              ),
+            ),
+            titleSpacing: 20,
+            title: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    'Faarfannaa',
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.primary,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 24,
                     ),
                   ),
                 ),
-              ),
-              titlePadding: const EdgeInsets.symmetric(
-                horizontal: 20,
-                vertical: 16,
-              ),
-              centerTitle: false,
-              title: Text(
-                'Faarfannaa',
-                style: TextStyle(
-                  color: Theme.of(context).colorScheme.primary,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 24,
+                IconButton(
+                  tooltip: 'Search',
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const SearchScreen()),
+                    );
+                  },
+                  icon: Icon(
+                    Icons.search,
+                    color: isDark ? Colors.white60 : Colors.black54,
+                  ),
                 ),
-              ),
+                IconButton(
+                  tooltip: 'Filter',
+                  onPressed: _openFilters,
+                  icon: Icon(
+                    Icons.tune,
+                    color: isDark ? Colors.white60 : Colors.black54,
+                  ),
+                ),
+                PopupMenuButton<String>(
+                  icon: Icon(
+                    Icons.more_vert,
+                    color: isDark ? Colors.white60 : Colors.black54,
+                  ),
+                  onSelected: (value) {
+                    switch (value) {
+                      case 'index':
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const SongIndexScreen(),
+                          ),
+                        );
+                        break;
+                      case 'recent':
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const RecentlyViewedScreen(),
+                          ),
+                        );
+                        break;
+                      case 'collections':
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const CollectionsScreen(),
+                          ),
+                        );
+                        break;
+                      case 'now_playing':
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const NowPlayingScreen(),
+                          ),
+                        );
+                        break;
+                    }
+                  },
+                  itemBuilder: (context) => const [
+                    PopupMenuItem(value: 'index', child: Text('Song Index')),
+                    PopupMenuItem(
+                      value: 'recent',
+                      child: Text('Recently Viewed'),
+                    ),
+                    PopupMenuItem(
+                      value: 'collections',
+                      child: Text('Collections'),
+                    ),
+                    PopupMenuItem(
+                      value: 'now_playing',
+                      child: Text('Now Playing'),
+                    ),
+                  ],
+                ),
+              ],
             ),
-            actions: [
-              IconButton(
-                onPressed: _openFilters,
-                icon: Icon(
-                  Icons.tune,
-                  color: isDark ? Colors.white60 : Colors.black54,
-                ),
-              ),
-              PopupMenuButton<String>(
-                icon: Icon(
-                  Icons.more_vert,
-                  color: isDark ? Colors.white60 : Colors.black54,
-                ),
-                onSelected: (value) {
-                  switch (value) {
-                    case 'index':
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => const SongIndexScreen(),
-                        ),
-                      );
-                      break;
-                    case 'recent':
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => const RecentlyViewedScreen(),
-                        ),
-                      );
-                      break;
-                    case 'collections':
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => const CollectionsScreen(),
-                        ),
-                      );
-                      break;
-                    case 'now_playing':
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => const NowPlayingScreen(),
-                        ),
-                      );
-                      break;
-                  }
-                },
-                itemBuilder: (context) => const [
-                  PopupMenuItem(value: 'index', child: Text('Song Index')),
-                  PopupMenuItem(
-                    value: 'recent',
-                    child: Text('Recently Viewed'),
-                  ),
-                  PopupMenuItem(
-                    value: 'collections',
-                    child: Text('Collections'),
-                  ),
-                  PopupMenuItem(
-                    value: 'now_playing',
-                    child: Text('Now Playing'),
-                  ),
-                ],
-              ),
-            ],
           ),
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
               child: Column(
                 children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        flex: 3,
-                        child: TextField(
-                          controller: _searchController,
-                          style: TextStyle(
-                            color: isDark ? Colors.white : Colors.black,
-                          ),
-                          decoration: InputDecoration(
-                            hintText: 'Search hymns...',
-                            hintStyle: TextStyle(
-                              color: isDark
-                                  ? Colors.white.withValues(alpha: 0.3)
-                                  : Colors.black38,
-                            ),
-                            prefixIcon: Icon(
-                              Icons.search,
-                              color: isDark
-                                  ? Colors.white.withValues(alpha: 0.4)
-                                  : Colors.black45,
-                            ),
-                            filled: true,
-                            fillColor: isDark
-                                ? Colors.white.withValues(alpha: 0.1)
-                                : Colors.grey.withValues(alpha: 0.1),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                              borderSide: BorderSide.none,
-                            ),
-                            contentPadding: const EdgeInsets.symmetric(
-                              vertical: 12,
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        flex: 1,
-                        child: TextField(
-                          controller: _numberController,
-                          keyboardType: TextInputType.number,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: isDark ? Colors.white : Colors.black,
-                          ),
-                          onSubmitted: (value) {
-                            final parsed = int.tryParse(value.trim());
-                            if (parsed == null) return;
-                            final hymn = SongService().getSongByNumber(parsed);
-                            if (hymn != null) {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) => SongDetailScreen(song: hymn),
-                                ),
-                              );
-                            } else {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) =>
-                                      SongNotFoundScreen(number: parsed),
-                                ),
-                              );
-                            }
-                          },
-                          decoration: InputDecoration(
-                            hintText: 'No.',
-                            hintStyle: TextStyle(
-                              color: isDark
-                                  ? Colors.white.withValues(alpha: 0.3)
-                                  : Colors.black38,
-                            ),
-                            filled: true,
-                            fillColor: isDark
-                                ? Colors.white.withValues(alpha: 0.1)
-                                : Colors.grey.withValues(alpha: 0.1),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                              borderSide: BorderSide.none,
-                            ),
-                            contentPadding: const EdgeInsets.symmetric(
-                              vertical: 12,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
                   SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: Row(

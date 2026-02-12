@@ -33,6 +33,7 @@ class _PrimaryColorPickerSheetState extends State<PrimaryColorPickerSheet> {
 
   late Color _color;
   final TextEditingController _hexController = TextEditingController();
+  bool _didCommit = false;
 
   @override
   void initState() {
@@ -43,6 +44,7 @@ class _PrimaryColorPickerSheetState extends State<PrimaryColorPickerSheet> {
 
   @override
   void dispose() {
+    _commitSelection();
     _hexController.dispose();
     super.dispose();
   }
@@ -55,38 +57,54 @@ class _PrimaryColorPickerSheetState extends State<PrimaryColorPickerSheet> {
     }
   }
 
+  void _commitSelection() {
+    if (_didCommit) return;
+    _didCommit = true;
+    widget.onSave(_color.withValues(alpha: 1));
+  }
+
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final primary = Theme.of(context).colorScheme.primary;
     final width = MediaQuery.sizeOf(context).width;
 
-    return SafeArea(
-      child: Padding(
-        padding: EdgeInsets.only(
-          left: 16,
-          right: 16,
-          top: 8,
-          bottom: 16 + MediaQuery.of(context).viewInsets.bottom,
-        ),
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  const Text(
-                    'Primary Color',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                  const Spacer(),
-                  TextButton(
-                    onPressed: () => _setColor(AppColors.primary),
-                    child: const Text('Reset'),
-                  ),
-                ],
-              ),
+    return PopScope(
+      onPopInvokedWithResult: (didPop, result) => _commitSelection(),
+      child: SafeArea(
+        child: Padding(
+          padding: EdgeInsets.only(
+            left: 16,
+            right: 16,
+            top: 8,
+            bottom: 16 + MediaQuery.of(context).viewInsets.bottom,
+          ),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    IconButton(
+                      tooltip: 'Back',
+                      onPressed: () {
+                        _commitSelection();
+                        Navigator.pop(context);
+                      },
+                      icon: const Icon(Icons.arrow_back),
+                    ),
+                    const Text(
+                      'Primary Color',
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                    const Spacer(),
+                    TextButton(
+                      onPressed: () => _setColor(AppColors.primary),
+                      child: const Text('Reset'),
+                    ),
+                  ],
+                ),
               const SizedBox(height: 8),
               Container(
                 padding: const EdgeInsets.all(14),
@@ -193,32 +211,8 @@ class _PrimaryColorPickerSheetState extends State<PrimaryColorPickerSheet> {
                 portraitOnly: true,
                 pickerAreaBorderRadius: BorderRadius.circular(18),
               ),
-              const SizedBox(height: 14),
-              Row(
-                children: [
-                  Expanded(
-                    child: OutlinedButton(
-                      onPressed: () => Navigator.pop(context),
-                      child: const Text('Cancel'),
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () {
-                        widget.onSave(_color.withValues(alpha: 1));
-                        Navigator.pop(context);
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: primary,
-                        foregroundColor: Colors.white,
-                      ),
-                      child: const Text('Save'),
-                    ),
-                  ),
-                ],
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
