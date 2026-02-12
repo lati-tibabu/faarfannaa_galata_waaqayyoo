@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../l10n/app_text.dart';
 import '../providers/settings_provider.dart';
 
 class AccessibilitySettingsScreen extends StatelessWidget {
@@ -12,7 +13,10 @@ class AccessibilitySettingsScreen extends StatelessWidget {
     final cardColor = isDark ? const Color(0xFF1C1C1E) : Colors.white;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Accessibility'), centerTitle: true),
+      appBar: AppBar(
+        title: Text(context.tr('accessibility')),
+        centerTitle: true,
+      ),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
@@ -24,8 +28,8 @@ class AccessibilitySettingsScreen extends StatelessWidget {
             child: Column(
               children: [
                 SwitchListTile(
-                  title: const Text('High Contrast'),
-                  subtitle: const Text('Increase UI contrast and separators'),
+                  title: Text(context.tr('high_contrast')),
+                  subtitle: Text(context.tr('high_contrast_sub')),
                   value: settings.highContrastMode,
                   onChanged: settings.setHighContrastMode,
                 ),
@@ -36,8 +40,8 @@ class AccessibilitySettingsScreen extends StatelessWidget {
                   color: Colors.grey.withValues(alpha: 0.2),
                 ),
                 SwitchListTile(
-                  title: const Text('Reduce Motion'),
-                  subtitle: const Text('Minimize page transition animations'),
+                  title: Text(context.tr('reduce_motion')),
+                  subtitle: Text(context.tr('reduce_motion_sub')),
                   value: settings.reduceMotion,
                   onChanged: settings.setReduceMotion,
                 ),
@@ -48,8 +52,8 @@ class AccessibilitySettingsScreen extends StatelessWidget {
                   color: Colors.grey.withValues(alpha: 0.2),
                 ),
                 SwitchListTile(
-                  title: const Text('Large Touch Targets'),
-                  subtitle: const Text('Increase tap target sizes'),
+                  title: Text(context.tr('large_touch_targets')),
+                  subtitle: Text(context.tr('large_touch_targets_sub')),
                   value: settings.largeTouchTargets,
                   onChanged: settings.setLargeTouchTargets,
                 ),
@@ -58,7 +62,7 @@ class AccessibilitySettingsScreen extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           Text(
-            'These settings apply app-wide immediately.',
+            context.tr('accessibility_note'),
             style: TextStyle(
               color: isDark ? Colors.white60 : Colors.black54,
               fontSize: 12,

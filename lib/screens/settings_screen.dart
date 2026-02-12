@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../l10n/app_text.dart';
 import '../providers/onboarding_provider.dart';
 import '../providers/settings_provider.dart';
 import 'about_screen.dart';
@@ -25,16 +26,16 @@ class SettingsScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'Settings',
-          style: TextStyle(fontWeight: FontWeight.bold),
+        title: Text(
+          context.tr('settings'),
+          style: const TextStyle(fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
       ),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          _buildSectionHeader('APP SETTINGS'),
+          _buildSectionHeader(context.tr('app_settings')),
           Container(
             decoration: BoxDecoration(
               color: isDark ? const Color(0xFF1C1C1E) : Colors.white,
@@ -43,7 +44,7 @@ class SettingsScreen extends StatelessWidget {
             child: Column(
               children: [
                 _buildListTile(
-                  title: 'Dark Mode',
+                  title: context.tr('dark_mode'),
                   leadingIcon: Icons.dark_mode,
                   leadingColor: Colors.blue,
                   trailing: Switch(
@@ -53,7 +54,7 @@ class SettingsScreen extends StatelessWidget {
                 ),
                 _divider(),
                 _buildListTile(
-                  title: 'Primary Color',
+                  title: context.tr('primary_color'),
                   leadingIcon: Icons.palette_outlined,
                   leadingColor: Theme.of(context).colorScheme.primary,
                   trailing: Row(
@@ -93,14 +94,16 @@ class SettingsScreen extends StatelessWidget {
                 ),
                 _divider(),
                 _buildListTile(
-                  title: 'Language',
+                  title: context.tr('language'),
                   leadingIcon: Icons.language,
                   leadingColor: Colors.indigo,
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
-                        settings.languageCode == 'om' ? 'Oromo' : 'English',
+                        settings.languageCode == 'om'
+                            ? context.tr('oromo')
+                            : context.tr('english'),
                         style: const TextStyle(color: Colors.grey),
                       ),
                       const SizedBox(width: 4),
@@ -118,7 +121,7 @@ class SettingsScreen extends StatelessWidget {
                 ),
                 _divider(),
                 _buildListTile(
-                  title: 'Accessibility',
+                  title: context.tr('accessibility'),
                   leadingIcon: Icons.accessibility_new,
                   leadingColor: Colors.teal,
                   trailing: const Icon(Icons.chevron_right, color: Colors.grey),
@@ -133,7 +136,7 @@ class SettingsScreen extends StatelessWidget {
                 ),
                 _divider(),
                 _buildListTile(
-                  title: "What's New",
+                  title: context.tr('whats_new'),
                   leadingIcon: Icons.new_releases_outlined,
                   leadingColor: Colors.orange,
                   trailing: const Icon(Icons.chevron_right, color: Colors.grey),
@@ -148,15 +151,15 @@ class SettingsScreen extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 8),
-          const Padding(
+          Padding(
             padding: EdgeInsets.symmetric(horizontal: 16),
             child: Text(
-              'Lyrics typography settings are available from song pages.',
-              style: TextStyle(fontSize: 12, color: Colors.grey),
+              context.tr('lyrics_settings_note'),
+              style: const TextStyle(fontSize: 12, color: Colors.grey),
             ),
           ),
           const SizedBox(height: 24),
-          _buildSectionHeader('LIBRARY'),
+          _buildSectionHeader(context.tr('library')),
           Container(
             decoration: BoxDecoration(
               color: isDark ? const Color(0xFF1C1C1E) : Colors.white,
@@ -165,7 +168,7 @@ class SettingsScreen extends StatelessWidget {
             child: Column(
               children: [
                 _buildListTile(
-                  title: 'Recently Viewed',
+                  title: context.tr('recently_viewed'),
                   leadingIcon: Icons.history,
                   leadingColor: Colors.teal,
                   trailing: const Icon(Icons.chevron_right, color: Colors.grey),
@@ -180,7 +183,7 @@ class SettingsScreen extends StatelessWidget {
                 ),
                 _divider(),
                 _buildListTile(
-                  title: 'Collections',
+                  title: context.tr('collections'),
                   leadingIcon: Icons.folder_open,
                   leadingColor: Colors.indigo,
                   trailing: const Icon(Icons.chevron_right, color: Colors.grey),
@@ -195,7 +198,7 @@ class SettingsScreen extends StatelessWidget {
                 ),
                 _divider(),
                 _buildListTile(
-                  title: 'Backup & Restore',
+                  title: context.tr('backup_restore'),
                   leadingIcon: Icons.cloud_upload_outlined,
                   leadingColor: Theme.of(context).colorScheme.primary,
                   trailing: const Icon(Icons.chevron_right, color: Colors.grey),
@@ -212,7 +215,7 @@ class SettingsScreen extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 24),
-          _buildSectionHeader('SUPPORT'),
+          _buildSectionHeader(context.tr('support')),
           Container(
             decoration: BoxDecoration(
               color: isDark ? const Color(0xFF1C1C1E) : Colors.white,
@@ -221,7 +224,7 @@ class SettingsScreen extends StatelessWidget {
             child: Column(
               children: [
                 _buildListTile(
-                  title: 'Help & Feedback',
+                  title: context.tr('help_feedback'),
                   leadingIcon: Icons.help_outline,
                   leadingColor: Colors.blueGrey,
                   trailing: const Icon(Icons.chevron_right, color: Colors.grey),
@@ -234,7 +237,7 @@ class SettingsScreen extends StatelessWidget {
                 ),
                 _divider(),
                 _buildListTile(
-                  title: 'Onboarding',
+                  title: context.tr('onboarding'),
                   leadingIcon: Icons.play_circle_outline,
                   leadingColor: Colors.deepPurple,
                   trailing: const Icon(Icons.chevron_right, color: Colors.grey),
@@ -258,7 +261,7 @@ class SettingsScreen extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 24),
-          _buildSectionHeader('ABOUT'),
+          _buildSectionHeader(context.tr('about')),
           Container(
             decoration: BoxDecoration(
               color: isDark ? const Color(0xFF1C1C1E) : Colors.white,
@@ -267,7 +270,7 @@ class SettingsScreen extends StatelessWidget {
             child: Column(
               children: [
                 _buildListTile(
-                  title: 'About the App',
+                  title: context.tr('about_app'),
                   leadingIcon: Icons.info_outline,
                   leadingColor: Colors.grey,
                   trailing: const Icon(Icons.chevron_right, color: Colors.grey),
@@ -280,7 +283,7 @@ class SettingsScreen extends StatelessWidget {
                 ),
                 _divider(),
                 _buildListTile(
-                  title: 'Privacy Policy',
+                  title: context.tr('privacy_policy'),
                   leadingIcon: Icons.privacy_tip_outlined,
                   leadingColor: Colors.green,
                   trailing: const Icon(Icons.chevron_right, color: Colors.grey),
@@ -295,7 +298,7 @@ class SettingsScreen extends StatelessWidget {
                 ),
                 _divider(),
                 _buildListTile(
-                  title: 'Terms',
+                  title: context.tr('terms'),
                   leadingIcon: Icons.description_outlined,
                   leadingColor: Theme.of(context).colorScheme.primary,
                   trailing: const Icon(Icons.chevron_right, color: Colors.grey),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../l10n/app_text.dart';
 import '../models/hymn_model.dart';
 import '../services/song_service.dart';
 import 'song_detail_screen.dart';
@@ -50,7 +51,7 @@ class _SearchScreenState extends State<SearchScreen> {
     final primary = Theme.of(context).colorScheme.primary;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Search'), centerTitle: true),
+      appBar: AppBar(title: Text(context.tr('search')), centerTitle: true),
       body: Column(
         children: [
           Padding(
@@ -60,7 +61,7 @@ class _SearchScreenState extends State<SearchScreen> {
               autofocus: true,
               style: TextStyle(color: isDark ? Colors.white : Colors.black),
               decoration: InputDecoration(
-                hintText: 'Search by title or number...',
+                hintText: context.tr('search_hint'),
                 prefixIcon: const Icon(Icons.search),
                 suffixIcon: _search.text.isEmpty
                     ? null
@@ -83,7 +84,7 @@ class _SearchScreenState extends State<SearchScreen> {
             child: _search.text.trim().isEmpty
                 ? Center(
                     child: Text(
-                      'Start typing to search hymns',
+                      context.tr('start_typing_to_search'),
                       style: TextStyle(
                         color: isDark ? Colors.white54 : Colors.black54,
                       ),
@@ -92,7 +93,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 : _filtered.isEmpty
                 ? Center(
                     child: Text(
-                      'No hymns found',
+                      context.tr('no_hymns_found'),
                       style: TextStyle(
                         color: isDark ? Colors.white54 : Colors.black54,
                       ),

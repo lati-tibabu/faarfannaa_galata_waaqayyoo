@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flashy_tab_bar2/flashy_tab_bar2.dart';
 import 'package:heroicons/heroicons.dart';
+import '../l10n/app_text.dart';
 import '../theme.dart';
 import 'home_explore_screen.dart';
 import 'categories_screen.dart';
@@ -69,7 +70,7 @@ class _MainLayoutState extends State<MainLayout> {
                     : HeroIconStyle.outline,
               ),
               title: Text(
-                'Home',
+                context.tr('home'),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: navTextStyle,
@@ -85,7 +86,7 @@ class _MainLayoutState extends State<MainLayout> {
                     : HeroIconStyle.outline,
               ),
               title: Text(
-                'Categories',
+                context.tr('categories'),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: navTextStyle,
@@ -101,7 +102,7 @@ class _MainLayoutState extends State<MainLayout> {
                     : HeroIconStyle.outline,
               ),
               title: Text(
-                'Collections',
+                context.tr('collections'),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: navTextStyle,
@@ -117,7 +118,7 @@ class _MainLayoutState extends State<MainLayout> {
                     : HeroIconStyle.outline,
               ),
               title: Text(
-                'Favorites',
+                context.tr('favorites'),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: navTextStyle,
@@ -133,7 +134,7 @@ class _MainLayoutState extends State<MainLayout> {
                     : HeroIconStyle.outline,
               ),
               title: Text(
-                'Settings',
+                context.tr('settings'),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: navTextStyle,

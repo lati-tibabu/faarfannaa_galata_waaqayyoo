@@ -9,7 +9,7 @@ class SettingsProvider with ChangeNotifier {
   String _fontFamily = 'inter';
   int _fontWeight = 400;
   Color _primaryColor = AppColors.primary;
-  String _languageCode = 'om';
+  String _languageCode = 'en';
   bool _highContrastMode = false;
   bool _reduceMotion = false;
   bool _largeTouchTargets = false;
@@ -55,9 +55,9 @@ class SettingsProvider with ChangeNotifier {
     _primaryColor = storedPrimary == null
         ? AppColors.primary
         : Color(storedPrimary).withValues(alpha: 1);
-    _languageCode = prefs.getString(StorageKeys.languageCode) ?? 'om';
+    _languageCode = prefs.getString(StorageKeys.languageCode) ?? 'en';
     if (_languageCode != 'om' && _languageCode != 'en') {
-      _languageCode = 'om';
+      _languageCode = 'en';
       await prefs.setString(StorageKeys.languageCode, _languageCode);
     }
     _highContrastMode = prefs.getBool(StorageKeys.highContrastMode) ?? false;

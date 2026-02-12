@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../l10n/app_text.dart';
 import '../theme.dart';
 import '../models/hymn_model.dart';
 import '../providers/favorites_provider.dart';
@@ -20,7 +21,7 @@ class HomeExploreScreen extends StatefulWidget {
 
 class _HomeExploreScreenState extends State<HomeExploreScreen> {
   List<Hymn> _allSongs = [];
-  String _selectedCategory = 'All';
+  String _selectedCategory = '__all__';
   bool _favoritesOnly = false;
   _SortOption _sort = _SortOption.number;
 
@@ -59,7 +60,7 @@ class _HomeExploreScreenState extends State<HomeExploreScreen> {
     final favorites = context.watch<FavoritesProvider>();
 
     List<Hymn> songs = _allSongs;
-    if (_selectedCategory != 'All') {
+    if (_selectedCategory != '__all__') {
       songs = songs
           .where(
             (s) => s.category.toLowerCase() == _selectedCategory.toLowerCase(),
@@ -79,7 +80,10 @@ class _HomeExploreScreenState extends State<HomeExploreScreen> {
       }
     });
 
-    final categories = <String>['All', ...SongService().getUniqueCategories()];
+    final categories = <String>[
+      '__all__',
+      ...SongService().getUniqueCategories(),
+    ];
 
     return Scaffold(
       body: CustomScrollView(
@@ -105,7 +109,7 @@ class _HomeExploreScreenState extends State<HomeExploreScreen> {
               children: [
                 Expanded(
                   child: Text(
-                    'Faarfannaa',
+                    context.tr('hymns'),
                     style: TextStyle(
                       color: Theme.of(context).colorScheme.primary,
                       fontWeight: FontWeight.bold,
@@ -114,7 +118,7 @@ class _HomeExploreScreenState extends State<HomeExploreScreen> {
                   ),
                 ),
                 IconButton(
-                  tooltip: 'Search',
+                  tooltip: context.tr('search'),
                   onPressed: () {
                     Navigator.push(
                       context,
@@ -127,7 +131,7 @@ class _HomeExploreScreenState extends State<HomeExploreScreen> {
                   ),
                 ),
                 IconButton(
-                  tooltip: 'Filter',
+                  tooltip: context.tr('filter'),
                   onPressed: _openFilters,
                   icon: Icon(
                     Icons.tune,
@@ -175,19 +179,22 @@ class _HomeExploreScreenState extends State<HomeExploreScreen> {
                         break;
                     }
                   },
-                  itemBuilder: (context) => const [
-                    PopupMenuItem(value: 'index', child: Text('Song Index')),
+                  itemBuilder: (context) => [
+                    PopupMenuItem(
+                      value: 'index',
+                      child: Text(context.tr('song_index')),
+                    ),
                     PopupMenuItem(
                       value: 'recent',
-                      child: Text('Recently Viewed'),
+                      child: Text(context.tr('recently_viewed')),
                     ),
                     PopupMenuItem(
                       value: 'collections',
-                      child: Text('Collections'),
+                      child: Text(context.tr('collections')),
                     ),
                     PopupMenuItem(
                       value: 'now_playing',
-                      child: Text('Now Playing'),
+                      child: Text(context.tr('now_playing')),
                     ),
                   ],
                 ),
@@ -204,7 +211,7 @@ class _HomeExploreScreenState extends State<HomeExploreScreen> {
                     child: Row(
                       children: [
                         _CategoryChip(
-                          label: 'Favorites',
+                          label: context.tr('favorites'),
                           isActive: _favoritesOnly,
                           onTap: () =>
                               setState(() => _favoritesOnly = !_favoritesOnly),
@@ -215,7 +222,9 @@ class _HomeExploreScreenState extends State<HomeExploreScreen> {
                               _selectedCategory.toLowerCase() ==
                               c.toLowerCase();
                           return _CategoryChip(
-                            label: c,
+                            label: c == '__all__'
+                                ? context.tr('all')
+                                : _categoryLabel(context, c),
                             isActive: active,
                             onTap: () => setState(() => _selectedCategory = c),
                           );
@@ -233,7 +242,9 @@ class _HomeExploreScreenState extends State<HomeExploreScreen> {
                 padding: const EdgeInsets.all(40.0),
                 child: Center(
                   child: Text(
-                    _favoritesOnly ? 'No favorites found' : 'No hymns found',
+                    _favoritesOnly
+                        ? context.tr('no_favorites_found')
+                        : context.tr('no_hymns_found'),
                     style: TextStyle(
                       color: isDark ? Colors.white54 : Colors.black54,
                     ),
@@ -262,6 +273,14 @@ class _HomeExploreScreenState extends State<HomeExploreScreen> {
         ],
       ),
     );
+  }
+
+  String _categoryLabel(BuildContext context, String category) {
+    final key = 'category_${category.toLowerCase()}';
+    final translated = context.tr(key);
+    if (translated != key) return translated;
+    if (category.isEmpty) return category;
+    return '${category[0].toUpperCase()}${category.substring(1)}';
   }
 }
 
@@ -439,34 +458,34 @@ class _FilterSheetState extends State<_FilterSheet> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Browse options',
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+          Text(
+            context.tr('browse_options'),
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
           ),
           const SizedBox(height: 10),
           SwitchListTile(
             value: _favoritesOnly,
             onChanged: (v) => setState(() => _favoritesOnly = v),
-            title: const Text('Favorites only'),
+            title: Text(context.tr('favorites_only')),
             secondary: Icon(Icons.favorite, color: primary),
           ),
           const SizedBox(height: 8),
           Text(
-            'Sort by',
+            context.tr('sort_by'),
             style: TextStyle(color: isDark ? Colors.white70 : Colors.black54),
           ),
           RadioGroup<_SortOption>(
             groupValue: _sort,
             onChanged: (v) => setState(() => _sort = v ?? _SortOption.number),
-            child: const Column(
+            child: Column(
               children: [
                 RadioListTile<_SortOption>(
                   value: _SortOption.number,
-                  title: Text('Number'),
+                  title: Text(context.tr('number')),
                 ),
                 RadioListTile<_SortOption>(
                   value: _SortOption.title,
-                  title: Text('Title'),
+                  title: Text(context.tr('title')),
                 ),
               ],
             ),
@@ -477,7 +496,7 @@ class _FilterSheetState extends State<_FilterSheet> {
               Expanded(
                 child: OutlinedButton(
                   onPressed: () => Navigator.pop(context),
-                  child: const Text('Cancel'),
+                  child: Text(context.tr('cancel')),
                 ),
               ),
               const SizedBox(width: 12),
@@ -493,7 +512,7 @@ class _FilterSheetState extends State<_FilterSheet> {
                     backgroundColor: primary,
                     foregroundColor: Colors.white,
                   ),
-                  child: const Text('Apply'),
+                  child: Text(context.tr('apply')),
                 ),
               ),
             ],

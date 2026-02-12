@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../l10n/app_text.dart';
 import '../providers/settings_provider.dart';
 
 class LanguageSettingsScreen extends StatelessWidget {
@@ -12,7 +13,7 @@ class LanguageSettingsScreen extends StatelessWidget {
     final cardColor = isDark ? const Color(0xFF1C1C1E) : Colors.white;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Language'), centerTitle: true),
+      appBar: AppBar(title: Text(context.tr('language')), centerTitle: true),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
@@ -24,7 +25,7 @@ class LanguageSettingsScreen extends StatelessWidget {
             child: Column(
               children: [
                 ListTile(
-                  title: const Text('Afaan Oromoo'),
+                  title: Text(context.tr('oromo')),
                   subtitle: const Text('Oromo'),
                   trailing: settings.languageCode == 'om'
                       ? Icon(
@@ -41,7 +42,7 @@ class LanguageSettingsScreen extends StatelessWidget {
                   color: Colors.grey.withValues(alpha: 0.2),
                 ),
                 ListTile(
-                  title: const Text('English'),
+                  title: Text(context.tr('english')),
                   subtitle: const Text('English'),
                   trailing: settings.languageCode == 'en'
                       ? Icon(
@@ -56,7 +57,7 @@ class LanguageSettingsScreen extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           Text(
-            'UI localization is prepared and will expand in upcoming updates.',
+            context.tr('language_note'),
             style: TextStyle(
               color: isDark ? Colors.white60 : Colors.black54,
               fontSize: 12,

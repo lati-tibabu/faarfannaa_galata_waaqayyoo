@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import '../l10n/app_text.dart';
 
 class WhatsNewScreen extends StatelessWidget {
   final VoidCallback? onClose;
@@ -13,7 +14,7 @@ class WhatsNewScreen extends StatelessWidget {
     final cardColor = isDark ? const Color(0xFF1C1C1E) : Colors.white;
 
     return Scaffold(
-      appBar: AppBar(title: const Text("What's New"), centerTitle: true),
+      appBar: AppBar(title: Text(context.tr('whats_new')), centerTitle: true),
       body: FutureBuilder<PackageInfo>(
         future: PackageInfo.fromPlatform(),
         builder: (context, snapshot) {
@@ -37,8 +38,8 @@ class WhatsNewScreen extends StatelessWidget {
                   children: [
                     Text(
                       appVersion.isEmpty
-                          ? 'Latest release'
-                          : 'Version $appVersion',
+                          ? context.tr('latest_release')
+                          : '${context.tr('version')} $appVersion',
                       style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 16,
@@ -82,7 +83,7 @@ class WhatsNewScreen extends StatelessWidget {
                       borderRadius: BorderRadius.circular(14),
                     ),
                   ),
-                  child: const Text('Continue'),
+                  child: Text(context.tr('continue')),
                 ),
               ],
             ],
