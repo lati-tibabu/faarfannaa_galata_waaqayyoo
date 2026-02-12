@@ -50,6 +50,9 @@ void main() {
   });
 
   testWidgets('Can open Backup & Restore', (tester) async {
+    await tester.binding.setSurfaceSize(const Size(800, 1200));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
     await tester.pumpWidget(
       MultiProvider(
         providers: [
@@ -64,6 +67,7 @@ void main() {
       ),
     );
 
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Backup & Restore'));
     await tester.pumpAndSettle();
 
