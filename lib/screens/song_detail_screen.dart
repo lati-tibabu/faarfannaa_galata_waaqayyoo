@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../theme.dart';
 import '../models/hymn_model.dart';
 import '../providers/collections_provider.dart';
 import '../providers/favorites_provider.dart';
@@ -51,7 +50,7 @@ class _SongDetailScreenState extends State<SongDetailScreen> {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new),
+          icon: Icon(Icons.arrow_back_ios_new),
           onPressed: () => Navigator.pop(context),
         ),
         centerTitle: true,
@@ -70,7 +69,7 @@ class _SongDetailScreenState extends State<SongDetailScreen> {
             ),
             Text(
               song.title,
-              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
@@ -83,14 +82,14 @@ class _SongDetailScreenState extends State<SongDetailScreen> {
               return IconButton(
                 icon: Icon(
                   isFav ? Icons.favorite : Icons.favorite_border,
-                  color: isFav ? AppColors.primary : Colors.grey,
+                  color: isFav ? Theme.of(context).colorScheme.primary : Colors.grey,
                 ),
                 onPressed: () => favorites.toggleFavorite(song.number),
               );
             },
           ),
           PopupMenuButton<String>(
-            icon: const Icon(Icons.more_horiz),
+            icon: Icon(Icons.more_horiz),
             onSelected: (value) {
               switch (value) {
                 case 'collection':
@@ -160,8 +159,8 @@ class _SongDetailScreenState extends State<SongDetailScreen> {
             MaterialPageRoute(builder: (_) => const NowPlayingScreen()),
           );
         },
-        backgroundColor: AppColors.primary,
-        child: const Icon(Icons.play_arrow, color: Colors.white),
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        child: Icon(Icons.play_arrow, color: Colors.white),
       ),
     );
   }
@@ -191,11 +190,11 @@ class _LyricSection extends StatelessWidget {
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: isChorus
-            ? AppColors.primary.withValues(alpha: 0.1)
+            ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.1)
             : Colors.transparent,
         borderRadius: BorderRadius.circular(20),
         border: isChorus
-            ? Border.all(color: AppColors.primary.withValues(alpha: 0.3))
+            ? Border.all(color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.3))
             : null,
       ),
       child: Column(
@@ -206,7 +205,7 @@ class _LyricSection extends StatelessWidget {
               label.toUpperCase(),
               style: TextStyle(
                 color: isChorus
-                    ? AppColors.primary
+                    ? Theme.of(context).colorScheme.primary
                     : Theme.of(context).disabledColor,
                 fontWeight: FontWeight.bold,
                 fontSize: 12,
@@ -255,7 +254,7 @@ class _AddToCollectionSheetState extends State<_AddToCollectionSheet> {
     final created = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('New collection'),
+        title: Text('New collection'),
         content: TextField(
           controller: controller,
           autofocus: true,
@@ -266,15 +265,15 @@ class _AddToCollectionSheetState extends State<_AddToCollectionSheet> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('Cancel'),
+            child: Text('Cancel'),
           ),
           ElevatedButton(
             onPressed: () => Navigator.pop(ctx, true),
             style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.primary,
+              backgroundColor: Theme.of(context).colorScheme.primary,
               foregroundColor: Colors.white,
             ),
-            child: const Text('Create'),
+            child: Text('Create'),
           ),
         ],
       ),
@@ -308,7 +307,7 @@ class _AddToCollectionSheetState extends State<_AddToCollectionSheet> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
+              Text(
                 'Add to collection',
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
               ),
@@ -325,8 +324,8 @@ class _AddToCollectionSheetState extends State<_AddToCollectionSheet> {
                   ),
                   TextButton.icon(
                     onPressed: () => _promptCreate(context),
-                    icon: const Icon(Icons.add),
-                    label: const Text('New'),
+                    icon: Icon(Icons.add),
+                    label: Text('New'),
                   ),
                 ],
               ),
@@ -367,12 +366,12 @@ class _AddToCollectionSheetState extends State<_AddToCollectionSheet> {
                         leading: Icon(
                           selected ? Icons.check_circle : Icons.circle_outlined,
                           color: selected
-                              ? AppColors.primary
+                              ? Theme.of(context).colorScheme.primary
                               : (isDark ? Colors.white38 : Colors.black38),
                         ),
                         title: Text(
                           c.name,
-                          style: const TextStyle(fontWeight: FontWeight.w600),
+                          style: TextStyle(fontWeight: FontWeight.w600),
                         ),
                         subtitle: Text(
                           '${c.hymnNumbers.length} hymns',
@@ -390,7 +389,7 @@ class _AddToCollectionSheetState extends State<_AddToCollectionSheet> {
                   Expanded(
                     child: OutlinedButton(
                       onPressed: () => Navigator.pop(context),
-                      child: const Text('Done'),
+                      child: Text('Done'),
                     ),
                   ),
                 ],

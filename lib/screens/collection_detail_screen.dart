@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import '../models/hymn_model.dart';
 import '../providers/collections_provider.dart';
 import '../services/song_service.dart';
-import '../theme.dart';
 import 'song_detail_screen.dart';
 
 class CollectionDetailScreen extends StatefulWidget {
@@ -38,30 +37,33 @@ class _CollectionDetailScreenState extends State<CollectionDetailScreen> {
     final controller = TextEditingController(text: currentName);
     final renamed = await showDialog<bool>(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Rename collection'),
-        content: TextField(
-          controller: controller,
-          autofocus: true,
-          decoration: const InputDecoration(hintText: 'Collection name'),
-          textInputAction: TextInputAction.done,
-          onSubmitted: (_) => Navigator.pop(ctx, true),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('Cancel'),
+      builder: (ctx) {
+        final primary = Theme.of(ctx).colorScheme.primary;
+        return AlertDialog(
+          title: const Text('Rename collection'),
+          content: TextField(
+            controller: controller,
+            autofocus: true,
+            decoration: const InputDecoration(hintText: 'Collection name'),
+            textInputAction: TextInputAction.done,
+            onSubmitted: (_) => Navigator.pop(ctx, true),
           ),
-          ElevatedButton(
-            onPressed: () => Navigator.pop(ctx, true),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.primary,
-              foregroundColor: Colors.white,
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx, false),
+              child: const Text('Cancel'),
             ),
-            child: const Text('Save'),
-          ),
-        ],
-      ),
+            ElevatedButton(
+              onPressed: () => Navigator.pop(ctx, true),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: primary,
+                foregroundColor: Colors.white,
+              ),
+              child: const Text('Save'),
+            ),
+          ],
+        );
+      },
     );
 
     if (!mounted) return;
@@ -109,6 +111,7 @@ class _CollectionDetailScreenState extends State<CollectionDetailScreen> {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final primary = Theme.of(context).colorScheme.primary;
 
     return Consumer<CollectionsProvider>(
       builder: (context, collectionsProvider, _) {
@@ -222,7 +225,7 @@ class _CollectionDetailScreenState extends State<CollectionDetailScreen> {
                                 width: 42,
                                 height: 42,
                                 decoration: BoxDecoration(
-                                  color: AppColors.primary.withValues(
+                                  color: primary.withValues(
                                     alpha: isDark ? 0.18 : 0.12,
                                   ),
                                   borderRadius: BorderRadius.circular(12),
@@ -230,9 +233,9 @@ class _CollectionDetailScreenState extends State<CollectionDetailScreen> {
                                 child: Center(
                                   child: Text(
                                     song.number.toString(),
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                       fontWeight: FontWeight.bold,
-                                      color: AppColors.primary,
+                                      color: primary,
                                     ),
                                   ),
                                 ),

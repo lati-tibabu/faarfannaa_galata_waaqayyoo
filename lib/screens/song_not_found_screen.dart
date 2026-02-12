@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../theme.dart';
 
 class SongNotFoundScreen extends StatelessWidget {
   final int number;
@@ -11,7 +10,7 @@ class SongNotFoundScreen extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           'Not Found',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
@@ -28,20 +27,20 @@ class SongNotFoundScreen extends StatelessWidget {
                 height: 86,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: AppColors.primary.withValues(
+                  color: Theme.of(context).colorScheme.primary.withValues(
                     alpha: isDark ? 0.18 : 0.12,
                   ),
                 ),
-                child: const Icon(
+                child: Icon(
                   Icons.search_off,
-                  color: AppColors.primary,
+                  color: Theme.of(context).colorScheme.primary,
                   size: 42,
                 ),
               ),
               const SizedBox(height: 16),
               Text(
                 'Hymn $number not found',
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                 ),
@@ -58,10 +57,10 @@ class SongNotFoundScreen extends StatelessWidget {
               ElevatedButton(
                 onPressed: () => Navigator.pop(context),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primary,
+                  backgroundColor: Theme.of(context).colorScheme.primary,
                   foregroundColor: Colors.white,
                 ),
-                child: const Text('Go back'),
+                child: Text('Go back'),
               ),
             ],
           ),

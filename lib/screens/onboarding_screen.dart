@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../theme.dart';
 
 class OnboardingScreen extends StatefulWidget {
   final VoidCallback onFinish;
@@ -43,7 +42,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             children: [
               Row(
                 children: [
-                  const Text(
+                  Text(
                     'Welcome',
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
@@ -100,7 +99,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   ElevatedButton(
                     onPressed: _next,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primary,
+                      backgroundColor: Theme.of(context).colorScheme.primary,
                       foregroundColor: Colors.white,
                       padding: const EdgeInsets.symmetric(
                         horizontal: 20,
@@ -166,14 +165,14 @@ class _OnboardingCard extends StatelessWidget {
             height: 54,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(16),
-              color: AppColors.primary.withValues(alpha: isDark ? 0.18 : 0.12),
+              color: Theme.of(context).colorScheme.primary.withValues(alpha: isDark ? 0.18 : 0.12),
             ),
-            child: Icon(icon, color: AppColors.primary, size: 28),
+            child: Icon(icon, color: Theme.of(context).colorScheme.primary, size: 28),
           ),
           const SizedBox(height: 18),
           Text(
             title,
-            style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+            style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 10),
           Text(
@@ -218,7 +217,7 @@ class _Dots extends StatelessWidget {
           height: 6,
           decoration: BoxDecoration(
             color: isActive
-                ? AppColors.primary
+                ? Theme.of(context).colorScheme.primary
                 : (isDark ? Colors.white24 : Colors.black12),
             borderRadius: BorderRadius.circular(10),
           ),

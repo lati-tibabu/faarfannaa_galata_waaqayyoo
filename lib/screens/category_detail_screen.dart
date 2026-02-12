@@ -51,6 +51,7 @@ class _HymnTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final primary = Theme.of(context).colorScheme.primary;
 
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
@@ -94,8 +95,8 @@ class _HymnTile extends StatelessWidget {
           child: Center(
             child: Text(
               hymn.number.toString(),
-              style: const TextStyle(
-                color: AppColors.primary,
+              style: TextStyle(
+                color: primary,
                 fontWeight: FontWeight.bold,
                 fontSize: 18,
               ),

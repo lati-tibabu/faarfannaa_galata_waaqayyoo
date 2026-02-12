@@ -33,7 +33,7 @@ class SplashScreen extends StatelessWidget {
                 child: Icon(
                   Icons.auto_awesome,
                   size: 70,
-                  color: AppColors.primary,
+                  color: Theme.of(context).colorScheme.primary,
                 ),
               ),
             ),
@@ -71,15 +71,15 @@ class SplashScreen extends StatelessWidget {
                         ),
                         boxShadow: [
                           BoxShadow(
-                            color: AppColors.primary.withValues(alpha: 0.35),
+                            color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.35),
                             blurRadius: 25,
                           ),
                         ],
                       ),
-                      child: const Icon(
+                      child: Icon(
                         Icons.music_note,
                         size: 72,
-                        color: AppColors.primary,
+                        color: Theme.of(context).colorScheme.primary,
                       ),
                     ),
                   ),
@@ -94,12 +94,12 @@ class SplashScreen extends StatelessWidget {
                       color: isDark ? Colors.white : Colors.black,
                     ),
                   ),
-                  const Text(
+                  Text(
                     'Galata Waaqayyoo',
                     style: TextStyle(
                       fontSize: 32,
                       fontWeight: FontWeight.bold,
-                      color: AppColors.primary,
+                      color: Theme.of(context).colorScheme.primary,
                       letterSpacing: -0.5,
                     ),
                   ),
@@ -129,8 +129,8 @@ class SplashScreen extends StatelessWidget {
                                 Container(
                                   width: 6,
                                   height: 6,
-                                  decoration: const BoxDecoration(
-                                    color: AppColors.primary,
+                                  decoration: BoxDecoration(
+                                    color: Theme.of(context).colorScheme.primary,
                                     shape: BoxShape.circle,
                                   ),
                                 ),
@@ -167,8 +167,8 @@ class SplashScreen extends StatelessWidget {
                             backgroundColor: isDark
                                 ? Colors.white10
                                 : Colors.grey.withValues(alpha: 0.2),
-                            valueColor: const AlwaysStoppedAnimation<Color>(
-                              AppColors.primary,
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                              Theme.of(context).colorScheme.primary,
                             ),
                             minHeight: 4,
                           ),

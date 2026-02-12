@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import '../theme.dart';
 import 'privacy_policy_screen.dart';
 import 'terms_screen.dart';
 
@@ -14,7 +13,7 @@ class AboutScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           'About',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
@@ -49,13 +48,13 @@ class AboutScreen extends StatelessWidget {
                       height: 54,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(16),
-                        color: AppColors.primary.withValues(
+                        color: Theme.of(context).colorScheme.primary.withValues(
                           alpha: isDark ? 0.18 : 0.12,
                         ),
                       ),
-                      child: const Icon(
+                      child: Icon(
                         Icons.music_note,
-                        color: AppColors.primary,
+                        color: Theme.of(context).colorScheme.primary,
                         size: 30,
                       ),
                     ),
@@ -64,7 +63,7 @@ class AboutScreen extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text(
+                          Text(
                             'Faarfannaa Galata Waaqayyoo',
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
@@ -167,11 +166,11 @@ class _LinkTile extends StatelessWidget {
         height: 40,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12),
-          color: AppColors.primary.withValues(alpha: isDark ? 0.18 : 0.12),
+          color: Theme.of(context).colorScheme.primary.withValues(alpha: isDark ? 0.18 : 0.12),
         ),
-        child: Icon(icon, color: AppColors.primary),
+        child: Icon(icon, color: Theme.of(context).colorScheme.primary),
       ),
-      title: Text(title, style: const TextStyle(fontWeight: FontWeight.w600)),
+      title: Text(title, style: TextStyle(fontWeight: FontWeight.w600)),
       trailing: Icon(
         Icons.chevron_right,
         color: isDark ? Colors.white24 : Colors.black26,

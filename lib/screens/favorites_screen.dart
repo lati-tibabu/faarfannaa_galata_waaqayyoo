@@ -53,6 +53,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
     }
 
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final primary = Theme.of(context).colorScheme.primary;
 
     return Scaffold(
       appBar: AppBar(
@@ -149,10 +150,10 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                       child: Center(
                         child: Text(
                           song.number.toString(),
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 14,
-                            color: AppColors.primary,
+                            color: primary,
                           ),
                         ),
                       ),
@@ -161,9 +162,9 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                       song.title,
                       style: const TextStyle(fontWeight: FontWeight.w600),
                     ),
-                    trailing: const Icon(
+                    trailing: Icon(
                       Icons.favorite,
-                      color: AppColors.primary,
+                      color: primary,
                     ),
                     onTap: () {
                       Navigator.push(
@@ -181,6 +182,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
   }
 
   Widget _buildEmptyState(BuildContext context) {
+    final primary = Theme.of(context).colorScheme.primary;
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -193,7 +195,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                 height: 150,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: AppColors.primary.withValues(alpha: 0.1),
+                  color: primary.withValues(alpha: 0.1),
                 ),
               ),
               Container(
@@ -203,11 +205,11 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                   shape: BoxShape.circle,
                   color: Theme.of(context).cardColor,
                 ),
-                child: const Center(
+                child: Center(
                   child: Icon(
                     Icons.favorite,
                     size: 50,
-                    color: AppColors.primary,
+                    color: primary,
                   ),
                 ),
               ),
@@ -220,9 +222,9 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                     color: Theme.of(context).scaffoldBackgroundColor,
                     shape: BoxShape.circle,
                   ),
-                  child: const Icon(
+                  child: Icon(
                     Icons.add_circle,
-                    color: AppColors.primary,
+                    color: primary,
                     size: 24,
                   ),
                 ),
@@ -252,7 +254,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
               );
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.primary,
+              backgroundColor: primary,
               foregroundColor: Colors.white,
               padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
               shape: RoundedRectangleBorder(

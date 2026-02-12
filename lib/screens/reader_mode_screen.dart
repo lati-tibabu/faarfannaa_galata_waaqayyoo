@@ -21,12 +21,12 @@ class ReaderModeScreen extends StatelessWidget {
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.close),
+          icon: Icon(Icons.close),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
           'HYMN ${song.number}',
-          style: const TextStyle(fontWeight: FontWeight.bold),
+          style: TextStyle(fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
       ),
@@ -38,7 +38,7 @@ class ReaderModeScreen extends StatelessWidget {
             children: [
               Text(
                 song.title,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
                 ),
@@ -98,11 +98,11 @@ class _ReaderLyricSection extends StatelessWidget {
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
         color: isChorus
-            ? AppColors.primary.withValues(alpha: 0.12)
+            ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.12)
             : Colors.transparent,
         borderRadius: BorderRadius.circular(18),
         border: isChorus
-            ? Border.all(color: AppColors.primary.withValues(alpha: 0.35))
+            ? Border.all(color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.35))
             : null,
       ),
       child: Column(
@@ -113,7 +113,7 @@ class _ReaderLyricSection extends StatelessWidget {
               label.toUpperCase(),
               style: TextStyle(
                 color: isChorus
-                    ? AppColors.primary
+                    ? Theme.of(context).colorScheme.primary
                     : Theme.of(context).disabledColor,
                 fontWeight: FontWeight.bold,
                 fontSize: 12,

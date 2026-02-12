@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/player_provider.dart';
-import '../theme.dart';
 
 class NowPlayingScreen extends StatelessWidget {
   const NowPlayingScreen({super.key});
@@ -11,7 +10,7 @@ class NowPlayingScreen extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           'Now Playing',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
@@ -44,17 +43,17 @@ class NowPlayingScreen extends StatelessWidget {
                   height: 140,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: AppColors.primary.withValues(
+                    color: Theme.of(context).colorScheme.primary.withValues(
                       alpha: isDark ? 0.18 : 0.12,
                     ),
                     border: Border.all(
-                      color: AppColors.primary.withValues(alpha: 0.35),
+                      color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.35),
                       width: 1.5,
                     ),
                   ),
-                  child: const Icon(
+                  child: Icon(
                     Icons.music_note,
-                    color: AppColors.primary,
+                    color: Theme.of(context).colorScheme.primary,
                     size: 56,
                   ),
                 ),
@@ -72,7 +71,7 @@ class NowPlayingScreen extends StatelessWidget {
                 Text(
                   song.title,
                   textAlign: TextAlign.center,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                   ),
@@ -94,14 +93,14 @@ class NowPlayingScreen extends StatelessWidget {
                         context.read<PlayerProvider>().stop();
                         Navigator.pop(context);
                       },
-                      icon: const Icon(Icons.stop_circle_outlined, size: 44),
+                      icon: Icon(Icons.stop_circle_outlined, size: 44),
                     ),
                     const SizedBox(width: 18),
                     ElevatedButton(
                       onPressed: () =>
                           context.read<PlayerProvider>().togglePlayPause(),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primary,
+                        backgroundColor: Theme.of(context).colorScheme.primary,
                         foregroundColor: Colors.white,
                         padding: const EdgeInsets.symmetric(
                           horizontal: 28,

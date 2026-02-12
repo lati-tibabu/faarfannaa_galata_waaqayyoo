@@ -35,7 +35,7 @@ class _MainLayoutState extends State<MainLayout> {
         ? Colors.white.withValues(alpha: 0.45)
         : Colors.black45;
     final navTextStyle = GoogleFonts.nunitoSans(
-      fontSize: 9,
+      fontSize: 12,
       fontWeight: FontWeight.w600,
       letterSpacing: 0.2,
     );

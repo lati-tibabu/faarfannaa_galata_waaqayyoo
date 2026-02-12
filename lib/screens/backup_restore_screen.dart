@@ -9,7 +9,6 @@ import '../providers/history_provider.dart';
 import '../providers/onboarding_provider.dart';
 import '../providers/settings_provider.dart';
 import '../services/storage_keys.dart';
-import '../theme.dart';
 
 class BackupRestoreScreen extends StatefulWidget {
   const BackupRestoreScreen({super.key});
@@ -151,7 +150,7 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           'Backup & Restore',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
@@ -170,7 +169,7 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          const Text('Backup', style: TextStyle(fontWeight: FontWeight.bold)),
+          Text('Backup', style: TextStyle(fontWeight: FontWeight.bold)),
           const SizedBox(height: 8),
           Container(
             padding: const EdgeInsets.all(14),
@@ -206,13 +205,13 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
                       );
                     }
                   },
-                  child: const Text('Copy'),
+                  child: Text('Copy'),
                 ),
               ),
             ],
           ),
           const SizedBox(height: 24),
-          const Text('Restore', style: TextStyle(fontWeight: FontWeight.bold)),
+          Text('Restore', style: TextStyle(fontWeight: FontWeight.bold)),
           const SizedBox(height: 8),
           TextField(
             controller: _import,
@@ -233,14 +232,14 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
           ElevatedButton(
             onPressed: _importData,
             style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.primary,
+              backgroundColor: Theme.of(context).colorScheme.primary,
               foregroundColor: Colors.white,
               padding: const EdgeInsets.symmetric(vertical: 14),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(14),
               ),
             ),
-            child: const Text('Import'),
+            child: Text('Import'),
           ),
           const SizedBox(height: 8),
           Text(

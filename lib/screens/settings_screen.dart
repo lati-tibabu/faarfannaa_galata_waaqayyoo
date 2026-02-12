@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/settings_provider.dart';
 import '../providers/onboarding_provider.dart';
-import '../theme.dart';
 import 'about_screen.dart';
 import 'backup_restore_screen.dart';
 import 'collections_screen.dart';
@@ -23,7 +22,7 @@ class SettingsScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           'Settings',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
@@ -64,34 +63,34 @@ class SettingsScreen extends StatelessWidget {
                     children: [
                       Text(
                         _getFontSizeLabel(settings.fontSize),
-                        style: const TextStyle(color: Colors.grey),
+                        style: TextStyle(color: Colors.grey),
                       ),
                       const SizedBox(width: 4),
-                      const Icon(Icons.chevron_right, color: Colors.grey),
+                      Icon(Icons.chevron_right, color: Colors.grey),
                     ],
                   ),
                   onTap: () {
                     showDialog(
                       context: context,
                       builder: (ctx) => SimpleDialog(
-                        title: const Text("Select Font Size"),
+                        title: Text("Select Font Size"),
                         children: [
                           SimpleDialogOption(
-                            child: const Text("Small"),
+                            child: Text("Small"),
                             onPressed: () {
                               settings.setFontSize(12.0);
                               Navigator.pop(ctx);
                             },
                           ),
                           SimpleDialogOption(
-                            child: const Text("Medium"),
+                            child: Text("Medium"),
                             onPressed: () {
                               settings.setFontSize(14.0);
                               Navigator.pop(ctx);
                             },
                           ),
                           SimpleDialogOption(
-                            child: const Text("Large"),
+                            child: Text("Large"),
                             onPressed: () {
                               settings.setFontSize(18.0);
                               Navigator.pop(ctx);
@@ -128,7 +127,7 @@ class SettingsScreen extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(width: 8),
-                      const Icon(Icons.chevron_right, color: Colors.grey),
+                      Icon(Icons.chevron_right, color: Colors.grey),
                     ],
                   ),
                   onTap: () {
@@ -169,7 +168,7 @@ class SettingsScreen extends StatelessWidget {
                   title: 'Recently Viewed',
                   leadingIcon: Icons.history,
                   leadingColor: Colors.teal,
-                  trailing: const Icon(Icons.chevron_right, color: Colors.grey),
+                  trailing: Icon(Icons.chevron_right, color: Colors.grey),
                   onTap: () {
                     Navigator.push(
                       context,
@@ -188,7 +187,7 @@ class SettingsScreen extends StatelessWidget {
                   title: 'Collections',
                   leadingIcon: Icons.folder_open,
                   leadingColor: Colors.indigo,
-                  trailing: const Icon(Icons.chevron_right, color: Colors.grey),
+                  trailing: Icon(Icons.chevron_right, color: Colors.grey),
                   onTap: () {
                     Navigator.push(
                       context,
@@ -206,8 +205,8 @@ class SettingsScreen extends StatelessWidget {
                 _buildListTile(
                   title: 'Backup & Restore',
                   leadingIcon: Icons.cloud_upload_outlined,
-                  leadingColor: AppColors.primary,
-                  trailing: const Icon(Icons.chevron_right, color: Colors.grey),
+                  leadingColor: Theme.of(context).colorScheme.primary,
+                  trailing: Icon(Icons.chevron_right, color: Colors.grey),
                   onTap: () {
                     Navigator.push(
                       context,
@@ -233,7 +232,7 @@ class SettingsScreen extends StatelessWidget {
                   title: 'Help & Feedback',
                   leadingIcon: Icons.help_outline,
                   leadingColor: Colors.blueGrey,
-                  trailing: const Icon(Icons.chevron_right, color: Colors.grey),
+                  trailing: Icon(Icons.chevron_right, color: Colors.grey),
                   onTap: () {
                     Navigator.push(
                       context,
@@ -250,7 +249,7 @@ class SettingsScreen extends StatelessWidget {
                   title: 'Onboarding',
                   leadingIcon: Icons.play_circle_outline,
                   leadingColor: Colors.deepPurple,
-                  trailing: const Icon(Icons.chevron_right, color: Colors.grey),
+                  trailing: Icon(Icons.chevron_right, color: Colors.grey),
                   onTap: () {
                     Navigator.push(
                       context,
@@ -283,7 +282,7 @@ class SettingsScreen extends StatelessWidget {
                   title: 'About the App',
                   leadingIcon: Icons.info_outline,
                   leadingColor: Colors.grey,
-                  trailing: const Icon(Icons.chevron_right, color: Colors.grey),
+                  trailing: Icon(Icons.chevron_right, color: Colors.grey),
                   onTap: () {
                     Navigator.push(
                       context,
@@ -300,7 +299,7 @@ class SettingsScreen extends StatelessWidget {
                   title: 'Privacy Policy',
                   leadingIcon: Icons.privacy_tip_outlined,
                   leadingColor: Colors.green,
-                  trailing: const Icon(Icons.chevron_right, color: Colors.grey),
+                  trailing: Icon(Icons.chevron_right, color: Colors.grey),
                   onTap: () {
                     Navigator.push(
                       context,
@@ -318,8 +317,8 @@ class SettingsScreen extends StatelessWidget {
                 _buildListTile(
                   title: 'Terms',
                   leadingIcon: Icons.description_outlined,
-                  leadingColor: Colors.orange,
-                  trailing: const Icon(Icons.chevron_right, color: Colors.grey),
+                  leadingColor: Theme.of(context).colorScheme.primary,
+                  trailing: Icon(Icons.chevron_right, color: Colors.grey),
                   onTap: () {
                     Navigator.push(
                       context,
@@ -340,7 +339,7 @@ class SettingsScreen extends StatelessWidget {
       padding: const EdgeInsets.only(left: 16, bottom: 8),
       child: Text(
         title,
-        style: const TextStyle(
+        style: TextStyle(
           fontSize: 13,
           fontWeight: FontWeight.w600,
           color: Colors.grey,
@@ -367,7 +366,7 @@ class SettingsScreen extends StatelessWidget {
         ),
         child: Icon(leadingIcon, color: Colors.white, size: 20),
       ),
-      title: Text(title, style: const TextStyle(fontWeight: FontWeight.w500)),
+      title: Text(title, style: TextStyle(fontWeight: FontWeight.w500)),
       trailing: trailing,
     );
   }

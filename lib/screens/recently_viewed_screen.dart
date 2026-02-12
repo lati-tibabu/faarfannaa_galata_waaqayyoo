@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import '../models/hymn_model.dart';
 import '../providers/history_provider.dart';
 import '../services/song_service.dart';
-import '../theme.dart';
 import 'song_detail_screen.dart';
 
 class RecentlyViewedScreen extends StatelessWidget {
@@ -15,7 +14,7 @@ class RecentlyViewedScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           'Recently Viewed',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
@@ -87,7 +86,7 @@ class RecentlyViewedScreen extends StatelessWidget {
                     width: 42,
                     height: 42,
                     decoration: BoxDecoration(
-                      color: AppColors.primary.withValues(
+                      color: Theme.of(context).colorScheme.primary.withValues(
                         alpha: isDark ? 0.18 : 0.12,
                       ),
                       borderRadius: BorderRadius.circular(12),
@@ -95,16 +94,16 @@ class RecentlyViewedScreen extends StatelessWidget {
                     child: Center(
                       child: Text(
                         song.number.toString(),
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          color: AppColors.primary,
+                          color: Theme.of(context).colorScheme.primary,
                         ),
                       ),
                     ),
                   ),
                   title: Text(
                     song.title,
-                    style: const TextStyle(fontWeight: FontWeight.w600),
+                    style: TextStyle(fontWeight: FontWeight.w600),
                   ),
                   subtitle: Text(
                     song.category.toUpperCase(),

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/hymn_model.dart';
 import '../services/song_service.dart';
-import '../theme.dart';
 import 'song_detail_screen.dart';
 
 class SongIndexScreen extends StatefulWidget {
@@ -51,7 +50,7 @@ class _SongIndexScreenState extends State<SongIndexScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           'Song Index',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
@@ -66,7 +65,7 @@ class _SongIndexScreenState extends State<SongIndexScreen> {
               style: TextStyle(color: isDark ? Colors.white : Colors.black),
               decoration: InputDecoration(
                 hintText: 'Search by number or title...',
-                prefixIcon: const Icon(Icons.search),
+                prefixIcon: Icon(Icons.search),
                 filled: true,
                 fillColor: isDark
                     ? Colors.white.withValues(alpha: 0.06)
@@ -152,16 +151,16 @@ class _IndexTile extends StatelessWidget {
               height: 40,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(12),
-                color: AppColors.primary.withValues(
+                color: Theme.of(context).colorScheme.primary.withValues(
                   alpha: isDark ? 0.18 : 0.12,
                 ),
               ),
               child: Center(
                 child: Text(
                   hymn.number.toString(),
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    color: AppColors.primary,
+                    color: Theme.of(context).colorScheme.primary,
                   ),
                 ),
               ),
@@ -172,7 +171,7 @@ class _IndexTile extends StatelessWidget {
                 hymn.title,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: const TextStyle(fontWeight: FontWeight.w600),
+                style: TextStyle(fontWeight: FontWeight.w600),
               ),
             ),
           ],

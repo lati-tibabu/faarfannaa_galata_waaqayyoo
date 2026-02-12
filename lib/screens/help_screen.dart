@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../services/song_service.dart';
-import '../theme.dart';
 import 'asset_text_screen.dart';
 
 class HelpScreen extends StatelessWidget {
@@ -28,7 +27,7 @@ class HelpScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           'Help & Feedback',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
@@ -76,7 +75,7 @@ class HelpScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
+                Text(
                   'Contact',
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
@@ -99,7 +98,7 @@ class HelpScreen extends StatelessWidget {
                       );
                     }
                   },
-                  child: const Text('Copy email'),
+                  child: Text('Copy email'),
                 ),
               ],
             ),
@@ -156,11 +155,11 @@ class _CardTile extends StatelessWidget {
               height: 42,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(12),
-                color: AppColors.primary.withValues(
+                color: Theme.of(context).colorScheme.primary.withValues(
                   alpha: isDark ? 0.18 : 0.12,
                 ),
               ),
-              child: Icon(icon, color: AppColors.primary),
+              child: Icon(icon, color: Theme.of(context).colorScheme.primary),
             ),
             const SizedBox(width: 14),
             Expanded(
@@ -169,7 +168,7 @@ class _CardTile extends StatelessWidget {
                 children: [
                   Text(
                     title,
-                    style: const TextStyle(fontWeight: FontWeight.w600),
+                    style: TextStyle(fontWeight: FontWeight.w600),
                   ),
                   const SizedBox(height: 4),
                   Text(

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/collections_provider.dart';
-import '../theme.dart';
 import 'collection_detail_screen.dart';
 
 class CollectionsScreen extends StatelessWidget {
@@ -14,6 +13,7 @@ class CollectionsScreen extends StatelessWidget {
       context: context,
       builder: (ctx) {
         final isDark = Theme.of(ctx).brightness == Brightness.dark;
+        final primary = Theme.of(ctx).colorScheme.primary;
         return AlertDialog(
           title: const Text('New collection'),
           content: TextField(
@@ -32,7 +32,7 @@ class CollectionsScreen extends StatelessWidget {
             ElevatedButton(
               onPressed: () => Navigator.pop(ctx, true),
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primary,
+                backgroundColor: primary,
                 foregroundColor: Colors.white,
               ),
               child: const Text('Create'),
@@ -50,6 +50,7 @@ class CollectionsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final primary = Theme.of(context).colorScheme.primary;
 
     return Scaffold(
       appBar: AppBar(
@@ -60,7 +61,7 @@ class CollectionsScreen extends StatelessWidget {
         centerTitle: true,
       ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: AppColors.primary,
+        backgroundColor: primary,
         foregroundColor: Colors.white,
         onPressed: () => _promptCreate(context),
         child: const Icon(Icons.add),
@@ -120,12 +121,12 @@ class CollectionsScreen extends StatelessWidget {
                     width: 42,
                     height: 42,
                     decoration: BoxDecoration(
-                      color: AppColors.primary.withValues(
+                      color: primary.withValues(
                         alpha: isDark ? 0.18 : 0.12,
                       ),
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    child: const Icon(Icons.folder, color: AppColors.primary),
+                    child: Icon(Icons.folder, color: primary),
                   ),
                   title: Text(
                     collection.name,

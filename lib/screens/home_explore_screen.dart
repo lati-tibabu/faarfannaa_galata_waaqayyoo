@@ -133,10 +133,10 @@ class _HomeExploreScreenState extends State<HomeExploreScreen> {
                 vertical: 16,
               ),
               centerTitle: false,
-              title: const Text(
+              title: Text(
                 'Faarfannaa',
                 style: TextStyle(
-                  color: AppColors.primary,
+                  color: Theme.of(context).colorScheme.primary,
                   fontWeight: FontWeight.bold,
                   fontSize: 24,
                 ),
@@ -381,6 +381,7 @@ class _CategoryChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final primary = Theme.of(context).colorScheme.primary;
 
     return InkWell(
       onTap: onTap,
@@ -390,7 +391,7 @@ class _CategoryChip extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
           color: isActive
-              ? AppColors.primary
+              ? primary
               : (isDark
                     ? Colors.white.withValues(alpha: 0.05)
                     : Colors.grey.withValues(alpha: 0.1)),
@@ -420,6 +421,7 @@ class _HymnTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final primary = Theme.of(context).colorScheme.primary;
 
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
@@ -463,8 +465,8 @@ class _HymnTile extends StatelessWidget {
           child: Center(
             child: Text(
               hymn.number.toString(),
-              style: const TextStyle(
-                color: AppColors.primary,
+              style: TextStyle(
+                color: primary,
                 fontWeight: FontWeight.bold,
                 fontSize: 18,
               ),
@@ -531,6 +533,7 @@ class _FilterSheetState extends State<_FilterSheet> {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final primary = Theme.of(context).colorScheme.primary;
     return Padding(
       padding: EdgeInsets.only(
         left: 16,
@@ -551,7 +554,7 @@ class _FilterSheetState extends State<_FilterSheet> {
             value: _favoritesOnly,
             onChanged: (v) => setState(() => _favoritesOnly = v),
             title: const Text('Favorites only'),
-            secondary: const Icon(Icons.favorite, color: AppColors.primary),
+            secondary: Icon(Icons.favorite, color: primary),
           ),
           const SizedBox(height: 8),
           Text(
@@ -593,7 +596,7 @@ class _FilterSheetState extends State<_FilterSheet> {
                     );
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.primary,
+                    backgroundColor: primary,
                     foregroundColor: Colors.white,
                   ),
                   child: const Text('Apply'),

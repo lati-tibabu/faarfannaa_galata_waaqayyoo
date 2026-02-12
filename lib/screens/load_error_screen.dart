@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../services/song_service.dart';
-import '../theme.dart';
 
 class LoadErrorScreen extends StatelessWidget {
   final SongLoadReport report;
@@ -28,7 +27,7 @@ class LoadErrorScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 12),
-              const Text(
+              Text(
                 'Failed to load hymns',
                 style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
               ),
@@ -113,7 +112,7 @@ class LoadErrorScreen extends StatelessWidget {
                               err.songNumber == 0
                                   ? 'Loader'
                                   : 'Song ${err.songNumber}',
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontWeight: FontWeight.w700,
                               ),
                             ),
@@ -151,7 +150,7 @@ class LoadErrorScreen extends StatelessWidget {
                           );
                         }
                       },
-                      child: const Text('Copy diagnostics'),
+                      child: Text('Copy diagnostics'),
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -159,10 +158,10 @@ class LoadErrorScreen extends StatelessWidget {
                     child: ElevatedButton(
                       onPressed: onRetry,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primary,
+                        backgroundColor: Theme.of(context).colorScheme.primary,
                         foregroundColor: Colors.white,
                       ),
-                      child: const Text('Retry'),
+                      child: Text('Retry'),
                     ),
                   ),
                 ],
@@ -197,7 +196,7 @@ class _StatRow extends StatelessWidget {
               ),
             ),
           ),
-          Text(value, style: const TextStyle(fontWeight: FontWeight.bold)),
+          Text(value, style: TextStyle(fontWeight: FontWeight.bold)),
         ],
       ),
     );
