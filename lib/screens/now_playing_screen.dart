@@ -47,7 +47,9 @@ class NowPlayingScreen extends StatelessWidget {
                       alpha: isDark ? 0.18 : 0.12,
                     ),
                     border: Border.all(
-                      color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.35),
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.primary.withValues(alpha: 0.35),
                       width: 1.5,
                     ),
                   ),
@@ -71,10 +73,7 @@ class NowPlayingScreen extends StatelessWidget {
                 Text(
                   song.title,
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 10),
                 Text(

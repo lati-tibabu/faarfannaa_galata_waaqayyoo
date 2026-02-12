@@ -151,9 +151,9 @@ class _IndexTile extends StatelessWidget {
               height: 40,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(12),
-                color: Theme.of(context).colorScheme.primary.withValues(
-                  alpha: isDark ? 0.18 : 0.12,
-                ),
+                color: Theme.of(
+                  context,
+                ).colorScheme.primary.withValues(alpha: isDark ? 0.18 : 0.12),
               ),
               child: Center(
                 child: Text(

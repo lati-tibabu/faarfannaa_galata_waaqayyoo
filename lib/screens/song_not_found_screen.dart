@@ -10,10 +10,7 @@ class SongNotFoundScreen extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          'Not Found',
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
+        title: Text('Not Found', style: TextStyle(fontWeight: FontWeight.bold)),
         centerTitle: true,
       ),
       body: Center(
@@ -27,9 +24,9 @@ class SongNotFoundScreen extends StatelessWidget {
                 height: 86,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: Theme.of(context).colorScheme.primary.withValues(
-                    alpha: isDark ? 0.18 : 0.12,
-                  ),
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.primary.withValues(alpha: isDark ? 0.18 : 0.12),
                 ),
                 child: Icon(
                   Icons.search_off,
@@ -40,10 +37,7 @@ class SongNotFoundScreen extends StatelessWidget {
               const SizedBox(height: 16),
               Text(
                 'Hymn $number not found',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 8),
               Text(

@@ -6,6 +6,7 @@ import '../providers/favorites_provider.dart';
 import '../providers/history_provider.dart';
 import '../providers/player_provider.dart';
 import '../providers/settings_provider.dart';
+import 'lyrics_settings_screen.dart';
 import 'now_playing_screen.dart';
 import 'reader_mode_screen.dart';
 
@@ -82,7 +83,9 @@ class _SongDetailScreenState extends State<SongDetailScreen> {
               return IconButton(
                 icon: Icon(
                   isFav ? Icons.favorite : Icons.favorite_border,
-                  color: isFav ? Theme.of(context).colorScheme.primary : Colors.grey,
+                  color: isFav
+                      ? Theme.of(context).colorScheme.primary
+                      : Colors.grey,
                 ),
                 onPressed: () => favorites.toggleFavorite(song.number),
               );
@@ -103,6 +106,14 @@ class _SongDetailScreenState extends State<SongDetailScreen> {
                     ),
                   );
                   break;
+                case 'lyrics_settings':
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const LyricsSettingsScreen(),
+                    ),
+                  );
+                  break;
                 case 'now_playing':
                   context.read<PlayerProvider>().start(song);
                   Navigator.push(
@@ -116,6 +127,10 @@ class _SongDetailScreenState extends State<SongDetailScreen> {
               PopupMenuItem(
                 value: 'collection',
                 child: Text('Add to collection'),
+              ),
+              PopupMenuItem(
+                value: 'lyrics_settings',
+                child: Text('Lyrics settings'),
               ),
               PopupMenuItem(value: 'reader', child: Text('Reader mode')),
               PopupMenuItem(value: 'now_playing', child: Text('Now playing')),
@@ -144,6 +159,8 @@ class _SongDetailScreenState extends State<SongDetailScreen> {
                   isChorus: section.type == 'CHR',
                   content: section.lines,
                   fontSize: fontSizeScale,
+                  fontFamily: settings.fontFamily,
+                  fontWeightValue: settings.fontWeight,
                 );
               }),
 
@@ -171,12 +188,16 @@ class _LyricSection extends StatelessWidget {
   final List<String> content;
   final bool isChorus;
   final double fontSize;
+  final String fontFamily;
+  final int fontWeightValue;
 
   const _LyricSection({
     required this.label,
     required this.content,
     this.isChorus = false,
     this.fontSize = 14.0,
+    this.fontFamily = 'inter',
+    this.fontWeightValue = 400,
   });
 
   @override
@@ -194,7 +215,11 @@ class _LyricSection extends StatelessWidget {
             : Colors.transparent,
         borderRadius: BorderRadius.circular(20),
         border: isChorus
-            ? Border.all(color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.3))
+            ? Border.all(
+                color: Theme.of(
+                  context,
+                ).colorScheme.primary.withValues(alpha: 0.3),
+              )
             : null,
       ),
       child: Column(
@@ -227,7 +252,10 @@ class _LyricSection extends StatelessWidget {
                         ).textTheme.bodyLarge?.color?.withValues(alpha: 0.8),
                   fontSize: textFontSize,
                   height: 1.6,
-                  fontWeight: isChorus ? FontWeight.w500 : FontWeight.normal,
+                  fontWeight: isChorus
+                      ? FontWeight.w500
+                      : _fontWeight(fontWeightValue),
+                  fontFamily: fontFamily,
                 ),
               ),
             ),
@@ -235,6 +263,22 @@ class _LyricSection extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  FontWeight _fontWeight(int value) {
+    switch (value) {
+      case 300:
+        return FontWeight.w300;
+      case 500:
+        return FontWeight.w500;
+      case 600:
+        return FontWeight.w600;
+      case 700:
+        return FontWeight.w700;
+      case 400:
+      default:
+        return FontWeight.w400;
+    }
   }
 }
 

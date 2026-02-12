@@ -165,9 +165,15 @@ class _OnboardingCard extends StatelessWidget {
             height: 54,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(16),
-              color: Theme.of(context).colorScheme.primary.withValues(alpha: isDark ? 0.18 : 0.12),
+              color: Theme.of(
+                context,
+              ).colorScheme.primary.withValues(alpha: isDark ? 0.18 : 0.12),
             ),
-            child: Icon(icon, color: Theme.of(context).colorScheme.primary, size: 28),
+            child: Icon(
+              icon,
+              color: Theme.of(context).colorScheme.primary,
+              size: 28,
+            ),
           ),
           const SizedBox(height: 18),
           Text(

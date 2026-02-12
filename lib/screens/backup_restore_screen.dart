@@ -53,6 +53,20 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
       'settings': {
         StorageKeys.isDarkMode: prefs.getBool(StorageKeys.isDarkMode),
         StorageKeys.fontSize: prefs.getDouble(StorageKeys.fontSize),
+        StorageKeys.fontFamily: prefs.getString(StorageKeys.fontFamily),
+        StorageKeys.fontWeight: prefs.getInt(StorageKeys.fontWeight),
+        StorageKeys.primaryColor: prefs.getInt(StorageKeys.primaryColor),
+        StorageKeys.languageCode: prefs.getString(StorageKeys.languageCode),
+        StorageKeys.highContrastMode: prefs.getBool(
+          StorageKeys.highContrastMode,
+        ),
+        StorageKeys.reduceMotion: prefs.getBool(StorageKeys.reduceMotion),
+        StorageKeys.largeTouchTargets: prefs.getBool(
+          StorageKeys.largeTouchTargets,
+        ),
+        StorageKeys.lastSeenWhatsNewVersion: prefs.getString(
+          StorageKeys.lastSeenWhatsNewVersion,
+        ),
       },
       StorageKeys.onboardingComplete:
           prefs.getBool(StorageKeys.onboardingComplete) ?? false,
@@ -90,11 +104,47 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
       if (settings is Map) {
         final isDark = settings[StorageKeys.isDarkMode];
         final fontSize = settings[StorageKeys.fontSize];
+        final fontFamily = settings[StorageKeys.fontFamily];
+        final fontWeight = settings[StorageKeys.fontWeight];
+        final primaryColor = settings[StorageKeys.primaryColor];
+        final languageCode = settings[StorageKeys.languageCode];
+        final highContrastMode = settings[StorageKeys.highContrastMode];
+        final reduceMotion = settings[StorageKeys.reduceMotion];
+        final largeTouchTargets = settings[StorageKeys.largeTouchTargets];
+        final lastSeenWhatsNewVersion =
+            settings[StorageKeys.lastSeenWhatsNewVersion];
         if (isDark is bool) {
           await prefs.setBool(StorageKeys.isDarkMode, isDark);
         }
         if (fontSize is num) {
           await prefs.setDouble(StorageKeys.fontSize, fontSize.toDouble());
+        }
+        if (fontFamily is String) {
+          await prefs.setString(StorageKeys.fontFamily, fontFamily);
+        }
+        if (fontWeight is int) {
+          await prefs.setInt(StorageKeys.fontWeight, fontWeight);
+        }
+        if (primaryColor is int) {
+          await prefs.setInt(StorageKeys.primaryColor, primaryColor);
+        }
+        if (languageCode is String) {
+          await prefs.setString(StorageKeys.languageCode, languageCode);
+        }
+        if (highContrastMode is bool) {
+          await prefs.setBool(StorageKeys.highContrastMode, highContrastMode);
+        }
+        if (reduceMotion is bool) {
+          await prefs.setBool(StorageKeys.reduceMotion, reduceMotion);
+        }
+        if (largeTouchTargets is bool) {
+          await prefs.setBool(StorageKeys.largeTouchTargets, largeTouchTargets);
+        }
+        if (lastSeenWhatsNewVersion is String) {
+          await prefs.setString(
+            StorageKeys.lastSeenWhatsNewVersion,
+            lastSeenWhatsNewVersion,
+          );
         }
       }
 

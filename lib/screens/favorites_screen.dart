@@ -162,10 +162,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                       song.title,
                       style: const TextStyle(fontWeight: FontWeight.w600),
                     ),
-                    trailing: Icon(
-                      Icons.favorite,
-                      color: primary,
-                    ),
+                    trailing: Icon(Icons.favorite, color: primary),
                     onTap: () {
                       Navigator.push(
                         context,
@@ -206,11 +203,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                   color: Theme.of(context).cardColor,
                 ),
                 child: Center(
-                  child: Icon(
-                    Icons.favorite,
-                    size: 50,
-                    color: primary,
-                  ),
+                  child: Icon(Icons.favorite, size: 50, color: primary),
                 ),
               ),
               Positioned(
@@ -222,11 +215,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                     color: Theme.of(context).scaffoldBackgroundColor,
                     shape: BoxShape.circle,
                   ),
-                  child: Icon(
-                    Icons.add_circle,
-                    color: primary,
-                    size: 24,
-                  ),
+                  child: Icon(Icons.add_circle, color: primary, size: 24),
                 ),
               ),
             ],

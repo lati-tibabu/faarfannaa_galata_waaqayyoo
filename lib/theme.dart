@@ -9,145 +9,136 @@ class AppColors {
 
 class AppTheme {
   static ThemeData darkTheme(
-    Color primaryColor,
-    String fontFamily,
-    int fontWeightValue,
-  ) => ThemeData(
-        useMaterial3: true,
-        brightness: Brightness.dark,
-        primaryColor: primaryColor,
-        scaffoldBackgroundColor: AppColors.backgroundDark,
-        appBarTheme: AppBarTheme(
-          centerTitle: true,
-          backgroundColor: AppColors.secondary.withValues(alpha: 0.95),
-          surfaceTintColor: Colors.transparent,
-          elevation: 0,
-          scrolledUnderElevation: 0,
-          iconTheme:
-              IconThemeData(color: Colors.white.withValues(alpha: 0.75)),
-          actionsIconTheme: IconThemeData(
-            color: Colors.white.withValues(alpha: 0.75),
-          ),
-          titleTextStyle: TextStyle(
-            fontSize: 18,
-            fontWeight: _fontWeight(fontWeightValue),
-            color: Colors.white,
-            fontFamily: _fontAssetFamily(fontFamily),
-          ),
-          shape: Border(
-            bottom: BorderSide(color: Colors.white.withValues(alpha: 0.06)),
-          ),
+    Color primaryColor, {
+    required bool highContrast,
+    required bool reduceMotion,
+    required bool largeTouchTargets,
+  }) => ThemeData(
+    useMaterial3: true,
+    brightness: Brightness.dark,
+    primaryColor: primaryColor,
+    scaffoldBackgroundColor: AppColors.backgroundDark,
+    materialTapTargetSize: largeTouchTargets
+        ? MaterialTapTargetSize.padded
+        : MaterialTapTargetSize.shrinkWrap,
+    visualDensity: largeTouchTargets
+        ? VisualDensity.comfortable
+        : VisualDensity.standard,
+    pageTransitionsTheme: _pageTransitions(reduceMotion),
+    dividerColor: Colors.white.withValues(alpha: highContrast ? 0.18 : 0.08),
+    appBarTheme: AppBarTheme(
+      centerTitle: true,
+      backgroundColor: AppColors.secondary.withValues(alpha: 0.95),
+      surfaceTintColor: Colors.transparent,
+      elevation: 0,
+      scrolledUnderElevation: 0,
+      iconTheme: IconThemeData(color: Colors.white.withValues(alpha: 0.75)),
+      actionsIconTheme: IconThemeData(
+        color: Colors.white.withValues(alpha: 0.75),
+      ),
+      titleTextStyle: TextStyle(
+        fontSize: 18,
+        fontWeight: FontWeight.w700,
+        color: Colors.white,
+        fontFamily: 'inter',
+      ),
+      shape: Border(
+        bottom: BorderSide(
+          color: Colors.white.withValues(alpha: highContrast ? 0.16 : 0.06),
         ),
-        floatingActionButtonTheme: FloatingActionButtonThemeData(
-          backgroundColor: primaryColor,
-          foregroundColor: Colors.white,
-        ),
-        textTheme: _withBaseWeight(
-          ThemeData.dark().textTheme.apply(
-            fontFamily: _fontAssetFamily(fontFamily),
-          ),
-          _fontWeight(fontWeightValue),
-        ),
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: primaryColor,
-          brightness: Brightness.dark,
-          surface: AppColors.secondary,
-        ),
-      );
+      ),
+    ),
+    floatingActionButtonTheme: FloatingActionButtonThemeData(
+      backgroundColor: primaryColor,
+      foregroundColor: Colors.white,
+    ),
+    textTheme: ThemeData.dark().textTheme.apply(fontFamily: 'inter'),
+    colorScheme: ColorScheme.fromSeed(
+      seedColor: primaryColor,
+      brightness: Brightness.dark,
+      surface: AppColors.secondary,
+    ),
+  );
 
   static ThemeData lightTheme(
-    Color primaryColor,
-    String fontFamily,
-    int fontWeightValue,
-  ) => ThemeData(
-        useMaterial3: true,
-        brightness: Brightness.light,
-        primaryColor: primaryColor,
-        scaffoldBackgroundColor: AppColors.backgroundLight,
-        appBarTheme: AppBarTheme(
-          centerTitle: true,
-          backgroundColor: Colors.white,
-          surfaceTintColor: Colors.transparent,
-          elevation: 0,
-          scrolledUnderElevation: 0,
-          iconTheme:
-              IconThemeData(color: Colors.black.withValues(alpha: 0.65)),
-          actionsIconTheme: IconThemeData(
-            color: Colors.black.withValues(alpha: 0.65),
-          ),
-          titleTextStyle: TextStyle(
-            fontSize: 18,
-            fontWeight: _fontWeight(fontWeightValue),
-            color: Colors.black87,
-            fontFamily: _fontAssetFamily(fontFamily),
-          ),
-          shape: Border(
-            bottom: BorderSide(color: Colors.black.withValues(alpha: 0.06)),
-          ),
+    Color primaryColor, {
+    required bool highContrast,
+    required bool reduceMotion,
+    required bool largeTouchTargets,
+  }) => ThemeData(
+    useMaterial3: true,
+    brightness: Brightness.light,
+    primaryColor: primaryColor,
+    scaffoldBackgroundColor: AppColors.backgroundLight,
+    materialTapTargetSize: largeTouchTargets
+        ? MaterialTapTargetSize.padded
+        : MaterialTapTargetSize.shrinkWrap,
+    visualDensity: largeTouchTargets
+        ? VisualDensity.comfortable
+        : VisualDensity.standard,
+    pageTransitionsTheme: _pageTransitions(reduceMotion),
+    dividerColor: Colors.black.withValues(alpha: highContrast ? 0.18 : 0.08),
+    appBarTheme: AppBarTheme(
+      centerTitle: true,
+      backgroundColor: Colors.white,
+      surfaceTintColor: Colors.transparent,
+      elevation: 0,
+      scrolledUnderElevation: 0,
+      iconTheme: IconThemeData(color: Colors.black.withValues(alpha: 0.65)),
+      actionsIconTheme: IconThemeData(
+        color: Colors.black.withValues(alpha: 0.65),
+      ),
+      titleTextStyle: TextStyle(
+        fontSize: 18,
+        fontWeight: FontWeight.w700,
+        color: Colors.black87,
+        fontFamily: 'inter',
+      ),
+      shape: Border(
+        bottom: BorderSide(
+          color: Colors.black.withValues(alpha: highContrast ? 0.16 : 0.06),
         ),
-        floatingActionButtonTheme: FloatingActionButtonThemeData(
-          backgroundColor: primaryColor,
-          foregroundColor: Colors.white,
-        ),
-        textTheme: _withBaseWeight(
-          ThemeData.light().textTheme.apply(
-            fontFamily: _fontAssetFamily(fontFamily),
-          ),
-          _fontWeight(fontWeightValue),
-        ),
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: primaryColor,
-          brightness: Brightness.light,
-          surface: Colors.white,
-        ),
-      );
+      ),
+    ),
+    floatingActionButtonTheme: FloatingActionButtonThemeData(
+      backgroundColor: primaryColor,
+      foregroundColor: Colors.white,
+    ),
+    textTheme: ThemeData.light().textTheme.apply(fontFamily: 'inter'),
+    colorScheme: ColorScheme.fromSeed(
+      seedColor: primaryColor,
+      brightness: Brightness.light,
+      surface: Colors.white,
+    ),
+  );
 
-  static String _fontAssetFamily(String fontFamily) {
-    switch (fontFamily) {
-      case 'inter':
-      case 'nunito':
-      case 'poppins':
-      case 'playfair':
-      case 'merriweather':
-        return fontFamily;
-      default:
-        return 'inter';
+  static PageTransitionsTheme _pageTransitions(bool reduceMotion) {
+    if (!reduceMotion) {
+      return const PageTransitionsTheme();
     }
-  }
-
-  static FontWeight _fontWeight(int value) {
-    switch (value) {
-      case 300:
-        return FontWeight.w300;
-      case 500:
-        return FontWeight.w500;
-      case 600:
-        return FontWeight.w600;
-      case 700:
-        return FontWeight.w700;
-      case 400:
-      default:
-        return FontWeight.w400;
-    }
-  }
-
-  static TextTheme _withBaseWeight(TextTheme base, FontWeight weight) {
-    return base.copyWith(
-      displayLarge: base.displayLarge?.copyWith(fontWeight: weight),
-      displayMedium: base.displayMedium?.copyWith(fontWeight: weight),
-      displaySmall: base.displaySmall?.copyWith(fontWeight: weight),
-      headlineLarge: base.headlineLarge?.copyWith(fontWeight: weight),
-      headlineMedium: base.headlineMedium?.copyWith(fontWeight: weight),
-      headlineSmall: base.headlineSmall?.copyWith(fontWeight: weight),
-      titleLarge: base.titleLarge?.copyWith(fontWeight: weight),
-      titleMedium: base.titleMedium?.copyWith(fontWeight: weight),
-      titleSmall: base.titleSmall?.copyWith(fontWeight: weight),
-      bodyLarge: base.bodyLarge?.copyWith(fontWeight: weight),
-      bodyMedium: base.bodyMedium?.copyWith(fontWeight: weight),
-      bodySmall: base.bodySmall?.copyWith(fontWeight: weight),
-      labelLarge: base.labelLarge?.copyWith(fontWeight: weight),
-      labelMedium: base.labelMedium?.copyWith(fontWeight: weight),
-      labelSmall: base.labelSmall?.copyWith(fontWeight: weight),
+    return const PageTransitionsTheme(
+      builders: {
+        TargetPlatform.android: _NoAnimationTransitionsBuilder(),
+        TargetPlatform.iOS: _NoAnimationTransitionsBuilder(),
+        TargetPlatform.linux: _NoAnimationTransitionsBuilder(),
+        TargetPlatform.macOS: _NoAnimationTransitionsBuilder(),
+        TargetPlatform.windows: _NoAnimationTransitionsBuilder(),
+      },
     );
+  }
+}
+
+class _NoAnimationTransitionsBuilder extends PageTransitionsBuilder {
+  const _NoAnimationTransitionsBuilder();
+
+  @override
+  Widget buildTransitions<T>(
+    PageRoute<T> route,
+    BuildContext context,
+    Animation<double> animation,
+    Animation<double> secondaryAnimation,
+    Widget child,
+  ) {
+    return child;
   }
 }

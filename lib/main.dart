@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter/services.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'theme.dart';
 import 'services/song_service.dart';
@@ -13,6 +15,7 @@ import 'providers/collections_provider.dart';
 import 'providers/player_provider.dart';
 import 'screens/load_error_screen.dart';
 import 'screens/onboarding_screen.dart';
+import 'screens/whats_new_screen.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -45,13 +48,28 @@ class MyApp extends StatelessWidget {
     return Consumer<SettingsProvider>(
       builder: (context, settings, _) {
         final primaryColor = settings.primaryColor;
-        final fontFamily = settings.fontFamily;
-        final fontWeight = settings.fontWeight;
         return MaterialApp(
           title: 'Faarfannaa Galata Waaqayyoo',
           debugShowCheckedModeBanner: false,
-          theme: AppTheme.lightTheme(primaryColor, fontFamily, fontWeight),
-          darkTheme: AppTheme.darkTheme(primaryColor, fontFamily, fontWeight),
+          locale: const Locale('en'),
+          supportedLocales: const [Locale('en')],
+          localizationsDelegates: const [
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          theme: AppTheme.lightTheme(
+            primaryColor,
+            highContrast: settings.highContrastMode,
+            reduceMotion: settings.reduceMotion,
+            largeTouchTargets: settings.largeTouchTargets,
+          ),
+          darkTheme: AppTheme.darkTheme(
+            primaryColor,
+            highContrast: settings.highContrastMode,
+            reduceMotion: settings.reduceMotion,
+            largeTouchTargets: settings.largeTouchTargets,
+          ),
           themeMode: settings.isDarkMode ? ThemeMode.dark : ThemeMode.light,
           home: const Initializer(),
         );
@@ -72,6 +90,8 @@ class _InitializerState extends State<Initializer> {
   bool _isLoading = true;
   SongLoadReport? _report;
   bool _showOnboarding = false;
+  bool _showWhatsNew = false;
+  String _appVersion = '';
 
   @override
   void initState() {
@@ -86,6 +106,8 @@ class _InitializerState extends State<Initializer> {
       _progress = 0.0;
       _report = null;
       _showOnboarding = false;
+      _showWhatsNew = false;
+      _appVersion = '';
     });
 
     final report = await SongService().loadSongs(
@@ -117,11 +139,20 @@ class _InitializerState extends State<Initializer> {
     }
 
     final onboarding = context.read<OnboardingProvider>();
+    final settings = context.read<SettingsProvider>();
     await onboarding.waitForInit();
+    await settings.waitForInit();
     if (!mounted) return;
+    final packageInfo = await PackageInfo.fromPlatform();
+    final currentVersion = '${packageInfo.version}+${packageInfo.buildNumber}';
+    final shouldShowWhatsNew =
+        !onboarding.isFirstInstall &&
+        settings.lastSeenWhatsNewVersion != currentVersion;
 
     setState(() {
       _showOnboarding = onboarding.shouldAutoShow;
+      _showWhatsNew = shouldShowWhatsNew;
+      _appVersion = currentVersion;
       _isLoading = false;
     });
   }
@@ -146,6 +177,19 @@ class _InitializerState extends State<Initializer> {
           await context.read<OnboardingProvider>().setComplete(true);
           if (!mounted) return;
           setState(() => _showOnboarding = false);
+        },
+      );
+    }
+
+    if (_showWhatsNew) {
+      return WhatsNewScreen(
+        versionLabel: _appVersion,
+        onClose: () async {
+          await context.read<SettingsProvider>().setLastSeenWhatsNewVersion(
+            _appVersion,
+          );
+          if (!mounted) return;
+          setState(() => _showWhatsNew = false);
         },
       );
     }

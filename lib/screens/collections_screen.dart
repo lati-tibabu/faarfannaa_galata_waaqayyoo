@@ -121,9 +121,7 @@ class CollectionsScreen extends StatelessWidget {
                     width: 42,
                     height: 42,
                     decoration: BoxDecoration(
-                      color: primary.withValues(
-                        alpha: isDark ? 0.18 : 0.12,
-                      ),
+                      color: primary.withValues(alpha: isDark ? 0.18 : 0.12),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Icon(Icons.folder, color: primary),

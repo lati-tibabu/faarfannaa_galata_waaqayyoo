@@ -13,10 +13,7 @@ class AboutScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          'About',
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
+        title: Text('About', style: TextStyle(fontWeight: FontWeight.bold)),
         centerTitle: true,
       ),
       body: FutureBuilder<PackageInfo>(
@@ -175,7 +172,9 @@ class _LinkTile extends StatelessWidget {
         height: 40,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12),
-          color: Theme.of(context).colorScheme.primary.withValues(alpha: isDark ? 0.18 : 0.12),
+          color: Theme.of(
+            context,
+          ).colorScheme.primary.withValues(alpha: isDark ? 0.18 : 0.12),
         ),
         child: Icon(icon, color: Theme.of(context).colorScheme.primary),
       ),

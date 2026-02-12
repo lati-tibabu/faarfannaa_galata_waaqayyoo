@@ -1,37 +1,40 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../providers/settings_provider.dart';
 import '../providers/onboarding_provider.dart';
+import '../providers/settings_provider.dart';
 import 'about_screen.dart';
+import 'accessibility_settings_screen.dart';
 import 'backup_restore_screen.dart';
 import 'collections_screen.dart';
 import 'help_screen.dart';
+import 'language_settings_screen.dart';
 import 'onboarding_screen.dart';
-import 'privacy_policy_screen.dart';
 import 'primary_color_picker_sheet.dart';
+import 'privacy_policy_screen.dart';
 import 'recently_viewed_screen.dart';
 import 'terms_screen.dart';
+import 'whats_new_screen.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final settings = Provider.of<SettingsProvider>(context);
+    final settings = context.watch<SettingsProvider>();
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'Settings',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
       ),
       body: ListView(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16),
         children: [
-          _buildSectionHeader('APPEARANCE'),
+          _buildSectionHeader('APP SETTINGS'),
           Container(
             decoration: BoxDecoration(
               color: isDark ? const Color(0xFF1C1C1E) : Colors.white,
@@ -45,214 +48,10 @@ class SettingsScreen extends StatelessWidget {
                   leadingColor: Colors.blue,
                   trailing: Switch(
                     value: settings.isDarkMode,
-                    onChanged: (value) => settings.toggleTheme(value),
-                    activeThumbColor: Colors.green,
+                    onChanged: settings.toggleTheme,
                   ),
                 ),
-                Divider(
-                  height: 1,
-                  indent: 50,
-                  color: Colors.grey.withValues(alpha: 0.2),
-                ),
-                _buildListTile(
-                  title: 'Font Size',
-                  leadingIcon: Icons.format_size,
-                  leadingColor: Theme.of(context).colorScheme.primary,
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        _getFontSizeLabel(settings.fontSize),
-                        style: TextStyle(color: Colors.grey),
-                      ),
-                      const SizedBox(width: 4),
-                      Icon(Icons.chevron_right, color: Colors.grey),
-                    ],
-                  ),
-                  onTap: () {
-                    showDialog(
-                      context: context,
-                      builder: (ctx) => SimpleDialog(
-                        title: Text("Select Font Size"),
-                        children: [
-                          SimpleDialogOption(
-                            child: Text("Small"),
-                            onPressed: () {
-                              settings.setFontSize(12.0);
-                              Navigator.pop(ctx);
-                            },
-                          ),
-                          SimpleDialogOption(
-                            child: Text("Medium"),
-                            onPressed: () {
-                              settings.setFontSize(14.0);
-                              Navigator.pop(ctx);
-                            },
-                          ),
-                          SimpleDialogOption(
-                            child: Text("Large"),
-                            onPressed: () {
-                              settings.setFontSize(18.0);
-                              Navigator.pop(ctx);
-                            },
-                          ),
-                        ],
-                      ),
-                    );
-                  },
-                ),
-                Divider(
-                  height: 1,
-                  indent: 50,
-                  color: Colors.grey.withValues(alpha: 0.2),
-                ),
-                _buildListTile(
-                  title: 'Font Family',
-                  leadingIcon: Icons.font_download_outlined,
-                  leadingColor: Theme.of(context).colorScheme.primary,
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        _getFontFamilyLabel(settings.fontFamily),
-                        style: TextStyle(color: Colors.grey),
-                      ),
-                      const SizedBox(width: 4),
-                      Icon(Icons.chevron_right, color: Colors.grey),
-                    ],
-                  ),
-                  onTap: () {
-                    showDialog(
-                      context: context,
-                      builder: (ctx) => SimpleDialog(
-                        title: Text('Select Font Family'),
-                        children: [
-                          SimpleDialogOption(
-                            child: Text(
-                              'Inter',
-                              style: TextStyle(fontFamily: 'inter'),
-                            ),
-                            onPressed: () {
-                              settings.setFontFamily('inter');
-                              Navigator.pop(ctx);
-                            },
-                          ),
-                          SimpleDialogOption(
-                            child: Text(
-                              'Nunito Sans',
-                              style: TextStyle(fontFamily: 'nunito'),
-                            ),
-                            onPressed: () {
-                              settings.setFontFamily('nunito');
-                              Navigator.pop(ctx);
-                            },
-                          ),
-                          SimpleDialogOption(
-                            child: Text(
-                              'Poppins',
-                              style: TextStyle(fontFamily: 'poppins'),
-                            ),
-                            onPressed: () {
-                              settings.setFontFamily('poppins');
-                              Navigator.pop(ctx);
-                            },
-                          ),
-                          SimpleDialogOption(
-                            child: Text(
-                              'Playfair Display',
-                              style: TextStyle(fontFamily: 'playfair'),
-                            ),
-                            onPressed: () {
-                              settings.setFontFamily('playfair');
-                              Navigator.pop(ctx);
-                            },
-                          ),
-                          SimpleDialogOption(
-                            child: Text(
-                              'Merriweather',
-                              style: TextStyle(fontFamily: 'merriweather'),
-                            ),
-                            onPressed: () {
-                              settings.setFontFamily('merriweather');
-                              Navigator.pop(ctx);
-                            },
-                          ),
-                        ],
-                      ),
-                    );
-                  },
-                ),
-                Divider(
-                  height: 1,
-                  indent: 50,
-                  color: Colors.grey.withValues(alpha: 0.2),
-                ),
-                _buildListTile(
-                  title: 'Font Weight',
-                  leadingIcon: Icons.line_weight,
-                  leadingColor: Theme.of(context).colorScheme.primary,
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        _getFontWeightLabel(settings.fontWeight),
-                        style: TextStyle(color: Colors.grey),
-                      ),
-                      const SizedBox(width: 4),
-                      Icon(Icons.chevron_right, color: Colors.grey),
-                    ],
-                  ),
-                  onTap: () {
-                    showDialog(
-                      context: context,
-                      builder: (ctx) => SimpleDialog(
-                        title: Text('Select Font Weight'),
-                        children: [
-                          SimpleDialogOption(
-                            child: Text('Light (300)'),
-                            onPressed: () {
-                              settings.setFontWeight(300);
-                              Navigator.pop(ctx);
-                            },
-                          ),
-                          SimpleDialogOption(
-                            child: Text('Regular (400)'),
-                            onPressed: () {
-                              settings.setFontWeight(400);
-                              Navigator.pop(ctx);
-                            },
-                          ),
-                          SimpleDialogOption(
-                            child: Text('Medium (500)'),
-                            onPressed: () {
-                              settings.setFontWeight(500);
-                              Navigator.pop(ctx);
-                            },
-                          ),
-                          SimpleDialogOption(
-                            child: Text('SemiBold (600)'),
-                            onPressed: () {
-                              settings.setFontWeight(600);
-                              Navigator.pop(ctx);
-                            },
-                          ),
-                          SimpleDialogOption(
-                            child: Text('Bold (700)'),
-                            onPressed: () {
-                              settings.setFontWeight(700);
-                              Navigator.pop(ctx);
-                            },
-                          ),
-                        ],
-                      ),
-                    );
-                  },
-                ),
-                Divider(
-                  height: 1,
-                  indent: 50,
-                  color: Colors.grey.withValues(alpha: 0.2),
-                ),
+                _divider(),
                 _buildListTile(
                   title: 'Primary Color',
                   leadingIcon: Icons.palette_outlined,
@@ -274,7 +73,7 @@ class SettingsScreen extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(width: 8),
-                      Icon(Icons.chevron_right, color: Colors.grey),
+                      const Icon(Icons.chevron_right, color: Colors.grey),
                     ],
                   ),
                   onTap: () {
@@ -282,12 +81,66 @@ class SettingsScreen extends StatelessWidget {
                       context: context,
                       isScrollControlled: true,
                       showDragHandle: true,
-                      backgroundColor:
-                          Theme.of(context).scaffoldBackgroundColor,
+                      backgroundColor: Theme.of(
+                        context,
+                      ).scaffoldBackgroundColor,
                       builder: (_) => PrimaryColorPickerSheet(
                         initialColor: settings.primaryColor,
-                        onSave: (color) => settings.setPrimaryColor(color),
+                        onSave: settings.setPrimaryColor,
                       ),
+                    );
+                  },
+                ),
+                _divider(),
+                _buildListTile(
+                  title: 'Language',
+                  leadingIcon: Icons.language,
+                  leadingColor: Colors.indigo,
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        settings.languageCode == 'om' ? 'Oromo' : 'English',
+                        style: const TextStyle(color: Colors.grey),
+                      ),
+                      const SizedBox(width: 4),
+                      const Icon(Icons.chevron_right, color: Colors.grey),
+                    ],
+                  ),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const LanguageSettingsScreen(),
+                      ),
+                    );
+                  },
+                ),
+                _divider(),
+                _buildListTile(
+                  title: 'Accessibility',
+                  leadingIcon: Icons.accessibility_new,
+                  leadingColor: Colors.teal,
+                  trailing: const Icon(Icons.chevron_right, color: Colors.grey),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const AccessibilitySettingsScreen(),
+                      ),
+                    );
+                  },
+                ),
+                _divider(),
+                _buildListTile(
+                  title: "What's New",
+                  leadingIcon: Icons.new_releases_outlined,
+                  leadingColor: Colors.orange,
+                  trailing: const Icon(Icons.chevron_right, color: Colors.grey),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const WhatsNewScreen()),
                     );
                   },
                 ),
@@ -296,9 +149,9 @@ class SettingsScreen extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16.0),
+            padding: EdgeInsets.symmetric(horizontal: 16),
             child: Text(
-              "Adjust the app's look and reading experience to your preference.",
+              'Lyrics typography settings are available from song pages.',
               style: TextStyle(fontSize: 12, color: Colors.grey),
             ),
           ),
@@ -315,7 +168,7 @@ class SettingsScreen extends StatelessWidget {
                   title: 'Recently Viewed',
                   leadingIcon: Icons.history,
                   leadingColor: Colors.teal,
-                  trailing: Icon(Icons.chevron_right, color: Colors.grey),
+                  trailing: const Icon(Icons.chevron_right, color: Colors.grey),
                   onTap: () {
                     Navigator.push(
                       context,
@@ -325,16 +178,12 @@ class SettingsScreen extends StatelessWidget {
                     );
                   },
                 ),
-                Divider(
-                  height: 1,
-                  indent: 50,
-                  color: Colors.grey.withValues(alpha: 0.2),
-                ),
+                _divider(),
                 _buildListTile(
                   title: 'Collections',
                   leadingIcon: Icons.folder_open,
                   leadingColor: Colors.indigo,
-                  trailing: Icon(Icons.chevron_right, color: Colors.grey),
+                  trailing: const Icon(Icons.chevron_right, color: Colors.grey),
                   onTap: () {
                     Navigator.push(
                       context,
@@ -344,16 +193,12 @@ class SettingsScreen extends StatelessWidget {
                     );
                   },
                 ),
-                Divider(
-                  height: 1,
-                  indent: 50,
-                  color: Colors.grey.withValues(alpha: 0.2),
-                ),
+                _divider(),
                 _buildListTile(
                   title: 'Backup & Restore',
                   leadingIcon: Icons.cloud_upload_outlined,
                   leadingColor: Theme.of(context).colorScheme.primary,
-                  trailing: Icon(Icons.chevron_right, color: Colors.grey),
+                  trailing: const Icon(Icons.chevron_right, color: Colors.grey),
                   onTap: () {
                     Navigator.push(
                       context,
@@ -379,7 +224,7 @@ class SettingsScreen extends StatelessWidget {
                   title: 'Help & Feedback',
                   leadingIcon: Icons.help_outline,
                   leadingColor: Colors.blueGrey,
-                  trailing: Icon(Icons.chevron_right, color: Colors.grey),
+                  trailing: const Icon(Icons.chevron_right, color: Colors.grey),
                   onTap: () {
                     Navigator.push(
                       context,
@@ -387,16 +232,12 @@ class SettingsScreen extends StatelessWidget {
                     );
                   },
                 ),
-                Divider(
-                  height: 1,
-                  indent: 50,
-                  color: Colors.grey.withValues(alpha: 0.2),
-                ),
+                _divider(),
                 _buildListTile(
                   title: 'Onboarding',
                   leadingIcon: Icons.play_circle_outline,
                   leadingColor: Colors.deepPurple,
-                  trailing: Icon(Icons.chevron_right, color: Colors.grey),
+                  trailing: const Icon(Icons.chevron_right, color: Colors.grey),
                   onTap: () {
                     Navigator.push(
                       context,
@@ -429,7 +270,7 @@ class SettingsScreen extends StatelessWidget {
                   title: 'About the App',
                   leadingIcon: Icons.info_outline,
                   leadingColor: Colors.grey,
-                  trailing: Icon(Icons.chevron_right, color: Colors.grey),
+                  trailing: const Icon(Icons.chevron_right, color: Colors.grey),
                   onTap: () {
                     Navigator.push(
                       context,
@@ -437,16 +278,12 @@ class SettingsScreen extends StatelessWidget {
                     );
                   },
                 ),
-                Divider(
-                  height: 1,
-                  indent: 50,
-                  color: Colors.grey.withValues(alpha: 0.2),
-                ),
+                _divider(),
                 _buildListTile(
                   title: 'Privacy Policy',
                   leadingIcon: Icons.privacy_tip_outlined,
                   leadingColor: Colors.green,
-                  trailing: Icon(Icons.chevron_right, color: Colors.grey),
+                  trailing: const Icon(Icons.chevron_right, color: Colors.grey),
                   onTap: () {
                     Navigator.push(
                       context,
@@ -456,16 +293,12 @@ class SettingsScreen extends StatelessWidget {
                     );
                   },
                 ),
-                Divider(
-                  height: 1,
-                  indent: 50,
-                  color: Colors.grey.withValues(alpha: 0.2),
-                ),
+                _divider(),
                 _buildListTile(
                   title: 'Terms',
                   leadingIcon: Icons.description_outlined,
                   leadingColor: Theme.of(context).colorScheme.primary,
-                  trailing: Icon(Icons.chevron_right, color: Colors.grey),
+                  trailing: const Icon(Icons.chevron_right, color: Colors.grey),
                   onTap: () {
                     Navigator.push(
                       context,
@@ -486,12 +319,20 @@ class SettingsScreen extends StatelessWidget {
       padding: const EdgeInsets.only(left: 16, bottom: 8),
       child: Text(
         title,
-        style: TextStyle(
+        style: const TextStyle(
           fontSize: 13,
           fontWeight: FontWeight.w600,
           color: Colors.grey,
         ),
       ),
+    );
+  }
+
+  Widget _divider() {
+    return Divider(
+      height: 1,
+      indent: 50,
+      color: Colors.grey.withValues(alpha: 0.2),
     );
   }
 
@@ -513,46 +354,8 @@ class SettingsScreen extends StatelessWidget {
         ),
         child: Icon(leadingIcon, color: Colors.white, size: 20),
       ),
-      title: Text(title, style: TextStyle(fontWeight: FontWeight.w500)),
+      title: Text(title, style: const TextStyle(fontWeight: FontWeight.w500)),
       trailing: trailing,
     );
-  }
-
-  String _getFontSizeLabel(double size) {
-    if (size <= 12.0) return "Small";
-    if (size >= 18.0) return "Large";
-    return "Medium";
-  }
-
-  String _getFontFamilyLabel(String family) {
-    switch (family) {
-      case 'nunito':
-        return 'Nunito Sans';
-      case 'poppins':
-        return 'Poppins';
-      case 'playfair':
-        return 'Playfair Display';
-      case 'merriweather':
-        return 'Merriweather';
-      case 'inter':
-      default:
-        return 'Inter';
-    }
-  }
-
-  String _getFontWeightLabel(int weight) {
-    switch (weight) {
-      case 300:
-        return 'Light';
-      case 500:
-        return 'Medium';
-      case 600:
-        return 'SemiBold';
-      case 700:
-        return 'Bold';
-      case 400:
-      default:
-        return 'Regular';
-    }
   }
 }

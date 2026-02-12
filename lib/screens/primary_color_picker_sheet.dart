@@ -13,7 +13,8 @@ class PrimaryColorPickerSheet extends StatefulWidget {
   });
 
   @override
-  State<PrimaryColorPickerSheet> createState() => _PrimaryColorPickerSheetState();
+  State<PrimaryColorPickerSheet> createState() =>
+      _PrimaryColorPickerSheetState();
 }
 
 class _PrimaryColorPickerSheetState extends State<PrimaryColorPickerSheet> {
@@ -224,4 +225,3 @@ class _PrimaryColorPickerSheetState extends State<PrimaryColorPickerSheet> {
     );
   }
 }
-

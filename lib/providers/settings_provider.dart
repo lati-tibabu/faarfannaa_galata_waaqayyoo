@@ -9,6 +9,11 @@ class SettingsProvider with ChangeNotifier {
   String _fontFamily = 'inter';
   int _fontWeight = 400;
   Color _primaryColor = AppColors.primary;
+  String _languageCode = 'om';
+  bool _highContrastMode = false;
+  bool _reduceMotion = false;
+  bool _largeTouchTargets = false;
+  String _lastSeenWhatsNewVersion = '';
   late final Future<void> _initFuture;
 
   bool get isDarkMode => _isDarkMode;
@@ -16,6 +21,11 @@ class SettingsProvider with ChangeNotifier {
   String get fontFamily => _fontFamily;
   int get fontWeight => _fontWeight;
   Color get primaryColor => _primaryColor;
+  String get languageCode => _languageCode;
+  bool get highContrastMode => _highContrastMode;
+  bool get reduceMotion => _reduceMotion;
+  bool get largeTouchTargets => _largeTouchTargets;
+  String get lastSeenWhatsNewVersion => _lastSeenWhatsNewVersion;
 
   SettingsProvider() {
     _initFuture = _loadSettings();
@@ -45,6 +55,16 @@ class SettingsProvider with ChangeNotifier {
     _primaryColor = storedPrimary == null
         ? AppColors.primary
         : Color(storedPrimary).withValues(alpha: 1);
+    _languageCode = prefs.getString(StorageKeys.languageCode) ?? 'om';
+    if (_languageCode != 'om' && _languageCode != 'en') {
+      _languageCode = 'om';
+      await prefs.setString(StorageKeys.languageCode, _languageCode);
+    }
+    _highContrastMode = prefs.getBool(StorageKeys.highContrastMode) ?? false;
+    _reduceMotion = prefs.getBool(StorageKeys.reduceMotion) ?? false;
+    _largeTouchTargets = prefs.getBool(StorageKeys.largeTouchTargets) ?? false;
+    _lastSeenWhatsNewVersion =
+        prefs.getString(StorageKeys.lastSeenWhatsNewVersion) ?? '';
     notifyListeners();
   }
 
@@ -80,6 +100,45 @@ class SettingsProvider with ChangeNotifier {
     _fontWeight = weight;
     final prefs = await SharedPreferences.getInstance();
     await prefs.setInt(StorageKeys.fontWeight, _fontWeight);
+    notifyListeners();
+  }
+
+  Future<void> setLanguageCode(String code) async {
+    if (code != 'om' && code != 'en') return;
+    _languageCode = code;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(StorageKeys.languageCode, _languageCode);
+    notifyListeners();
+  }
+
+  Future<void> setHighContrastMode(bool enabled) async {
+    _highContrastMode = enabled;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(StorageKeys.highContrastMode, _highContrastMode);
+    notifyListeners();
+  }
+
+  Future<void> setReduceMotion(bool enabled) async {
+    _reduceMotion = enabled;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(StorageKeys.reduceMotion, _reduceMotion);
+    notifyListeners();
+  }
+
+  Future<void> setLargeTouchTargets(bool enabled) async {
+    _largeTouchTargets = enabled;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(StorageKeys.largeTouchTargets, _largeTouchTargets);
+    notifyListeners();
+  }
+
+  Future<void> setLastSeenWhatsNewVersion(String version) async {
+    _lastSeenWhatsNewVersion = version;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(
+      StorageKeys.lastSeenWhatsNewVersion,
+      _lastSeenWhatsNewVersion,
+    );
     notifyListeners();
   }
 }

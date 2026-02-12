@@ -75,10 +75,7 @@ class HelpScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  'Contact',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
+                Text('Contact', style: TextStyle(fontWeight: FontWeight.bold)),
                 const SizedBox(height: 8),
                 Text(
                   'Email: codelab.teams@gmail.com',
@@ -155,9 +152,9 @@ class _CardTile extends StatelessWidget {
               height: 42,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(12),
-                color: Theme.of(context).colorScheme.primary.withValues(
-                  alpha: isDark ? 0.18 : 0.12,
-                ),
+                color: Theme.of(
+                  context,
+                ).colorScheme.primary.withValues(alpha: isDark ? 0.18 : 0.12),
               ),
               child: Icon(icon, color: Theme.of(context).colorScheme.primary),
             ),
@@ -166,10 +163,7 @@ class _CardTile extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    title,
-                    style: TextStyle(fontWeight: FontWeight.w600),
-                  ),
+                  Text(title, style: TextStyle(fontWeight: FontWeight.w600)),
                   const SizedBox(height: 4),
                   Text(
                     subtitle,

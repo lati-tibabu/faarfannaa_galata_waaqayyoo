@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../models/hymn_model.dart';
 import '../providers/settings_provider.dart';
 import '../theme.dart';
+import 'lyrics_settings_screen.dart';
 
 class ReaderModeScreen extends StatelessWidget {
   final Hymn song;
@@ -24,6 +25,18 @@ class ReaderModeScreen extends StatelessWidget {
           icon: Icon(Icons.close),
           onPressed: () => Navigator.pop(context),
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.tune),
+            tooltip: 'Lyrics settings',
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const LyricsSettingsScreen()),
+              );
+            },
+          ),
+        ],
         title: Text(
           'HYMN ${song.number}',
           style: TextStyle(fontWeight: FontWeight.bold),
@@ -38,10 +51,7 @@ class ReaderModeScreen extends StatelessWidget {
             children: [
               Text(
                 song.title,
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 18),
               if (song.sections.isEmpty)
@@ -56,11 +66,13 @@ class ReaderModeScreen extends StatelessWidget {
                     isChorus: section.type == 'CHR',
                     content: section.lines,
                     fontSize: fontSizeScale,
+                    fontFamily: settings.fontFamily,
+                    fontWeightValue: settings.fontWeight,
                   );
                 }),
               const SizedBox(height: 30),
               Text(
-                'Tip: Adjust font size from Settings.',
+                'Tip: Tune typography with the top-right settings icon.',
                 style: TextStyle(
                   color: Colors.white.withValues(alpha: 0.6),
                   fontSize: 12,
@@ -80,12 +92,16 @@ class _ReaderLyricSection extends StatelessWidget {
   final List<String> content;
   final bool isChorus;
   final double fontSize;
+  final String fontFamily;
+  final int fontWeightValue;
 
   const _ReaderLyricSection({
     required this.label,
     required this.content,
     this.isChorus = false,
     this.fontSize = 14.0,
+    this.fontFamily = 'inter',
+    this.fontWeightValue = 400,
   });
 
   @override
@@ -102,7 +118,11 @@ class _ReaderLyricSection extends StatelessWidget {
             : Colors.transparent,
         borderRadius: BorderRadius.circular(18),
         border: isChorus
-            ? Border.all(color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.35))
+            ? Border.all(
+                color: Theme.of(
+                  context,
+                ).colorScheme.primary.withValues(alpha: 0.35),
+              )
             : null,
       ),
       child: Column(
@@ -130,7 +150,10 @@ class _ReaderLyricSection extends StatelessWidget {
                 style: TextStyle(
                   fontSize: textFontSize,
                   height: 1.7,
-                  fontWeight: isChorus ? FontWeight.w500 : FontWeight.normal,
+                  fontWeight: isChorus
+                      ? FontWeight.w500
+                      : _fontWeight(fontWeightValue),
+                  fontFamily: fontFamily,
                 ),
               ),
             ),
@@ -138,5 +161,21 @@ class _ReaderLyricSection extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  FontWeight _fontWeight(int value) {
+    switch (value) {
+      case 300:
+        return FontWeight.w300;
+      case 500:
+        return FontWeight.w500;
+      case 600:
+        return FontWeight.w600;
+      case 700:
+        return FontWeight.w700;
+      case 400:
+      default:
+        return FontWeight.w400;
+    }
   }
 }

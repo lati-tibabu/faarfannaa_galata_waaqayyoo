@@ -40,30 +40,7 @@ class _MainLayoutState extends State<MainLayout> {
     );
 
     return Scaffold(
-      body: Stack(
-        children: [
-          IndexedStack(index: _selectedIndex, children: _screens),
-          if (isDark)
-            Positioned(
-              left: 0,
-              right: 0,
-              bottom: 0,
-              child: Container(
-                height: 100,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      Colors.transparent,
-                      AppColors.backgroundDark.withValues(alpha: 0.8),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-        ],
-      ),
+      body: IndexedStack(index: _selectedIndex, children: _screens),
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
           border: Border(

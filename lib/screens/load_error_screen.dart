@@ -112,9 +112,7 @@ class LoadErrorScreen extends StatelessWidget {
                               err.songNumber == 0
                                   ? 'Loader'
                                   : 'Song ${err.songNumber}',
-                              style: TextStyle(
-                                fontWeight: FontWeight.w700,
-                              ),
+                              style: TextStyle(fontWeight: FontWeight.w700),
                             ),
                             const SizedBox(height: 4),
                             Text(
