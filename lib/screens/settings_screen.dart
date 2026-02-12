@@ -107,6 +107,153 @@ class SettingsScreen extends StatelessWidget {
                   color: Colors.grey.withValues(alpha: 0.2),
                 ),
                 _buildListTile(
+                  title: 'Font Family',
+                  leadingIcon: Icons.font_download_outlined,
+                  leadingColor: Theme.of(context).colorScheme.primary,
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        _getFontFamilyLabel(settings.fontFamily),
+                        style: TextStyle(color: Colors.grey),
+                      ),
+                      const SizedBox(width: 4),
+                      Icon(Icons.chevron_right, color: Colors.grey),
+                    ],
+                  ),
+                  onTap: () {
+                    showDialog(
+                      context: context,
+                      builder: (ctx) => SimpleDialog(
+                        title: Text('Select Font Family'),
+                        children: [
+                          SimpleDialogOption(
+                            child: Text(
+                              'Inter',
+                              style: TextStyle(fontFamily: 'inter'),
+                            ),
+                            onPressed: () {
+                              settings.setFontFamily('inter');
+                              Navigator.pop(ctx);
+                            },
+                          ),
+                          SimpleDialogOption(
+                            child: Text(
+                              'Nunito Sans',
+                              style: TextStyle(fontFamily: 'nunito'),
+                            ),
+                            onPressed: () {
+                              settings.setFontFamily('nunito');
+                              Navigator.pop(ctx);
+                            },
+                          ),
+                          SimpleDialogOption(
+                            child: Text(
+                              'Poppins',
+                              style: TextStyle(fontFamily: 'poppins'),
+                            ),
+                            onPressed: () {
+                              settings.setFontFamily('poppins');
+                              Navigator.pop(ctx);
+                            },
+                          ),
+                          SimpleDialogOption(
+                            child: Text(
+                              'Playfair Display',
+                              style: TextStyle(fontFamily: 'playfair'),
+                            ),
+                            onPressed: () {
+                              settings.setFontFamily('playfair');
+                              Navigator.pop(ctx);
+                            },
+                          ),
+                          SimpleDialogOption(
+                            child: Text(
+                              'Merriweather',
+                              style: TextStyle(fontFamily: 'merriweather'),
+                            ),
+                            onPressed: () {
+                              settings.setFontFamily('merriweather');
+                              Navigator.pop(ctx);
+                            },
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+                Divider(
+                  height: 1,
+                  indent: 50,
+                  color: Colors.grey.withValues(alpha: 0.2),
+                ),
+                _buildListTile(
+                  title: 'Font Weight',
+                  leadingIcon: Icons.line_weight,
+                  leadingColor: Theme.of(context).colorScheme.primary,
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        _getFontWeightLabel(settings.fontWeight),
+                        style: TextStyle(color: Colors.grey),
+                      ),
+                      const SizedBox(width: 4),
+                      Icon(Icons.chevron_right, color: Colors.grey),
+                    ],
+                  ),
+                  onTap: () {
+                    showDialog(
+                      context: context,
+                      builder: (ctx) => SimpleDialog(
+                        title: Text('Select Font Weight'),
+                        children: [
+                          SimpleDialogOption(
+                            child: Text('Light (300)'),
+                            onPressed: () {
+                              settings.setFontWeight(300);
+                              Navigator.pop(ctx);
+                            },
+                          ),
+                          SimpleDialogOption(
+                            child: Text('Regular (400)'),
+                            onPressed: () {
+                              settings.setFontWeight(400);
+                              Navigator.pop(ctx);
+                            },
+                          ),
+                          SimpleDialogOption(
+                            child: Text('Medium (500)'),
+                            onPressed: () {
+                              settings.setFontWeight(500);
+                              Navigator.pop(ctx);
+                            },
+                          ),
+                          SimpleDialogOption(
+                            child: Text('SemiBold (600)'),
+                            onPressed: () {
+                              settings.setFontWeight(600);
+                              Navigator.pop(ctx);
+                            },
+                          ),
+                          SimpleDialogOption(
+                            child: Text('Bold (700)'),
+                            onPressed: () {
+                              settings.setFontWeight(700);
+                              Navigator.pop(ctx);
+                            },
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+                Divider(
+                  height: 1,
+                  indent: 50,
+                  color: Colors.grey.withValues(alpha: 0.2),
+                ),
+                _buildListTile(
                   title: 'Primary Color',
                   leadingIcon: Icons.palette_outlined,
                   leadingColor: Theme.of(context).colorScheme.primary,
@@ -375,5 +522,37 @@ class SettingsScreen extends StatelessWidget {
     if (size <= 12.0) return "Small";
     if (size >= 18.0) return "Large";
     return "Medium";
+  }
+
+  String _getFontFamilyLabel(String family) {
+    switch (family) {
+      case 'nunito':
+        return 'Nunito Sans';
+      case 'poppins':
+        return 'Poppins';
+      case 'playfair':
+        return 'Playfair Display';
+      case 'merriweather':
+        return 'Merriweather';
+      case 'inter':
+      default:
+        return 'Inter';
+    }
+  }
+
+  String _getFontWeightLabel(int weight) {
+    switch (weight) {
+      case 300:
+        return 'Light';
+      case 500:
+        return 'Medium';
+      case 600:
+        return 'SemiBold';
+      case 700:
+        return 'Bold';
+      case 400:
+      default:
+        return 'Regular';
+    }
   }
 }

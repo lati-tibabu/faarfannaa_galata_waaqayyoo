@@ -81,7 +81,7 @@ class HelpScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Email: support@example.com',
+                  'Email: codelab.teams@gmail.com',
                   style: TextStyle(
                     color: isDark ? Colors.white70 : Colors.black87,
                   ),
@@ -90,7 +90,7 @@ class HelpScreen extends StatelessWidget {
                 OutlinedButton(
                   onPressed: () async {
                     await Clipboard.setData(
-                      const ClipboardData(text: 'support@example.com'),
+                      const ClipboardData(text: 'codelab.teams@gmail.com'),
                     );
                     if (context.mounted) {
                       ScaffoldMessenger.of(context).showSnackBar(

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flashy_tab_bar2/flashy_tab_bar2.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:heroicons/heroicons.dart';
 import '../theme.dart';
 import 'home_explore_screen.dart';
@@ -34,7 +33,7 @@ class _MainLayoutState extends State<MainLayout> {
     final inactiveColor = isDark
         ? Colors.white.withValues(alpha: 0.45)
         : Colors.black45;
-    final navTextStyle = GoogleFonts.nunitoSans(
+    final navTextStyle = TextStyle(
       fontSize: 12,
       fontWeight: FontWeight.w600,
       letterSpacing: 0.2,

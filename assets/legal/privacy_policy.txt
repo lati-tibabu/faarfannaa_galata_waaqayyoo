@@ -20,5 +20,5 @@ Data deletion
 - You can clear data by uninstalling the app or by using the Backup & Restore feature to overwrite local data.
 
 Contact
-- Email: support@example.com
+- Email: codelab.teams@gmail.com
 

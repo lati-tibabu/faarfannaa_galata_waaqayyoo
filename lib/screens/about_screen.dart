@@ -136,6 +136,15 @@ class AboutScreen extends StatelessWidget {
                   ),
                 ),
               ),
+              const SizedBox(height: 12),
+              Text(
+                'Developed by Daniel Geremew and Lati Tibabu',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: isDark ? Colors.white60 : Colors.black54,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
             ],
           );
         },

@@ -45,11 +45,13 @@ class MyApp extends StatelessWidget {
     return Consumer<SettingsProvider>(
       builder: (context, settings, _) {
         final primaryColor = settings.primaryColor;
+        final fontFamily = settings.fontFamily;
+        final fontWeight = settings.fontWeight;
         return MaterialApp(
           title: 'Faarfannaa Galata Waaqayyoo',
           debugShowCheckedModeBanner: false,
-          theme: AppTheme.lightTheme(primaryColor),
-          darkTheme: AppTheme.darkTheme(primaryColor),
+          theme: AppTheme.lightTheme(primaryColor, fontFamily, fontWeight),
+          darkTheme: AppTheme.darkTheme(primaryColor, fontFamily, fontWeight),
           themeMode: settings.isDarkMode ? ThemeMode.dark : ThemeMode.light,
           home: const Initializer(),
         );
