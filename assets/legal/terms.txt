@@ -1,0 +1,21 @@
+Terms
+
+Last updated: 2026-02-11
+
+By using this app, you agree to the following:
+
+1) Offline-first
+The app is designed to work without internet access. Content and features may change in future versions.
+
+2) Content and attribution
+Hymn content may have its own copyright/licensing terms. Ensure you have the rights to distribute or use content as needed.
+
+3) No warranty
+The app is provided "as is" without warranties of any kind.
+
+4) Limitation of liability
+To the maximum extent permitted by law, the developers are not liable for damages arising from use of the app.
+
+Contact
+- Email: codelab.teams@gmail.com
+

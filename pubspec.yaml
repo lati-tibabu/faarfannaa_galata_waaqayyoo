@@ -16,7 +16,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 1.0.0+1
+version: 1.1.0+2
 
 environment:
   sdk: ^3.10.8
@@ -34,9 +34,12 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
-  google_fonts: ^8.0.1
   shared_preferences: ^2.5.4
   provider: ^6.1.5+1
+  package_info_plus: ^9.0.0
+  flashy_tab_bar2: ^0.0.10
+  heroicons: ^0.11.0
+  flutter_colorpicker: ^1.1.0
 
 dev_dependencies:
   flutter_test:
@@ -68,6 +71,9 @@ flutter:
 
   assets:
     - assets/songs/
+    - assets/legal/
+    - assets/help/
+    - assets/fonts/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
@@ -75,26 +81,67 @@ flutter:
   # For details regarding adding assets from package dependencies, see
   # https://flutter.dev/to/asset-from-package
 
-  # To add custom fonts to your application, add a fonts section here,
-  # in this "flutter" section. Each entry in this list should have a
-  # "family" key with the font family name, and a "fonts" key with a
-  # list giving the asset and other descriptors for the font. For
-  # example:
-  # fonts:
-  #   - family: Schyler
-  #     fonts:
-  #       - asset: fonts/Schyler-Regular.ttf
-  #       - asset: fonts/Schyler-Italic.ttf
-  #         style: italic
-  #   - family: Trajan Pro
-  #     fonts:
-  #       - asset: fonts/TrajanPro.ttf
-  #       - asset: fonts/TrajanPro_Bold.ttf
-  #         weight: 700
-  #
-  # For details regarding fonts from package dependencies,
-  # see https://flutter.dev/to/font-from-package
-
+  fonts:
+    - family: inter
+      fonts:
+        - asset: "assets/fonts/inter/Inter[opsz,wght].ttf"
+          weight: 300
+        - asset: "assets/fonts/inter/Inter[opsz,wght].ttf"
+          weight: 400
+        - asset: "assets/fonts/inter/Inter[opsz,wght].ttf"
+          weight: 500
+        - asset: "assets/fonts/inter/Inter[opsz,wght].ttf"
+          weight: 600
+        - asset: "assets/fonts/inter/Inter[opsz,wght].ttf"
+          weight: 700
+    - family: nunito
+      fonts:
+        - asset: "assets/fonts/nunito/NunitoSans[YTLC,opsz,wdth,wght].ttf"
+          weight: 300
+        - asset: "assets/fonts/nunito/NunitoSans[YTLC,opsz,wdth,wght].ttf"
+          weight: 400
+        - asset: "assets/fonts/nunito/NunitoSans[YTLC,opsz,wdth,wght].ttf"
+          weight: 500
+        - asset: "assets/fonts/nunito/NunitoSans[YTLC,opsz,wdth,wght].ttf"
+          weight: 600
+        - asset: "assets/fonts/nunito/NunitoSans[YTLC,opsz,wdth,wght].ttf"
+          weight: 700
+    - family: poppins
+      fonts:
+        - asset: assets/fonts/poppins/Poppins-Light.ttf
+          weight: 300
+        - asset: assets/fonts/poppins/Poppins-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/poppins/Poppins-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/poppins/Poppins-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/poppins/Poppins-Bold.ttf
+          weight: 700
+    - family: playfair
+      fonts:
+        - asset: "assets/fonts/playfair/PlayfairDisplay[wght].ttf"
+          weight: 300
+        - asset: "assets/fonts/playfair/PlayfairDisplay[wght].ttf"
+          weight: 400
+        - asset: "assets/fonts/playfair/PlayfairDisplay[wght].ttf"
+          weight: 500
+        - asset: "assets/fonts/playfair/PlayfairDisplay[wght].ttf"
+          weight: 600
+        - asset: "assets/fonts/playfair/PlayfairDisplay[wght].ttf"
+          weight: 700
+    - family: merriweather
+      fonts:
+        - asset: "assets/fonts/merriweather/Merriweather[opsz,wdth,wght].ttf"
+          weight: 300
+        - asset: "assets/fonts/merriweather/Merriweather[opsz,wdth,wght].ttf"
+          weight: 400
+        - asset: "assets/fonts/merriweather/Merriweather[opsz,wdth,wght].ttf"
+          weight: 500
+        - asset: "assets/fonts/merriweather/Merriweather[opsz,wdth,wght].ttf"
+          weight: 600
+        - asset: "assets/fonts/merriweather/Merriweather[opsz,wdth,wght].ttf"
+          weight: 700
 flutter_launcher_icons:
   android: "launcher_icon"
   ios: true

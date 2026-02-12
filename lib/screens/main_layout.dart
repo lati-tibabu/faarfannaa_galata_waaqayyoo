@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flashy_tab_bar2/flashy_tab_bar2.dart';
+import 'package:heroicons/heroicons.dart';
 import '../theme.dart';
 import 'home_explore_screen.dart';
 import 'categories_screen.dart';
+import 'collections_screen.dart';
 import 'favorites_screen.dart';
 import 'settings_screen.dart';
 
@@ -18,6 +21,7 @@ class _MainLayoutState extends State<MainLayout> {
   static const List<Widget> _screens = [
     HomeExploreScreen(),
     CategoriesScreen(),
+    CollectionsScreen(),
     FavoritesScreen(),
     SettingsScreen(),
   ];
@@ -25,6 +29,15 @@ class _MainLayoutState extends State<MainLayout> {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final primary = Theme.of(context).colorScheme.primary;
+    final inactiveColor = isDark
+        ? Colors.white.withValues(alpha: 0.45)
+        : Colors.black45;
+    final navTextStyle = TextStyle(
+      fontSize: 12,
+      fontWeight: FontWeight.w600,
+      letterSpacing: 0.2,
+    );
 
     return Scaffold(
       body: Stack(
@@ -43,7 +56,7 @@ class _MainLayoutState extends State<MainLayout> {
                     end: Alignment.bottomCenter,
                     colors: [
                       Colors.transparent,
-                      AppColors.backgroundDark.withOpacity(0.8),
+                      AppColors.backgroundDark.withValues(alpha: 0.8),
                     ],
                   ),
                 ),
@@ -52,66 +65,104 @@ class _MainLayoutState extends State<MainLayout> {
         ],
       ),
       bottomNavigationBar: Container(
-        padding: const EdgeInsets.only(top: 8, bottom: 24),
         decoration: BoxDecoration(
-          color: isDark ? AppColors.secondary.withOpacity(0.95) : Colors.white,
           border: Border(
             top: BorderSide(
               color: isDark
-                  ? Colors.white.withOpacity(0.05)
-                  : Colors.black.withOpacity(0.05),
+                  ? Colors.white.withValues(alpha: 0.05)
+                  : Colors.black.withValues(alpha: 0.05),
             ),
           ),
-          boxShadow: isDark
-              ? null
-              : [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
-                    blurRadius: 10,
-                    offset: const Offset(0, -5),
-                  ),
-                ],
         ),
-        child: BottomNavigationBar(
-          currentIndex: _selectedIndex,
-          onTap: (index) => setState(() => _selectedIndex = index),
-          type: BottomNavigationBarType.fixed,
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          selectedItemColor: AppColors.primary,
-          unselectedItemColor: isDark
-              ? Colors.white.withOpacity(0.4)
-              : Colors.black45,
-          selectedFontSize: 10,
-          unselectedFontSize: 10,
-          selectedLabelStyle: const TextStyle(
-            fontWeight: FontWeight.bold,
-            letterSpacing: 0.5,
-          ),
-          unselectedLabelStyle: const TextStyle(
-            fontWeight: FontWeight.w500,
-            letterSpacing: 0.5,
-          ),
-          items: const [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home_outlined),
-              activeIcon: Icon(Icons.home),
-              label: 'HOME',
+        child: FlashyTabBar(
+          selectedIndex: _selectedIndex,
+          onItemSelected: (index) => setState(() => _selectedIndex = index),
+          height: 62,
+          iconSize: 24,
+          showElevation: false,
+          backgroundColor: isDark
+              ? AppColors.secondary.withValues(alpha: 0.95)
+              : Colors.white,
+          items: [
+            FlashyTabBarItem(
+              icon: HeroIcon(
+                HeroIcons.home,
+                style: _selectedIndex == 0
+                    ? HeroIconStyle.solid
+                    : HeroIconStyle.outline,
+              ),
+              title: Text(
+                'Home',
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: navTextStyle,
+              ),
+              activeColor: primary,
+              inactiveColor: inactiveColor,
             ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.grid_view_outlined),
-              activeIcon: Icon(Icons.grid_view),
-              label: 'CATEGORIES',
+            FlashyTabBarItem(
+              icon: HeroIcon(
+                HeroIcons.squares2x2,
+                style: _selectedIndex == 1
+                    ? HeroIconStyle.solid
+                    : HeroIconStyle.outline,
+              ),
+              title: Text(
+                'Categories',
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: navTextStyle,
+              ),
+              activeColor: primary,
+              inactiveColor: inactiveColor,
             ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.favorite_outline),
-              activeIcon: Icon(Icons.favorite),
-              label: 'FAVORITES',
+            FlashyTabBarItem(
+              icon: HeroIcon(
+                HeroIcons.folderOpen,
+                style: _selectedIndex == 2
+                    ? HeroIconStyle.solid
+                    : HeroIconStyle.outline,
+              ),
+              title: Text(
+                'Collections',
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: navTextStyle,
+              ),
+              activeColor: primary,
+              inactiveColor: inactiveColor,
             ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.settings_outlined),
-              activeIcon: Icon(Icons.settings),
-              label: 'SETTINGS',
+            FlashyTabBarItem(
+              icon: HeroIcon(
+                HeroIcons.heart,
+                style: _selectedIndex == 3
+                    ? HeroIconStyle.solid
+                    : HeroIconStyle.outline,
+              ),
+              title: Text(
+                'Favorites',
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: navTextStyle,
+              ),
+              activeColor: primary,
+              inactiveColor: inactiveColor,
+            ),
+            FlashyTabBarItem(
+              icon: HeroIcon(
+                HeroIcons.cog6Tooth,
+                style: _selectedIndex == 4
+                    ? HeroIconStyle.solid
+                    : HeroIconStyle.outline,
+              ),
+              title: Text(
+                'Settings',
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: navTextStyle,
+              ),
+              activeColor: primary,
+              inactiveColor: inactiveColor,
             ),
           ],
         ),

@@ -1,0 +1,24 @@
+Privacy Policy
+
+Last updated: 2026-02-11
+
+Faarfannaa Galata Waaqayyoo is an offline-first hymn library.
+
+What the app stores on your device
+- Favorites: hymn numbers you have marked as favorites.
+- Settings: dark mode and font size.
+- History: recently viewed hymns.
+- Collections: any custom collections you create.
+
+What the app sends off your device
+- By default, nothing. The app does not require an internet connection to browse hymns.
+
+Permissions
+- The app does not request special permissions for core usage.
+
+Data deletion
+- You can clear data by uninstalling the app or by using the Backup & Restore feature to overwrite local data.
+
+Contact
+- Email: codelab.teams@gmail.com
+
