@@ -20,6 +20,7 @@ class HomeExploreScreen extends StatefulWidget {
 }
 
 class _HomeExploreScreenState extends State<HomeExploreScreen> {
+  final SongService _songService = SongService();
   List<Hymn> _allSongs = [];
   String _selectedCategory = '__all__';
   bool _favoritesOnly = false;
@@ -28,12 +29,20 @@ class _HomeExploreScreenState extends State<HomeExploreScreen> {
   @override
   void initState() {
     super.initState();
+    _songService.addCatalogListener(_loadSongs);
     _loadSongs();
   }
 
+  @override
+  void dispose() {
+    _songService.removeCatalogListener(_loadSongs);
+    super.dispose();
+  }
+
   void _loadSongs() {
+    if (!mounted) return;
     setState(() {
-      _allSongs = SongService().getAllSongs();
+      _allSongs = _songService.getAllSongs();
     });
   }
 
@@ -82,7 +91,7 @@ class _HomeExploreScreenState extends State<HomeExploreScreen> {
 
     final categories = <String>[
       '__all__',
-      ...SongService().getUniqueCategories(),
+      ..._songService.getUniqueCategories(),
     ];
 
     return Scaffold(

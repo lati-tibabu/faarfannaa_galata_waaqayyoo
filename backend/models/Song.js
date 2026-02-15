@@ -19,6 +19,17 @@ const Song = sequelize.define('Song', {
     type: DataTypes.JSONB, // Store sections as JSON
     allowNull: false,
   },
+  version: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    defaultValue: '1.0',
+  },
+  lastPublishedAt: {
+    type: DataTypes.DATE,
+    allowNull: false,
+    defaultValue: DataTypes.NOW,
+    field: 'last_published_at',
+  },
   createdAt: {
     type: DataTypes.DATE,
     defaultValue: DataTypes.NOW,

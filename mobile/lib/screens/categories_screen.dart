@@ -10,19 +10,33 @@ class CategoriesScreen extends StatefulWidget {
 }
 
 class _CategoriesScreenState extends State<CategoriesScreen> {
+  final SongService _songService = SongService();
   final TextEditingController _search = TextEditingController();
 
   @override
+  void initState() {
+    super.initState();
+    _songService.addCatalogListener(_handleCatalogChanged);
+  }
+
+  @override
   void dispose() {
+    _songService.removeCatalogListener(_handleCatalogChanged);
     _search.dispose();
     super.dispose();
+  }
+
+  void _handleCatalogChanged() {
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final query = _search.text.trim().toLowerCase();
-    final categories = SongService()
+    final categories = _songService
         .getUniqueCategories()
         .where((c) => query.isEmpty || c.toLowerCase().contains(query))
         .toList();
@@ -91,7 +105,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                           icon: _getIconForCategory(category),
                           title: category,
                           subtitle:
-                              '${SongService().getSongsByCategory(category).length} Songs',
+                              '${_songService.getSongsByCategory(category).length} Songs',
                           color: _getColorForCategory(category),
                           onTap: () {
                             Navigator.push(

@@ -24,6 +24,11 @@ const User = sequelize.define('User', {
     type: DataTypes.ENUM('user', 'admin', 'editor'),
     defaultValue: 'user',
   },
+  first_login: {
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
+    defaultValue: false,
+  },
   createdAt: {
     type: DataTypes.DATE,
     defaultValue: DataTypes.NOW,

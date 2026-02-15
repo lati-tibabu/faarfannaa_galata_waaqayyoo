@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const { trackDeviceConnection } = require('../services/deviceTracker');
 
 const authMiddleware = (req, res, next) => {
   const token = req.header('Authorization')?.replace('Bearer ', '');
@@ -9,6 +10,7 @@ const authMiddleware = (req, res, next) => {
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     req.user = decoded;
+    trackDeviceConnection(req, decoded.id);
     next();
   } catch (err) {
     res.status(400).json({ error: 'Invalid token.' });

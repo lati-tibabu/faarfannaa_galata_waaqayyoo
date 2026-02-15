@@ -12,6 +12,7 @@ class SearchScreen extends StatefulWidget {
 }
 
 class _SearchScreenState extends State<SearchScreen> {
+  final SongService _songService = SongService();
   final TextEditingController _search = TextEditingController();
   List<Hymn> _all = [];
   List<Hymn> _filtered = const [];
@@ -19,16 +20,25 @@ class _SearchScreenState extends State<SearchScreen> {
   @override
   void initState() {
     super.initState();
-    _all = SongService().getAllSongs()
+    _songService.addCatalogListener(_refreshFromCatalog);
+    _all = _songService.getAllSongs()
       ..sort((a, b) => a.number.compareTo(b.number));
     _search.addListener(_applyFilter);
   }
 
   @override
   void dispose() {
+    _songService.removeCatalogListener(_refreshFromCatalog);
     _search.removeListener(_applyFilter);
     _search.dispose();
     super.dispose();
+  }
+
+  void _refreshFromCatalog() {
+    if (!mounted) return;
+    _all = _songService.getAllSongs()
+      ..sort((a, b) => a.number.compareTo(b.number));
+    _applyFilter();
   }
 
   void _applyFilter() {

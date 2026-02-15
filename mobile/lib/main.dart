@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter/services.dart';
@@ -85,18 +87,46 @@ class Initializer extends StatefulWidget {
   State<Initializer> createState() => _InitializerState();
 }
 
-class _InitializerState extends State<Initializer> {
+class _InitializerState extends State<Initializer> with WidgetsBindingObserver {
   double _progress = 0.0;
   bool _isLoading = true;
   SongLoadReport? _report;
   bool _showOnboarding = false;
   bool _showWhatsNew = false;
   String _appVersion = '';
+  Timer? _syncTimer;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    _syncTimer = Timer.periodic(const Duration(minutes: 5), (_) {
+      _syncInBackground();
+    });
     _start();
+  }
+
+  @override
+  void dispose() {
+    _syncTimer?.cancel();
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _syncInBackground();
+    }
+  }
+
+  Future<void> _syncInBackground() async {
+    if (!_isLoading && _report?.isSuccessful == true) {
+      await SongService().syncWithBackend();
+      if (mounted) {
+        setState(() {});
+      }
+    }
   }
 
   Future<void> _start({bool forceReload = false}) async {
@@ -137,6 +167,9 @@ class _InitializerState extends State<Initializer> {
       setState(() => _isLoading = false);
       return;
     }
+
+    await SongService().syncWithBackend();
+    if (!mounted) return;
 
     final onboarding = context.read<OnboardingProvider>();
     final settings = context.read<SettingsProvider>();

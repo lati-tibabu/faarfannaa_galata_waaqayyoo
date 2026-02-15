@@ -39,6 +39,7 @@ dependencies:
   shared_preferences: ^2.5.4
   provider: ^6.1.5+1
   package_info_plus: ^9.0.0
+  http: ^1.5.0
   flashy_tab_bar2: ^0.0.10
   heroicons: ^0.11.0
   flutter_colorpicker: ^1.1.0

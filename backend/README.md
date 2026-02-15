@@ -21,6 +21,22 @@ This is the backend application for the Faarfannaa Galata Waaqayyoo app, built w
    npm run dev
    ```
 
+4. Run universal seed (songs + admin):
+   ```bash
+   npm run seed
+   ```
+   Default admin login is `admin` / `admin`.
+
+5. Clear database (truncate all tables):
+   ```bash
+   npm run db:clear
+   ```
+
+6. Reset database (clear + seed):
+   ```bash
+   npm run db:reset
+   ```
+
 ## API Endpoints
 
 - `GET /health` - Health check
@@ -39,3 +55,7 @@ This is the backend application for the Faarfannaa Galata Waaqayyoo app, built w
 - `DB_NAME` - Database name
 - `DB_USER` - Database username
 - `DB_PASSWORD` - Database password
+- `JWT_SECRET` - Secret key used to sign auth tokens
+- `ADMIN_EMAIL` - Optional seeded admin email/username (default: `admin`)
+- `ADMIN_PASSWORD` - Optional seeded admin password (default: `admin`)
+- `ADMIN_NAME` - Optional seeded admin display name (default: `admin`)

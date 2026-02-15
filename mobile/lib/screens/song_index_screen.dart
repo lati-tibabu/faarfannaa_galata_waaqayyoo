@@ -11,6 +11,7 @@ class SongIndexScreen extends StatefulWidget {
 }
 
 class _SongIndexScreenState extends State<SongIndexScreen> {
+  final SongService _songService = SongService();
   final TextEditingController _search = TextEditingController();
   List<Hymn> _all = [];
   List<Hymn> _filtered = [];
@@ -18,16 +19,24 @@ class _SongIndexScreenState extends State<SongIndexScreen> {
   @override
   void initState() {
     super.initState();
-    _all = SongService().getAllSongs();
+    _songService.addCatalogListener(_refreshFromCatalog);
+    _all = _songService.getAllSongs();
     _filtered = _all;
     _search.addListener(_apply);
   }
 
   @override
   void dispose() {
+    _songService.removeCatalogListener(_refreshFromCatalog);
     _search.removeListener(_apply);
     _search.dispose();
     super.dispose();
+  }
+
+  void _refreshFromCatalog() {
+    if (!mounted) return;
+    _all = _songService.getAllSongs();
+    _apply();
   }
 
   void _apply() {

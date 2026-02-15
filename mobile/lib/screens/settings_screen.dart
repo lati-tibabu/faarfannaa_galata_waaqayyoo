@@ -13,11 +13,55 @@ import 'onboarding_screen.dart';
 import 'primary_color_picker_sheet.dart';
 import 'privacy_policy_screen.dart';
 import 'recently_viewed_screen.dart';
+import '../services/song_service.dart';
 import 'terms_screen.dart';
 import 'whats_new_screen.dart';
 
-class SettingsScreen extends StatelessWidget {
+class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
+
+  @override
+  State<SettingsScreen> createState() => _SettingsScreenState();
+}
+
+class _SettingsScreenState extends State<SettingsScreen> {
+  bool _isManualSyncing = false;
+
+  Future<void> _runManualSync() async {
+    if (_isManualSyncing) return;
+
+    setState(() => _isManualSyncing = true);
+    final report = await SongService().syncWithBackend();
+    if (!mounted) return;
+
+    setState(() => _isManualSyncing = false);
+
+    final messenger = ScaffoldMessenger.of(context);
+    messenger.hideCurrentSnackBar();
+
+    if (report.success) {
+      final message = report.hasChanges
+          ? 'Sync completed: ${report.updatesApplied} updates, ${report.deletionsApplied} deletions.'
+          : 'Library is already up to date.';
+
+      messenger.showSnackBar(
+        SnackBar(
+          content: Text(message),
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: Theme.of(context).colorScheme.primary,
+        ),
+      );
+      return;
+    }
+
+    messenger.showSnackBar(
+      SnackBar(
+        content: Text('Sync failed. ${report.error ?? 'Please try again.'}'),
+        behavior: SnackBarBehavior.floating,
+        backgroundColor: Theme.of(context).colorScheme.error,
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -195,6 +239,23 @@ class SettingsScreen extends StatelessWidget {
                       ),
                     );
                   },
+                ),
+                _divider(),
+                _buildListTile(
+                  title: 'Sync Library Now',
+                  leadingIcon: Icons.sync,
+                  leadingColor: Theme.of(context).colorScheme.primary,
+                  trailing: _isManualSyncing
+                      ? SizedBox(
+                          width: 18,
+                          height: 18,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                        )
+                      : const Icon(Icons.chevron_right, color: Colors.grey),
+                  onTap: _isManualSyncing ? null : _runManualSync,
                 ),
                 _divider(),
                 _buildListTile(

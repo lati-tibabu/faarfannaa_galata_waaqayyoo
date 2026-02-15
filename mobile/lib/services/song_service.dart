@@ -1,7 +1,13 @@
 import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
+
 import '../models/hymn_model.dart';
+import 'storage_keys.dart';
 
 enum SongLoadErrorType { missingAsset, invalidJson, unknown }
 
@@ -55,19 +61,63 @@ class SongLoadReport {
   };
 }
 
+class SongSyncReport {
+  final bool success;
+  final int updatesApplied;
+  final int deletionsApplied;
+  final DateTime finishedAt;
+  final String? error;
+
+  const SongSyncReport({
+    required this.success,
+    required this.updatesApplied,
+    required this.deletionsApplied,
+    required this.finishedAt,
+    this.error,
+  });
+
+  bool get hasChanges => updatesApplied > 0 || deletionsApplied > 0;
+}
+
 class SongService {
   static final SongService _instance = SongService._internal();
   factory SongService() => _instance;
   SongService._internal();
 
   static const int totalExpectedSongs = 329;
+  static const String _apiBaseUrlFromEnv = String.fromEnvironment(
+    'API_BASE_URL',
+    defaultValue: '',
+  );
 
   List<Hymn> _songs = [];
   bool _isLoaded = false;
+  bool _isSyncing = false;
   SongLoadReport? _lastLoadReport;
+  SongSyncReport? _lastSyncReport;
+  DateTime? _lastSyncedAt;
+
+  final Set<VoidCallback> _catalogListeners = <VoidCallback>{};
 
   bool get isLoaded => _isLoaded;
+  bool get isSyncing => _isSyncing;
   SongLoadReport? get lastLoadReport => _lastLoadReport;
+  SongSyncReport? get lastSyncReport => _lastSyncReport;
+  DateTime? get lastSyncedAt => _lastSyncedAt;
+
+  void addCatalogListener(VoidCallback listener) {
+    _catalogListeners.add(listener);
+  }
+
+  void removeCatalogListener(VoidCallback listener) {
+    _catalogListeners.remove(listener);
+  }
+
+  void _notifyCatalogListeners() {
+    for (final listener in List<VoidCallback>.from(_catalogListeners)) {
+      listener();
+    }
+  }
 
   Future<SongLoadReport> loadSongs({
     ValueChanged<double>? onProgress,
@@ -88,13 +138,12 @@ class SongService {
     }
 
     try {
-      final List<Hymn> loadedSongs = [];
+      final List<Hymn> bundledSongs = [];
       final List<SongLoadError> errors = [];
       int missingCount = 0;
       int parseErrorCount = 0;
       int otherErrorCount = 0;
 
-      // Attempt to load songs 1 through totalExpectedSongs
       for (int i = 1; i <= totalExpectedSongs; i++) {
         try {
           final String response = await rootBundle.loadString(
@@ -102,7 +151,18 @@ class SongService {
           );
           try {
             final data = json.decode(response);
-            loadedSongs.add(Hymn.fromJson(data));
+            if (data is Map<String, dynamic>) {
+              bundledSongs.add(Hymn.fromJson(data));
+            } else {
+              parseErrorCount++;
+              errors.add(
+                SongLoadError(
+                  songNumber: i,
+                  type: SongLoadErrorType.invalidJson,
+                  message: 'Unexpected song JSON structure',
+                ),
+              );
+            }
           } catch (e) {
             parseErrorCount++;
             errors.add(
@@ -139,12 +199,12 @@ class SongService {
         }
       }
 
-      _songs = loadedSongs;
+      _songs = await _mergeBundledWithCachedRemote(bundledSongs);
       _songs.sort((a, b) => a.number.compareTo(b.number));
-      _isLoaded = loadedSongs.isNotEmpty;
+      _isLoaded = _songs.isNotEmpty;
       _lastLoadReport = SongLoadReport(
         totalExpected: totalExpectedSongs,
-        loadedCount: loadedSongs.length,
+        loadedCount: _songs.length,
         missingCount: missingCount,
         parseErrorCount: parseErrorCount,
         otherErrorCount: otherErrorCount,
@@ -152,6 +212,7 @@ class SongService {
         errors: List.unmodifiable(errors),
       );
 
+      _notifyCatalogListeners();
       return _lastLoadReport!;
     } catch (e) {
       debugPrint('Error loading songs: $e');
@@ -175,6 +236,151 @@ class SongService {
       _songs = [];
       return report;
     }
+  }
+
+  Future<SongSyncReport> syncWithBackend({bool forceFullSync = false}) async {
+    if (_isSyncing) {
+      return SongSyncReport(
+        success: false,
+        updatesApplied: 0,
+        deletionsApplied: 0,
+        finishedAt: DateTime.now(),
+        error: 'Sync already in progress',
+      );
+    }
+
+    _isSyncing = true;
+    final baseUrl = _resolveApiBaseUrl();
+    try {
+      if (!_isLoaded) {
+        await loadSongs();
+      }
+
+      final query = <String, String>{};
+      if (!forceFullSync && _lastSyncedAt != null) {
+        query['since'] = _lastSyncedAt!.toUtc().toIso8601String();
+      }
+
+      final uri = Uri.parse(
+        '$baseUrl/songs/sync',
+      ).replace(queryParameters: query.isEmpty ? null : query);
+
+      final response = await http.get(uri).timeout(const Duration(seconds: 12));
+      if (response.statusCode != 200) {
+        throw Exception(
+          'Sync failed with status ${response.statusCode}: ${response.body}',
+        );
+      }
+
+      final decoded = json.decode(response.body);
+      if (decoded is! Map<String, dynamic>) {
+        throw Exception('Unexpected sync response format');
+      }
+
+      final updatesRaw = decoded['updates'] as List<dynamic>? ?? const [];
+      final deletionsRaw = decoded['deletions'] as List<dynamic>? ?? const [];
+      final serverTime = DateTime.tryParse(
+        decoded['serverTime']?.toString() ?? '',
+      );
+
+      final songMap = <int, Hymn>{for (final song in _songs) song.number: song};
+      final deletedIds = await _readDeletedSongIds();
+
+      int updatesApplied = 0;
+      for (final raw in updatesRaw) {
+        if (raw is! Map) continue;
+        try {
+          final hymn = Hymn.fromJson(Map<String, dynamic>.from(raw));
+          if (hymn.number <= 0) continue;
+          songMap[hymn.number] = hymn;
+          deletedIds.remove(hymn.number);
+          updatesApplied++;
+        } catch (_) {
+          continue;
+        }
+      }
+
+      int deletionsApplied = 0;
+      for (final raw in deletionsRaw) {
+        if (raw is! Map) continue;
+        final songIdRaw = raw['songId'];
+        final songId = songIdRaw is int
+            ? songIdRaw
+            : int.tryParse(songIdRaw?.toString() ?? '');
+        if (songId == null || songId <= 0) continue;
+
+        if (songMap.remove(songId) != null) {
+          deletionsApplied++;
+        }
+        deletedIds.add(songId);
+      }
+
+      final merged = songMap.values.toList()
+        ..sort((a, b) => a.number.compareTo(b.number));
+
+      _songs = merged;
+      _isLoaded = _songs.isNotEmpty;
+      _lastSyncedAt = serverTime ?? DateTime.now().toUtc();
+      await _persistSyncState(
+        songs: _songs,
+        deletedSongIds: deletedIds,
+        syncedAt: _lastSyncedAt!,
+      );
+
+      _lastSyncReport = SongSyncReport(
+        success: true,
+        updatesApplied: updatesApplied,
+        deletionsApplied: deletionsApplied,
+        finishedAt: DateTime.now(),
+      );
+
+      if (_lastSyncReport!.hasChanges) {
+        _notifyCatalogListeners();
+      }
+
+      return _lastSyncReport!;
+    } catch (e) {
+      final rawError = e.toString();
+      final friendlyError = _toFriendlySyncError(rawError, baseUrl);
+      _lastSyncReport = SongSyncReport(
+        success: false,
+        updatesApplied: 0,
+        deletionsApplied: 0,
+        finishedAt: DateTime.now(),
+        error: friendlyError,
+      );
+      if (kDebugMode) {
+        debugPrint('Song sync error: $friendlyError');
+      }
+      return _lastSyncReport!;
+    } finally {
+      _isSyncing = false;
+    }
+  }
+
+  String _resolveApiBaseUrl() {
+    final fromEnv = _apiBaseUrlFromEnv.trim();
+    if (fromEnv.isNotEmpty) {
+      return fromEnv;
+    }
+
+    if (kIsWeb) {
+      return 'http://localhost:3000/api';
+    }
+
+    // Android emulator cannot reach host machine via localhost.
+    if (Platform.isAndroid) {
+      return 'http://10.0.2.2:3000/api';
+    }
+
+    return 'http://localhost:3000/api';
+  }
+
+  String _toFriendlySyncError(String error, String baseUrl) {
+    if (error.contains('Connection refused')) {
+      return 'Cannot reach backend at $baseUrl. Start backend server and set API_BASE_URL for your device network if needed.';
+    }
+    return error;
   }
 
   List<Hymn> getAllSongs() => _songs;
@@ -206,5 +412,76 @@ class SongService {
     return _songs
         .where((s) => s.category.toLowerCase() == category.toLowerCase())
         .toList();
+  }
+
+  Future<List<Hymn>> _mergeBundledWithCachedRemote(
+    List<Hymn> bundledSongs,
+  ) async {
+    final prefs = await SharedPreferences.getInstance();
+    final rawSyncedSongs = prefs.getString(StorageKeys.syncedSongsJson);
+    final rawDeletedIds =
+        prefs.getStringList(StorageKeys.syncedDeletedSongIds) ?? const [];
+
+    final merged = <int, Hymn>{
+      for (final song in bundledSongs) song.number: song,
+    };
+
+    if (rawSyncedSongs != null && rawSyncedSongs.trim().isNotEmpty) {
+      try {
+        final decoded = json.decode(rawSyncedSongs);
+        if (decoded is List) {
+          for (final item in decoded) {
+            if (item is! Map) continue;
+            final hymn = Hymn.fromJson(Map<String, dynamic>.from(item));
+            if (hymn.number > 0) {
+              merged[hymn.number] = hymn;
+            }
+          }
+        }
+      } catch (_) {
+        // Ignore broken cache and continue with bundled songs.
+      }
+    }
+
+    for (final rawId in rawDeletedIds) {
+      final id = int.tryParse(rawId);
+      if (id != null) {
+        merged.remove(id);
+      }
+    }
+
+    _lastSyncedAt = DateTime.tryParse(
+      prefs.getString(StorageKeys.songsLastSyncAt) ?? '',
+    );
+
+    final list = merged.values.toList();
+    list.sort((a, b) => a.number.compareTo(b.number));
+    return list;
+  }
+
+  Future<Set<int>> _readDeletedSongIds() async {
+    final prefs = await SharedPreferences.getInstance();
+    final raw =
+        prefs.getStringList(StorageKeys.syncedDeletedSongIds) ?? const [];
+    return raw.map(int.tryParse).whereType<int>().toSet();
+  }
+
+  Future<void> _persistSyncState({
+    required List<Hymn> songs,
+    required Set<int> deletedSongIds,
+    required DateTime syncedAt,
+  }) async {
+    final prefs = await SharedPreferences.getInstance();
+    final payload = json.encode(songs.map((song) => song.toJson()).toList());
+
+    await prefs.setString(StorageKeys.syncedSongsJson, payload);
+    await prefs.setStringList(
+      StorageKeys.syncedDeletedSongIds,
+      deletedSongIds.map((id) => id.toString()).toList()..sort(),
+    );
+    await prefs.setString(
+      StorageKeys.songsLastSyncAt,
+      syncedAt.toUtc().toIso8601String(),
+    );
   }
 }
