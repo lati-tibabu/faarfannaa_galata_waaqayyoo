@@ -1,0 +1,60 @@
+{
+  "number": 62,
+  "title": "Lubbuun koo kan joorte",
+  "category": "salvation",
+  "sections": [
+    {
+      "type": "VRS1",
+      "lines": [
+        "Lubbuun koo kan joorte",
+        "si barbaaddee turte,",
+        "Anaaf jettee dhuftee",
+        "Du'aayis na baafte",
+        "Joonja'atan ture biyya lafaa keessa",
+        "Jireenyi ko darbe",
+        "baay'isee na aarsa",
+        "Gargaaraa foon kooti",
+        "Fayyisaa lubbuu koo/2/",
+        "Namaari naaf dhiisi",
+        "adaraa cubbuu koo/2/"
+      ]
+    },
+    {
+      "type": "VRS2",
+      "lines": [
+        "Halkanii fi guyyaa",
+        "Gooftaa ko na eegda,",
+        "Na barsiisuudhaaf karaa kee isa dhugaa;",
+        "Diinota koo duratti",
+        "maqaa keen faarfadhaa,",
+        "Garaa koo hundumaan",
+        "sin galateeffadha."
+      ]
+    },
+    {
+      "type": "CHR",
+      "lines": [
+        "Gargaaraa..."
+      ]
+    },
+    {
+      "type": "VRS3",
+      "lines": [
+        "Dhiigni kee Golgootaatti",
+        "inni dhangala'e,",
+        "Dhiphannaa na baasee",
+        "Jireenya naaf ta'e;",
+        "Anis badeen ture",
+        "kara keerraa kaadhee,",
+        "Maqaa keetti amaneen",
+        "jireenya argadhe."
+      ]
+    },
+    {
+      "type": "CHR",
+      "lines": [
+        "Gargaaraa..."
+      ]
+    }
+  ]
+}

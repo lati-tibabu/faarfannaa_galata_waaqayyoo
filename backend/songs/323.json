@@ -1,0 +1,43 @@
+{
+  "number": 323,
+  "title": "Galata kee Yesus*2",
+  "category": "praise",
+  "sections": [
+    {
+      "type": "VRS1",
+      "lines": [
+        "Galata kee Yesus*2",
+        "Galata kee Yesus garaa kootti,",
+        "Galata kee Yesus*2",
+        "Galata kee Yesus garaa kootti."
+      ]
+    },
+    {
+      "type": "VRS2",
+      "lines": [
+        "Sin jaalladha yesus*2",
+        "Sin jaalladha yesus garaa kootti,",
+        "Sin jaalladha yesus*2",
+        "Sin jaalladha yesus garaa kootti."
+      ]
+    },
+    {
+      "type": "VRS3",
+      "lines": [
+        "Ulfinan siif kenna*2",
+        "Ulfinan siif kenna garaa kootti,",
+        "Ulfinan siif kenna*2",
+        "Ulfinan siif kenna garaa kootti."
+      ]
+    },
+    {
+      "type": "VRS4",
+      "lines": [
+        "Si malee hinjiraadhu*2",
+        "Si malee hin jiraadhu garaa kootti,",
+        "Si malee hinjiraadhu*2",
+        "Si malee hin jiraadhu garaa kootti"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "number": 129,
+  "title": "Achi Edenittis wal argina,",
+  "category": "worship",
+  "sections": [
+    {
+      "type": "VRS1",
+      "lines": [
+        "Achi Edenittis wal argina,",
+        "Gara biyya qulqulluu sanatti",
+        "Dhiphinni keenya yommuu darbu,",
+        "Waaqayyo bira si'a geenyu.",
+        "Edenitti gaaf tokko,",
+        "Edenitti gaaf tokko,",
+        "Lafa irratis waan hin argine,",
+        "Waaqayyo biratti in argina."
+      ]
+    },
+    {
+      "type": "VRS2",
+      "lines": [
+        "Edenitti gaafa wal arginu,",
+        "Guyyaa Fayyisaa bira geenyu,",
+        "Warra godaanan amantoota,",
+        "isaan in argina Waaqa irratti,"
+      ]
+    },
+    {
+      "type": "CHR",
+      "lines": [
+        "Edenitti gaaf tokko..."
+      ]
+    },
+    {
+      "type": "VRS3",
+      "lines": [
+        "Toloonni durii achi jiru,",
+        "Raajotnii fi ergamoonnis",
+        "Kan obbaafatan daa'imoonnis,",
+        "Fuula Waaqayyoo dura ijaajju."
+      ]
+    },
+    {
+      "type": "CHR",
+      "lines": [
+        "Edenitti gaaf tokko..."
+      ]
+    }
+  ]
+}

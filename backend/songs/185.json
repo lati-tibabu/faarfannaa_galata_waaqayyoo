@@ -1,0 +1,43 @@
+{
+  "number": 185,
+  "title": "Rakkoo garaa kee hundumaa",
+  "category": "salvation",
+  "sections": [
+    {
+      "type": "VRS1",
+      "lines": [
+        "Rakkoo garaa kee hundumaa",
+        "Yesusitti kennadhu,",
+        "Guyyaa qoramsi si marsu,",
+        "Fayyisaa keetti baqadhu."
+      ]
+    },
+    {
+      "type": "VRS2",
+      "lines": [
+        "Dafii gara Yesus kottu",
+        "Amma utuu yeroo qabduu,",
+        "Yoo diddes in gaabbita'oo",
+        "Baqachuuf iddoo hin qabdu."
+      ]
+    },
+    {
+      "type": "VRS3",
+      "lines": [
+        "Cubbuu kee isatti himadhu,",
+        "Arjaan akka isaa hin jiruu,",
+        "Dheekkamsi isaa booddee jiraa,",
+        "Cubbuudhaan hin koorin."
+      ]
+    },
+    {
+      "type": "VRS4",
+      "lines": [
+        "Fayyisaan kan biraa hin jiruu",
+        "Olii gadi hin joorin,",
+        "Badhaadhummaa baay'ee qabdaa,",
+        "Rakkinaaf hin boo'on."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,69 @@
+{
+  "number": 5,
+  "title": "Karaa Waaqayyoo irran adeema",
+  "category": "worship",
+  "sections": [
+    {
+      "type": "CHR",
+      "lines": [
+        "Karaa Waaqayyoo irran adeema",
+        "Mana Waaqayyoon ol aseena",
+        "Waan naaf godhummoo inni beeka"
+      ]
+    },
+    {
+      "type": "VRS1",
+      "lines": [
+        "Halkanii fi guyyaa",
+        "Karaa Waaqayyoo",
+        "Yeroon dammaqu",
+        "Karaa Waqayyoo",
+        "Yeroon hojjedhu",
+        "Karaa Waqayyoo",
+        "Yeroon adeemu"
+      ]
+    },
+    {
+      "type": "CHR",
+      "lines": [
+        "Karaa Waaqayyoo irran adeema",
+        "Mana Waaqayyoon ol aseena",
+        "Waan naaf godhummoo inni beeka"
+      ]
+    },
+    {
+      "type": "VRS2",
+      "lines": [
+        "Yaada garaatiin",
+        "Haasaa arrabaan",
+        "Hojii harkaatiin",
+        "Jireenya kootiin"
+      ]
+    },
+    {
+      "type": "CHR",
+      "lines": [
+        "Karaa Waaqayyoo irran adeema",
+        "Mana Waaqayyoon ol aseena",
+        "Waan naaf godhummoo inni beeka"
+      ]
+    },
+    {
+      "type": "VRS3",
+      "lines": [
+        "Kottaa in dammaqnaa",
+        "Dafnee qophoofnaa",
+        "Gooftaatti amannaa",
+        "Dhaala hirmaannaa"
+      ]
+    },
+    {
+      "type": "CHR",
+      "lines": [
+        "Karaa Waaqayyoo irran adeema",
+        "Mana Waaqayyoon ol aseena",
+        "Waan naaf godhummoo inni beeka"
+      ]
+    }
+  ]
+}

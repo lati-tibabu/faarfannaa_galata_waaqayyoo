@@ -1,0 +1,43 @@
+{
+  "number": 87,
+  "title": "Abbaan firdii dhufuu hin oolu,",
+  "category": "worship",
+  "sections": [
+    {
+      "type": "VRS1",
+      "lines": [
+        "Abbaan firdii dhufuu hin oolu,",
+        "Hundaa qoree kan ilaalu,",
+        "Hunduu firdiitti in dhi'aatu,",
+        "Gatii isaaniis in argatu"
+      ]
+    },
+    {
+      "type": "VRS2",
+      "lines": [
+        "Warri loogduun amma in kooru,",
+        "Garuu gaafas in dhiphatu,",
+        "Gadduunis isaan qaabata,",
+        "Gammachuun isaan baqata."
+      ]
+    },
+    {
+      "type": "VRS3",
+      "lines": [
+        "Yeroo gaarii utuu qabdanii,",
+        "Warri dubbii isaa mamtan,",
+        "Amma amanaa daftanii,",
+        "Gaafas yeroo hin argattanii."
+      ]
+    },
+    {
+      "type": "VRS4",
+      "lines": [
+        "Kottaa yaa ijoollee namootaa,",
+        "Obbolootaa obboleettotaa,",
+        "Dubbii Gooftaa jabeeffannaa,",
+        "Yoos bara-baraan jiraannaa."
+      ]
+    }
+  ]
+}
