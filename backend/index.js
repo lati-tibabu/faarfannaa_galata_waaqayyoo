@@ -29,13 +29,18 @@ app.get('/health', (req, res) => {
   res.json({ status: 'OK', message: 'Backend is running' });
 });
 
-// Sync database and start server
-models.sequelize.sync({ alter: true }).then(async () => {
-  console.log('Database synced successfully');
-  await seedAdmin();
-  app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+// Sync database and start server (Only if not running on Vercel/serverless)
+if (process.env.NODE_ENV !== 'production') {
+  models.sequelize.sync({ alter: false }).then(async () => {
+    console.log('Database synced successfully');
+    await seedAdmin();
+    app.listen(PORT, () => {
+      console.log(`Server is running on port ${PORT}`);
+    });
+  }).catch(err => {
+    console.error('Unable to sync database:', err);
   });
-}).catch(err => {
-  console.error('Unable to sync database:', err);
-});
+}
+
+module.exports = app;
+

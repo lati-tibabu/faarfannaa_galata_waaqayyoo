@@ -8,11 +8,17 @@ const authMiddleware = require('../middleware/authMiddleware');
 const roleMiddleware = require('../middleware/roleMiddleware');
 const adminSetupMiddleware = require('../middleware/adminSetupMiddleware');
 
-const uploadDir = path.join(__dirname, '..', 'upload');
-fs.mkdirSync(uploadDir, { recursive: true });
+const isProduction = process.env.NODE_ENV === 'production';
+
+if (!isProduction) {
+	const uploadDir = path.join(__dirname, '..', 'upload');
+	if (!fs.existsSync(uploadDir)) {
+		fs.mkdirSync(uploadDir, { recursive: true });
+	}
+}
 
 const upload = multer({
-	dest: uploadDir,
+	storage: multer.memoryStorage(),
 	limits: {
 		fileSize: 25 * 1024 * 1024,
 	},

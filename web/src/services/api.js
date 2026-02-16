@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { getOrCreateDeviceId, getToken } from '../lib/session';
 
-const API_BASE_URL = 'http://localhost:3000/api'; // Adjust if backend is on different port
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 
 const api = axios.create({
   baseURL: API_BASE_URL,

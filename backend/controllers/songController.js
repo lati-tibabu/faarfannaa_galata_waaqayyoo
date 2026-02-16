@@ -1,10 +1,25 @@
 const fs = require('fs');
 const path = require('path');
 const { Op } = require('sequelize');
+const { createClient } = require('@supabase/supabase-js');
 const { Song, SongChange, SongDeletion, User } = require('../models');
 
+const isProduction = process.env.NODE_ENV === 'production';
+
+// Initialize Supabase Client (Only if in production)
+let supabase = null;
+if (isProduction) {
+  supabase = createClient(
+    process.env.SUPABASE_URL || '',
+    process.env.SUPABASE_SERVICE_ROLE_KEY || ''
+  );
+}
+const STORAGE_BUCKET = 'music-assets';
 const MUSIC_UPLOAD_DIR = path.join(__dirname, '..', 'upload');
-fs.mkdirSync(MUSIC_UPLOAD_DIR, { recursive: true });
+
+if (!isProduction) {
+  fs.mkdirSync(MUSIC_UPLOAD_DIR, { recursive: true });
+}
 
 const parseSections = (sections) => {
   if (!Array.isArray(sections) || sections.length === 0) {
@@ -48,13 +63,21 @@ const serializeSongForSync = (song) => ({
   updatedAt: song.lastPublishedAt || song.updatedAt,
 });
 
-const deleteMusicFile = (fileName) => {
+const deleteMusicFile = async (fileName) => {
   if (!fileName) {
     return;
   }
-  const absolutePath = path.join(MUSIC_UPLOAD_DIR, fileName);
-  if (fs.existsSync(absolutePath)) {
-    fs.unlinkSync(absolutePath);
+  if (isProduction) {
+    try {
+      await supabase.storage.from(STORAGE_BUCKET).remove([fileName]);
+    } catch (error) {
+      console.error('Error deleting file from Supabase:', error.message);
+    }
+  } else {
+    const absolutePath = path.join(MUSIC_UPLOAD_DIR, fileName);
+    if (fs.existsSync(absolutePath)) {
+      fs.unlinkSync(absolutePath);
+    }
   }
 };
 
@@ -271,19 +294,29 @@ const songController = {
 
       const song = await Song.findByPk(req.params.id);
       if (!song) {
-        try {
-          fs.unlinkSync(req.file.path);
-        } catch (_) {
-          // No-op
-        }
         return res.status(404).json({ error: 'Song not found' });
       }
 
       const extension = path.extname(req.file.originalname || '') || '.mp3';
       const nextFileName = `${song.id}-${Date.now()}${extension}`;
-      const nextFilePath = path.join(MUSIC_UPLOAD_DIR, nextFileName);
 
-      fs.renameSync(req.file.path, nextFilePath);
+      if (isProduction) {
+        // Upload to Supabase Storage
+        const { error: uploadError } = await supabase.storage
+          .from(STORAGE_BUCKET)
+          .upload(nextFileName, req.file.buffer, {
+            contentType: req.file.mimetype,
+            cacheControl: '3600',
+          });
+
+        if (uploadError) {
+          throw new Error(`Supabase upload failed: ${uploadError.message}`);
+        }
+      } else {
+        // Save locally for development
+        const nextFilePath = path.join(MUSIC_UPLOAD_DIR, nextFileName);
+        fs.writeFileSync(nextFilePath, req.file.buffer);
+      }
 
       const now = new Date();
       const newTrack = {
@@ -311,13 +344,6 @@ const songController = {
         song,
       });
     } catch (error) {
-      if (req.file?.path) {
-        try {
-          fs.unlinkSync(req.file.path);
-        } catch (_) {
-          // No-op
-        }
-      }
       return res.status(500).json({ error: error.message });
     }
   },
@@ -345,7 +371,7 @@ const songController = {
 
       const updatedFiles = currentFiles.filter(f => f.fileName !== fileName);
 
-      deleteMusicFile(fileName);
+      await deleteMusicFile(fileName);
 
       const now = new Date();
       const hasAnyMusic = updatedFiles.length > 0;
@@ -394,34 +420,41 @@ const songController = {
       }
 
       let selectedFileName = fileName;
-      let mimeType = song.musicMimeType;
 
       if (!selectedFileName) {
-        // Default to legacy field or first track
         selectedFileName = song.musicFileName;
         if (!selectedFileName && Array.isArray(song.musicFiles) && song.musicFiles.length > 0) {
           selectedFileName = song.musicFiles[0].fileName;
-          mimeType = song.musicFiles[0].mimeType;
         }
-      } else {
-        // Find mimetype in tracks
-        const track = (song.musicFiles || []).find(f => f.fileName === selectedFileName);
-        if (track) mimeType = track.mimeType;
       }
 
       if (!selectedFileName) {
         return res.status(404).json({ error: 'Music not found for this song.' });
       }
 
-      const absolutePath = path.join(MUSIC_UPLOAD_DIR, selectedFileName);
-      if (!fs.existsSync(absolutePath)) {
-        return res.status(404).json({ error: 'Music file is missing on server.' });
-      }
+      if (isProduction) {
+        const { data } = supabase.storage
+          .from(STORAGE_BUCKET)
+          .getPublicUrl(selectedFileName);
 
-      if (mimeType) {
-        res.setHeader('Content-Type', mimeType);
+        if (!data || !data.publicUrl) {
+          return res.status(404).json({ error: 'Failed to generate public URL for music.' });
+        }
+
+        return res.redirect(data.publicUrl);
+      } else {
+        const absolutePath = path.join(MUSIC_UPLOAD_DIR, selectedFileName);
+        if (!fs.existsSync(absolutePath)) {
+          return res.status(404).json({ error: 'Music file is missing on server.' });
+        }
+
+        // Find mimetype in tracks
+        const track = (song.musicFiles || []).find(f => f.fileName === selectedFileName);
+        if (track && track.mimeType) {
+          res.setHeader('Content-Type', track.mimeType);
+        }
+        return res.sendFile(absolutePath);
       }
-      return res.sendFile(absolutePath);
     } catch (error) {
       return res.status(500).json({ error: error.message });
     }
@@ -577,7 +610,7 @@ const songController = {
       const songMusicFileName = song.musicFileName;
       await song.destroy({ transaction });
       await transaction.commit();
-      deleteMusicFile(songMusicFileName);
+      await deleteMusicFile(songMusicFileName);
 
       res.status(204).send();
     } catch (error) {
