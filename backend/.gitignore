@@ -65,3 +65,7 @@ jspm_packages/
 
 # DynamoDB Local files
 .dynamodb/
+
+# Uploaded music files (development local storage)
+upload/*
+!upload/.gitignore

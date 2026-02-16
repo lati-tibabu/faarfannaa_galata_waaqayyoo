@@ -46,6 +46,13 @@ This is the backend application for the Faarfannaa Galata Waaqayyoo app, built w
 - `PUT /api/users/:id` - Update user
 - `DELETE /api/users/:id` - Delete user
 
+### Songs and Music
+
+- `POST /api/songs/:id/music` - Upload music file for a song (admin/editor, multipart form field: `music`)
+- `GET /api/songs/:id/music` - Download/stream music file for a song
+
+Uploaded music is stored in `backend/upload/` for local development. This folder is gitignored.
+
 ## Environment Variables
 
 - `NODE_ENV` - Environment (development/production)

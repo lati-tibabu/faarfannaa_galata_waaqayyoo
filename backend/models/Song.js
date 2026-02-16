@@ -24,6 +24,27 @@ const Song = sequelize.define('Song', {
     allowNull: false,
     defaultValue: '1.0',
   },
+  hasMusic: {
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
+    defaultValue: false,
+    field: 'has_music',
+  },
+  musicFileName: {
+    type: DataTypes.STRING,
+    allowNull: true,
+    field: 'music_file_name',
+  },
+  musicMimeType: {
+    type: DataTypes.STRING,
+    allowNull: true,
+    field: 'music_mime_type',
+  },
+  musicUpdatedAt: {
+    type: DataTypes.DATE,
+    allowNull: true,
+    field: 'music_updated_at',
+  },
   lastPublishedAt: {
     type: DataTypes.DATE,
     allowNull: false,

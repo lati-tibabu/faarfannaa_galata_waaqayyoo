@@ -77,27 +77,44 @@ class NowPlayingScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 10),
                 Text(
-                  'Audio playback is not configured yet.',
+                  player.isPreparing
+                      ? 'Preparing playback...'
+                      : (player.isPlaying ? 'Playing' : 'Paused'),
                   style: TextStyle(
                     color: isDark ? Colors.white60 : Colors.black54,
                   ),
                 ),
+                if (player.error != null) ...[
+                  const SizedBox(height: 10),
+                  Text(
+                    player.error!,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.error,
+                      fontSize: 12,
+                    ),
+                  ),
+                ],
                 const Spacer(),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     IconButton(
                       tooltip: 'Stop',
-                      onPressed: () {
-                        context.read<PlayerProvider>().stop();
+                      onPressed: () async {
+                        await context.read<PlayerProvider>().stop();
+                        if (!context.mounted) return;
                         Navigator.pop(context);
                       },
                       icon: Icon(Icons.stop_circle_outlined, size: 44),
                     ),
                     const SizedBox(width: 18),
                     ElevatedButton(
-                      onPressed: () =>
-                          context.read<PlayerProvider>().togglePlayPause(),
+                      onPressed: player.isPreparing
+                          ? null
+                          : () => context
+                                .read<PlayerProvider>()
+                                .togglePlayPause(),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Theme.of(context).colorScheme.primary,
                         foregroundColor: Colors.white,

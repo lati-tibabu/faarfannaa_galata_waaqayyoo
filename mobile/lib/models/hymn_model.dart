@@ -5,6 +5,8 @@ class Hymn {
   final List<HymnSection> sections;
   final String version;
   final DateTime? updatedAt;
+  final bool hasMusic;
+  final DateTime? musicUpdatedAt;
 
   Hymn({
     required this.number,
@@ -13,6 +15,8 @@ class Hymn {
     required this.sections,
     this.version = '1.0',
     this.updatedAt,
+    this.hasMusic = false,
+    this.musicUpdatedAt,
   });
 
   factory Hymn.fromJson(Map<String, dynamic> json) {
@@ -34,6 +38,10 @@ class Hymn {
       sections: parsedSections,
       version: json['version']?.toString() ?? '1.0',
       updatedAt: DateTime.tryParse(json['updatedAt']?.toString() ?? ''),
+      hasMusic: json['hasMusic'] == true,
+      musicUpdatedAt: DateTime.tryParse(
+        json['musicUpdatedAt']?.toString() ?? '',
+      ),
     );
   }
 
@@ -44,6 +52,8 @@ class Hymn {
     'sections': sections.map((section) => section.toJson()).toList(),
     'version': version,
     'updatedAt': updatedAt?.toIso8601String(),
+    'hasMusic': hasMusic,
+    'musicUpdatedAt': musicUpdatedAt?.toIso8601String(),
   };
 }
 

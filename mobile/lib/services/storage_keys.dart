@@ -19,5 +19,6 @@ class StorageKeys {
   static const String collectionsJson = 'collectionsJson';
   static const String syncedSongsJson = 'syncedSongsJson';
   static const String syncedDeletedSongIds = 'syncedDeletedSongIds';
+  static const String downloadedMusicSongIds = 'downloadedMusicSongIds';
   static const String songsLastSyncAt = 'songsLastSyncAt';
 }

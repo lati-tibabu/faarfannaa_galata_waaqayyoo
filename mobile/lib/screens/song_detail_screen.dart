@@ -6,6 +6,7 @@ import '../providers/favorites_provider.dart';
 import '../providers/history_provider.dart';
 import '../providers/player_provider.dart';
 import '../providers/settings_provider.dart';
+import '../services/song_service.dart';
 import 'lyrics_settings_screen.dart';
 import 'now_playing_screen.dart';
 import 'reader_mode_screen.dart';
@@ -20,13 +21,79 @@ class SongDetailScreen extends StatefulWidget {
 }
 
 class _SongDetailScreenState extends State<SongDetailScreen> {
+  final SongService _songService = SongService();
+  bool _hasLocalMusic = false;
+  bool _checkingMusicState = true;
+  bool _downloadPromptShown = false;
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
       context.read<HistoryProvider>().recordViewed(widget.song.number);
+      _initMusicState();
     });
+  }
+
+  Future<void> _initMusicState() async {
+    final hasLocalMusic = await _songService.hasDownloadedMusic(
+      widget.song.number,
+    );
+    if (!mounted) {
+      return;
+    }
+    setState(() {
+      _hasLocalMusic = hasLocalMusic;
+      _checkingMusicState = false;
+    });
+
+    if (widget.song.hasMusic && !hasLocalMusic && !_downloadPromptShown) {
+      _downloadPromptShown = true;
+      await _askForMusicDownload();
+    }
+  }
+
+  Future<void> _askForMusicDownload() async {
+    final shouldDownload = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Music available'),
+        content: const Text('This lyrics has music available. Download now?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Not now'),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Download'),
+          ),
+        ],
+      ),
+    );
+
+    if (shouldDownload == true) {
+      await _downloadMusic();
+    }
+  }
+
+  Future<void> _downloadMusic() async {
+    try {
+      await _songService.downloadSongMusic(widget.song);
+      if (!mounted) return;
+      setState(() {
+        _hasLocalMusic = true;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Music downloaded successfully.')),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Failed to download music: $e')));
+    }
   }
 
   Future<void> _openAddToCollection() async {
@@ -93,7 +160,7 @@ class _SongDetailScreenState extends State<SongDetailScreen> {
           ),
           PopupMenuButton<String>(
             icon: Icon(Icons.more_horiz),
-            onSelected: (value) {
+            onSelected: (value) async {
               switch (value) {
                 case 'collection':
                   _openAddToCollection();
@@ -115,7 +182,29 @@ class _SongDetailScreenState extends State<SongDetailScreen> {
                   );
                   break;
                 case 'now_playing':
-                  context.read<PlayerProvider>().start(song);
+                  if (!_hasLocalMusic) {
+                    if (song.hasMusic) {
+                      _askForMusicDownload();
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text(
+                            'No music available for this song yet.',
+                          ),
+                        ),
+                      );
+                    }
+                    break;
+                  }
+                  final player = context.read<PlayerProvider>();
+                  await player.start(song);
+                  if (!context.mounted) return;
+                  if (player.error != null) {
+                    ScaffoldMessenger.of(
+                      context,
+                    ).showSnackBar(SnackBar(content: Text(player.error!)));
+                    break;
+                  }
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (_) => const NowPlayingScreen()),
@@ -123,7 +212,7 @@ class _SongDetailScreenState extends State<SongDetailScreen> {
                   break;
               }
             },
-            itemBuilder: (context) => const [
+            itemBuilder: (context) => [
               PopupMenuItem(
                 value: 'collection',
                 child: Text('Add to collection'),
@@ -168,17 +257,27 @@ class _SongDetailScreenState extends State<SongDetailScreen> {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          context.read<PlayerProvider>().start(song);
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (_) => const NowPlayingScreen()),
-          );
-        },
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        child: Icon(Icons.play_arrow, color: Colors.white),
-      ),
+      floatingActionButton: (!_checkingMusicState && _hasLocalMusic)
+          ? FloatingActionButton(
+              onPressed: () async {
+                final player = context.read<PlayerProvider>();
+                await player.start(song);
+                if (!context.mounted) return;
+                if (player.error != null) {
+                  ScaffoldMessenger.of(
+                    context,
+                  ).showSnackBar(SnackBar(content: Text(player.error!)));
+                  return;
+                }
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const NowPlayingScreen()),
+                );
+              },
+              backgroundColor: Theme.of(context).colorScheme.primary,
+              child: const Icon(Icons.play_arrow, color: Colors.white),
+            )
+          : null,
     );
   }
 }

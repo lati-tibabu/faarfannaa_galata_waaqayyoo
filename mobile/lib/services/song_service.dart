@@ -4,6 +4,8 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
+import 'package:path/path.dart' as path;
+import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/hymn_model.dart';
@@ -96,6 +98,7 @@ class SongService {
   SongLoadReport? _lastLoadReport;
   SongSyncReport? _lastSyncReport;
   DateTime? _lastSyncedAt;
+  Set<int> _downloadedMusicSongIds = <int>{};
 
   final Set<VoidCallback> _catalogListeners = <VoidCallback>{};
 
@@ -104,6 +107,7 @@ class SongService {
   SongLoadReport? get lastLoadReport => _lastLoadReport;
   SongSyncReport? get lastSyncReport => _lastSyncReport;
   DateTime? get lastSyncedAt => _lastSyncedAt;
+  Set<int> get downloadedMusicSongIds => Set<int>.from(_downloadedMusicSongIds);
 
   void addCatalogListener(VoidCallback listener) {
     _catalogListeners.add(listener);
@@ -321,6 +325,7 @@ class SongService {
       _songs = merged;
       _isLoaded = _songs.isNotEmpty;
       _lastSyncedAt = serverTime ?? DateTime.now().toUtc();
+      _downloadedMusicSongIds = await _readDownloadedMusicSongIds();
       await _persistSyncState(
         songs: _songs,
         deletedSongIds: deletedIds,
@@ -453,10 +458,97 @@ class SongService {
     _lastSyncedAt = DateTime.tryParse(
       prefs.getString(StorageKeys.songsLastSyncAt) ?? '',
     );
+    _downloadedMusicSongIds = await _readDownloadedMusicSongIds();
 
     final list = merged.values.toList();
     list.sort((a, b) => a.number.compareTo(b.number));
     return list;
+  }
+
+  Future<Directory> _musicDirectory() async {
+    final rootDir = await getApplicationDocumentsDirectory();
+    final dir = Directory('${rootDir.path}${Platform.pathSeparator}music');
+    if (!dir.existsSync()) {
+      dir.createSync(recursive: true);
+    }
+    return dir;
+  }
+
+  Future<String?> getLocalMusicPath(int songNumber) async {
+    final dir = await _musicDirectory();
+    final files = dir
+        .listSync()
+        .whereType<File>()
+        .where((file) => path.basename(file.path).startsWith('$songNumber.'))
+        .toList();
+    if (files.isEmpty) {
+      return null;
+    }
+    return files.first.path;
+  }
+
+  Future<bool> hasDownloadedMusic(int songNumber) async {
+    if (_downloadedMusicSongIds.contains(songNumber)) {
+      return true;
+    }
+    final local = await getLocalMusicPath(songNumber);
+    final exists = local != null;
+    if (exists) {
+      _downloadedMusicSongIds.add(songNumber);
+      await _persistDownloadedMusicSongIds(_downloadedMusicSongIds);
+    }
+    return exists;
+  }
+
+  Future<String> downloadSongMusic(Hymn song) async {
+    final baseUrl = _resolveApiBaseUrl();
+    final uri = Uri.parse('$baseUrl/songs/${song.number}/music');
+    final response = await http.get(uri).timeout(const Duration(seconds: 20));
+    if (response.statusCode != 200) {
+      throw Exception('Failed to download music: ${response.statusCode}');
+    }
+
+    final contentType = response.headers['content-type'] ?? 'audio/mpeg';
+    final normalizedContentType = contentType.toLowerCase();
+    if (!normalizedContentType.startsWith('audio/')) {
+      throw Exception('Invalid music response content-type: $contentType');
+    }
+    if (response.bodyBytes.isEmpty) {
+      throw Exception('Downloaded music file is empty.');
+    }
+
+    String extension = '.mp3';
+    if (normalizedContentType.contains('wav')) {
+      extension = '.wav';
+    } else if (normalizedContentType.contains('ogg')) {
+      extension = '.ogg';
+    } else if (normalizedContentType.contains('aac')) {
+      extension = '.aac';
+    } else if (normalizedContentType.contains('m4a') ||
+        normalizedContentType.contains('mp4')) {
+      extension = '.m4a';
+    }
+
+    final dir = await _musicDirectory();
+    final existingFiles = dir.listSync().whereType<File>().where(
+      (file) => path.basename(file.path).startsWith('${song.number}.'),
+    );
+    for (final file in existingFiles) {
+      try {
+        file.deleteSync();
+      } catch (_) {
+        // Ignore cleanup failures.
+      }
+    }
+
+    final targetPath =
+        '${dir.path}${Platform.pathSeparator}${song.number}$extension';
+    final targetFile = File(targetPath);
+    await targetFile.writeAsBytes(response.bodyBytes, flush: true);
+
+    _downloadedMusicSongIds.add(song.number);
+    await _persistDownloadedMusicSongIds(_downloadedMusicSongIds);
+    return targetPath;
   }
 
   Future<Set<int>> _readDeletedSongIds() async {
@@ -464,6 +556,21 @@ class SongService {
     final raw =
         prefs.getStringList(StorageKeys.syncedDeletedSongIds) ?? const [];
     return raw.map(int.tryParse).whereType<int>().toSet();
+  }
+
+  Future<Set<int>> _readDownloadedMusicSongIds() async {
+    final prefs = await SharedPreferences.getInstance();
+    final raw =
+        prefs.getStringList(StorageKeys.downloadedMusicSongIds) ?? const [];
+    return raw.map(int.tryParse).whereType<int>().toSet();
+  }
+
+  Future<void> _persistDownloadedMusicSongIds(Set<int> songIds) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setStringList(
+      StorageKeys.downloadedMusicSongIds,
+      songIds.map((id) => id.toString()).toList()..sort(),
+    );
   }
 
   Future<void> _persistSyncState({

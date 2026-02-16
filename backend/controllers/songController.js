@@ -3,6 +3,9 @@ const path = require('path');
 const { Op } = require('sequelize');
 const { Song, SongChange, SongDeletion, User } = require('../models');
 
+const MUSIC_UPLOAD_DIR = path.join(__dirname, '..', 'upload');
+fs.mkdirSync(MUSIC_UPLOAD_DIR, { recursive: true });
+
 const parseSections = (sections) => {
   if (!Array.isArray(sections) || sections.length === 0) {
     return null;
@@ -40,8 +43,20 @@ const serializeSongForSync = (song) => ({
   category: song.category,
   sections: Array.isArray(song.content?.sections) ? song.content.sections : [],
   version: song.version,
+  hasMusic: Boolean(song.hasMusic && song.musicFileName),
+  musicUpdatedAt: song.musicUpdatedAt,
   updatedAt: song.lastPublishedAt || song.updatedAt,
 });
+
+const deleteMusicFile = (fileName) => {
+  if (!fileName) {
+    return;
+  }
+  const absolutePath = path.join(MUSIC_UPLOAD_DIR, fileName);
+  if (fs.existsSync(absolutePath)) {
+    fs.unlinkSync(absolutePath);
+  }
+};
 
 const validateSongPayload = ({ title, category, sections }) => {
   const normalizedTitle = String(title || '').trim();
@@ -248,6 +263,78 @@ const songController = {
   // Backward-compatible alias for old update endpoint.
   updateSong: async (req, res) => songController.submitSongChange(req, res),
 
+  uploadSongMusic: async (req, res) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ error: 'Music file is required. Use form field `music`.' });
+      }
+
+      const song = await Song.findByPk(req.params.id);
+      if (!song) {
+        try {
+          fs.unlinkSync(req.file.path);
+        } catch (_) {
+          // No-op
+        }
+        return res.status(404).json({ error: 'Song not found' });
+      }
+
+      const extension = path.extname(req.file.originalname || '') || '.mp3';
+      const nextFileName = `${song.id}-${Date.now()}${extension}`;
+      const nextFilePath = path.join(MUSIC_UPLOAD_DIR, nextFileName);
+      const previousFileName = song.musicFileName;
+
+      fs.renameSync(req.file.path, nextFilePath);
+
+      const now = new Date();
+      await song.update({
+        hasMusic: true,
+        musicFileName: nextFileName,
+        musicMimeType: req.file.mimetype || null,
+        musicUpdatedAt: now,
+        version: bumpSongVersion(song.version),
+        lastPublishedAt: now,
+      });
+
+      deleteMusicFile(previousFileName);
+
+      return res.status(200).json({
+        message: 'Music uploaded successfully.',
+        song,
+      });
+    } catch (error) {
+      if (req.file?.path) {
+        try {
+          fs.unlinkSync(req.file.path);
+        } catch (_) {
+          // No-op
+        }
+      }
+      return res.status(500).json({ error: error.message });
+    }
+  },
+
+  downloadSongMusic: async (req, res) => {
+    try {
+      const song = await Song.findByPk(req.params.id);
+      if (!song || !song.hasMusic || !song.musicFileName) {
+        return res.status(404).json({ error: 'Music not found for this song.' });
+      }
+
+      const absolutePath = path.join(MUSIC_UPLOAD_DIR, song.musicFileName);
+      if (!fs.existsSync(absolutePath)) {
+        return res.status(404).json({ error: 'Music file is missing on server.' });
+      }
+
+      if (song.musicMimeType) {
+        res.setHeader('Content-Type', song.musicMimeType);
+      }
+      return res.sendFile(absolutePath);
+    } catch (error) {
+      return res.status(500).json({ error: error.message });
+    }
+  },
+
   // Admin view for pending/approved/rejected requests.
   getSongChanges: async (req, res) => {
     try {
@@ -395,8 +482,10 @@ const songController = {
         lastVersion: song.version,
       }, { transaction });
 
+      const songMusicFileName = song.musicFileName;
       await song.destroy({ transaction });
       await transaction.commit();
+      deleteMusicFile(songMusicFileName);
 
       res.status(204).send();
     } catch (error) {

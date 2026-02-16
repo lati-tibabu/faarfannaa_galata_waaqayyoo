@@ -49,6 +49,8 @@ const SongDetail = () => {
   const [error, setError] = useState(null);
   const [editing, setEditing] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [uploadingMusic, setUploadingMusic] = useState(false);
+  const [musicFile, setMusicFile] = useState(null);
   const [deleting, setDeleting] = useState(false);
   const [actionError, setActionError] = useState('');
   const [actionInfo, setActionInfo] = useState('');
@@ -152,6 +154,34 @@ const SongDetail = () => {
     }
   };
 
+  const handleMusicFileChange = (event) => {
+    const selected = event.target.files?.[0] || null;
+    setMusicFile(selected);
+  };
+
+  const handleUploadMusic = async () => {
+    setActionError('');
+    setActionInfo('');
+
+    if (!musicFile) {
+      setActionError('Choose an audio file first.');
+      return;
+    }
+
+    setUploadingMusic(true);
+    try {
+      const response = await songService.uploadSongMusic(id, musicFile);
+      setSong(response.data.song);
+      setActionInfo(response.data.message || 'Music uploaded successfully.');
+      setMusicFile(null);
+    } catch (err) {
+      console.error(err);
+      setActionError(err?.response?.data?.error || 'Failed to upload music.');
+    } finally {
+      setUploadingMusic(false);
+    }
+  };
+
   if (loading) return <div className="mx-auto w-full max-w-6xl px-4 py-10 sm:px-6 lg:px-8">Loading song...</div>;
   if (error) return <div className="mx-auto w-full max-w-6xl px-4 py-10 text-red-500 sm:px-6 lg:px-8">{error}</div>;
   if (!song) return <div className="mx-auto w-full max-w-6xl px-4 py-10 sm:px-6 lg:px-8">Song not found.</div>;
@@ -185,6 +215,10 @@ const SongDetail = () => {
               <p className="mt-1 font-medium">
                 {song.lastPublishedAt ? new Date(song.lastPublishedAt).toLocaleString() : 'N/A'}
               </p>
+            </div>
+            <div>
+              <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Music</p>
+              <p className="mt-1 font-medium">{song.hasMusic ? 'Available' : 'Not uploaded'}</p>
             </div>
           </div>
           {(user?.role === 'editor' || user?.role === 'admin') && (
@@ -260,6 +294,18 @@ const SongDetail = () => {
                 {saving ? 'Submitting...' : 'Submit for Review'}
               </Button>
             </form>
+          )}
+          {(user?.role === 'editor' || user?.role === 'admin') && (
+            <div className="space-y-3 rounded-xl border border-border/70 bg-card p-4">
+              <h2 className="text-lg font-semibold">Music Upload</h2>
+              <p className="text-sm text-muted-foreground">
+                Upload audio for this song. This marks the song as having music for synced mobile users.
+              </p>
+              <Input type="file" accept="audio/*" onChange={handleMusicFileChange} />
+              <Button onClick={handleUploadMusic} disabled={uploadingMusic || !musicFile}>
+                {uploadingMusic ? 'Uploading...' : 'Upload Music'}
+              </Button>
+            </div>
           )}
           {actionError && <p className="rounded-md bg-destructive/10 p-2 text-sm text-destructive">{actionError}</p>}
           {actionInfo && <p className="rounded-md bg-muted p-2 text-sm">{actionInfo}</p>}

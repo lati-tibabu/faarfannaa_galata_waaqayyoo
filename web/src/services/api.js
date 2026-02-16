@@ -32,6 +32,11 @@ export const songService = {
   getSongChanges: (status = 'pending') => api.get('/songs/changes', { params: { status } }),
   reviewSongChange: (changeId, data) => api.post(`/songs/changes/${changeId}/review`, data),
   submitSongChange: (id, data) => api.put(`/songs/${id}`, data),
+  uploadSongMusic: (id, file) => {
+    const formData = new FormData();
+    formData.append('music', file);
+    return api.post(`/songs/${id}/music`, formData);
+  },
   deleteSong: (id) => api.delete(`/songs/${id}`),
   getSyncChanges: (since) => api.get('/songs/sync', { params: since ? { since } : {} }),
 };
