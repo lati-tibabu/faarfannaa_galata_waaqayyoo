@@ -114,101 +114,92 @@ class _HomeExploreScreenState extends State<HomeExploreScreen> {
               ),
             ),
             titleSpacing: 20,
-            title: Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    context.tr('hymns'),
-                    style: TextStyle(
-                      color: Theme.of(context).colorScheme.primary,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 24,
-                    ),
-                  ),
-                ),
-                IconButton(
-                  tooltip: context.tr('search'),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (_) => const SearchScreen()),
-                    );
-                  },
-                  icon: Icon(
-                    Icons.search,
-                    color: isDark ? Colors.white60 : Colors.black54,
-                  ),
-                ),
-                IconButton(
-                  tooltip: context.tr('filter'),
-                  onPressed: _openFilters,
-                  icon: Icon(
-                    Icons.tune,
-                    color: isDark ? Colors.white60 : Colors.black54,
-                  ),
-                ),
-                PopupMenuButton<String>(
-                  icon: Icon(
-                    Icons.more_vert,
-                    color: isDark ? Colors.white60 : Colors.black54,
-                  ),
-                  onSelected: (value) {
-                    switch (value) {
-                      case 'index':
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => const SongIndexScreen(),
-                          ),
-                        );
-                        break;
-                      case 'recent':
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => const RecentlyViewedScreen(),
-                          ),
-                        );
-                        break;
-                      case 'collections':
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => const CollectionsScreen(),
-                          ),
-                        );
-                        break;
-                      case 'now_playing':
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => const NowPlayingScreen(),
-                          ),
-                        );
-                        break;
-                    }
-                  },
-                  itemBuilder: (context) => [
-                    PopupMenuItem(
-                      value: 'index',
-                      child: Text(context.tr('song_index')),
-                    ),
-                    PopupMenuItem(
-                      value: 'recent',
-                      child: Text(context.tr('recently_viewed')),
-                    ),
-                    PopupMenuItem(
-                      value: 'collections',
-                      child: Text(context.tr('collections')),
-                    ),
-                    PopupMenuItem(
-                      value: 'now_playing',
-                      child: Text(context.tr('now_playing')),
-                    ),
-                  ],
-                ),
-              ],
+            centerTitle: false,
+            title: Text(
+              context.tr('hymns'),
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.primary,
+                fontWeight: FontWeight.bold,
+                fontSize: 24,
+              ),
             ),
+            actions: [
+              IconButton(
+                tooltip: context.tr('search'),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const SearchScreen()),
+                  );
+                },
+                icon: Icon(
+                  Icons.search,
+                  color: isDark ? Colors.white60 : Colors.black54,
+                ),
+              ),
+              IconButton(
+                tooltip: context.tr('filter'),
+                onPressed: _openFilters,
+                icon: Icon(
+                  Icons.tune,
+                  color: isDark ? Colors.white60 : Colors.black54,
+                ),
+              ),
+              PopupMenuButton<String>(
+                tooltip: context.tr('more'),
+                icon: Icon(
+                  Icons.more_vert,
+                  color: isDark ? Colors.white60 : Colors.black54,
+                ),
+                onSelected: (value) {
+                  switch (value) {
+                    case 'index':
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const SongIndexScreen()),
+                      );
+                      break;
+                    case 'recent':
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const RecentlyViewedScreen()),
+                      );
+                      break;
+                    case 'collections':
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const CollectionsScreen()),
+                      );
+                      break;
+                    case 'now_playing':
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const NowPlayingScreen()),
+                      );
+                      break;
+                  }
+                },
+                itemBuilder: (context) => [
+                  PopupMenuItem(
+                    value: 'index',
+                    child: Text(context.tr('song_index')),
+                  ),
+                  PopupMenuItem(
+                    value: 'recent',
+                    child: Text(context.tr('recently_viewed')),
+                  ),
+                  PopupMenuItem(
+                    value: 'collections',
+                    child: Text(context.tr('collections')),
+                  ),
+                  PopupMenuItem(
+                    value: 'now_playing',
+                    child: Text(context.tr('now_playing')),
+                  ),
+                ],
+              ),
+              const SizedBox(width: 6),
+            ],
           ),
           SliverToBoxAdapter(
             child: Padding(

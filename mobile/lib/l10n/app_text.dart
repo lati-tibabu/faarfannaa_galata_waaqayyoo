@@ -14,6 +14,7 @@ class AppText {
       'hymns': 'Hymns',
       'search': 'Search',
       'filter': 'Filter',
+      'more': 'More options',
       'song_index': 'Song Index',
       'recently_viewed': 'Recently Viewed',
       'now_playing': 'Now Playing',
@@ -75,6 +76,7 @@ class AppText {
       'hymns': 'Faarfannaa',
       'search': 'Barbaadi',
       'filter': 'Calali',
+      'more': 'Filannoowwan dabalataa',
       'song_index': 'Tarree Faarfannaa',
       'recently_viewed': 'Dhiyeenyaa Ilaalaman',
       'now_playing': 'Amma Taphachaa',
@@ -135,7 +137,11 @@ class AppText {
 
 extension AppTextX on BuildContext {
   String tr(String key) {
-    final languageCode = watch<SettingsProvider>().languageCode;
+    // We use read instead of watch here because tr is often called in 
+    // situations where listening is not allowed (handlers, builders).
+    // Reactivity is still maintained because the root MaterialApp 
+    // rebuilds when SettingsProvider changes.
+    final languageCode = read<SettingsProvider>().languageCode;
     return AppText.translate(key, languageCode);
   }
 }

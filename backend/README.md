@@ -1,68 +1,77 @@
 # Faarfannaa Galata Waaqayyoo Backend
 
-This is the backend application for the Faarfannaa Galata Waaqayyoo app, built with Node.js, Express, and Sequelize ORM with PostgreSQL.
+This is the backend application for the Faarfannaa Galata Waaqayyoo app, built with Node.js, Express, and Sequelize ORM with PostgreSQL. It provides a RESTful API for managing users, songs, and synchronizing data with mobile and web clients.
+
+## Project Structure
+
+- `index.js`: Entry point of the application.
+- `config/`: Configuration files (e.g., database connection).
+- `controllers/`: Request handlers for different routes.
+- `middleware/`: Custom middleware (auth, roles, etc.).
+- `models/`: Sequelize models for database tables.
+- `routes/`: Express route definitions.
+- `scripts/`: Utility scripts for database management and seeding.
+- `services/`: Business logic and external service integrations.
+- `songs/`: Initial song data in JSON format for seeding.
 
 ## Setup
 
-1. Install dependencies:
+1. **Install dependencies:**
    ```bash
    npm install
    ```
 
-2. Set up PostgreSQL database and update `.env` file with your database credentials.
+2. **Database Configuration:**
+   - Create a PostgreSQL database.
+   - Copy `.env.example` to `.env` and update the database credentials and other environment variables.
 
-3. Run the application:
-   ```bash
-   npm start
-   ```
+3. **Run the application:**
+   - Production: `npm start`
+   - Development: `npm run dev` (uses nodemon)
 
-   For development with auto-restart:
-   ```bash
-   npm run dev
-   ```
+4. **Initialize Database:**
+   - Run universal seed (songs + admin): `npm run seed`
+   - Default admin login is `admin` / `admin`.
 
-4. Run universal seed (songs + admin):
-   ```bash
-   npm run seed
-   ```
-   Default admin login is `admin` / `admin`.
+5. **Utility Commands:**
+   - Clear database: `npm run db:clear`
+   - Reset database: `npm run db:reset`
 
-5. Clear database (truncate all tables):
-   ```bash
-   npm run db:clear
-   ```
+## Features
 
-6. Reset database (clear + seed):
-   ```bash
-   npm run db:reset
-   ```
+- **Authentication & Authorization**: JWT-based auth with role-based access control (Admin, User).
+- **Song Management**: CRUD operations for hymns.
+- **Change Tracking**: Tracks song modifications and deletions for client synchronization.
+- **Music Uploads**: Supports uploading and streaming music files for hymns.
+- **Device Tracking**: Keeps track of connected devices.
 
 ## API Endpoints
 
-- `GET /health` - Health check
-- `GET /api/users` - Get all users
+### Auth & Users
+- `POST /api/users/login` - User login
+- `POST /api/users/register` - User registration
+- `GET /api/users` - Get all users (Admin only)
 - `GET /api/users/:id` - Get user by ID
-- `POST /api/users` - Create a new user
-- `PUT /api/users/:id` - Update user
-- `DELETE /api/users/:id` - Delete user
 
-### Songs and Music
-
-- `POST /api/songs/:id/music` - Upload music file for a song (admin/editor, multipart form field: `music`)
-- `GET /api/songs/:id/music` - Download/stream music file for a song
-
-Uploaded music is stored in `backend/upload/` for local development. This folder is gitignored.
+### Songs
+- `GET /api/songs` - List all songs
+- `GET /api/songs/:id` - Get song details
+- `POST /api/songs` - Create song (Admin only)
+- `PUT /api/songs/:id` - Update song (Admin only)
+- `DELETE /api/songs/:id` - Delete song (Admin only)
+- `POST /api/songs/:id/music` - Upload music file
+- `GET /api/songs/:id/music` - Stream music file
 
 ## Environment Variables
 
-- `NODE_ENV` - Environment (development/production)
-- `PORT` - Server port (default: 3000)
-- `DB_HOST` - Database host
-- `DB_PORT` - Database port
-- `DB_NAME` - Database name
-- `DB_USER` - Database username
-- `DB_PASSWORD` - Database password
-- `JWT_SECRET` - Secret key used to sign auth tokens
-- `ADMIN_EMAIL` - Optional seeded admin email/username (default: `admin`)
-- `ADMIN_PASSWORD` - Optional seeded admin password (default: `admin`)
-- `ADMIN_NAME` - Optional seeded admin display name (default: `admin`)
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `PORT` | Server port | 3000 |
+| `DB_HOST` | Database host | localhost |
+| `DB_USER` | Database user | postgres |
+| `DB_PASSWORD` | Database password | - |
+| `DB_NAME` | Database name | faarfannaa |
+| `JWT_SECRET` | JWT signing secret | - |
+| `ADMIN_EMAIL` | Seeded admin email | admin |
+| `ADMIN_PASSWORD`| Seeded admin password | admin |
+

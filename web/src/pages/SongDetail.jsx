@@ -6,38 +6,66 @@ import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 
-const sectionsToEditorText = (sections = []) => sections
+const SECTION_TYPE_OPTIONS = ['VRS', 'CHRS', 'INTR', 'BRDG', 'PRE', 'OUTR', 'TAG'];
+
+const normalizeSectionType = (type = '') => {
+  const normalized = String(type).trim().toUpperCase();
+  return normalized || 'VRS';
+};
+
+const sectionsToEditableSections = (sections = []) => {
+  const mappedSections = sections
+    .map((section) => ({
+      type: normalizeSectionType(section?.type),
+      linesText: Array.isArray(section?.lines) ? section.lines.join('\n') : '',
+    }))
+    .filter((section) => section.type || section.linesText.trim());
+
+  if (mappedSections.length > 0) {
+    return mappedSections;
+  }
+
+  return [{ type: 'VRS', linesText: '' }];
+};
+
+const editableSectionsToPayload = (sections = []) => sections
   .map((section) => {
-    const header = section?.type ? `[${section.type}]` : '[VRS]';
-    const lines = Array.isArray(section?.lines) ? section.lines.join('\n') : '';
-    return `${header}\n${lines}`.trim();
+    const lines = String(section?.linesText || '')
+      .split('\n')
+      .map((line) => line.trim())
+      .filter(Boolean);
+
+    if (lines.length === 0) {
+      return null;
+    }
+
+    return {
+      type: normalizeSectionType(section?.type),
+      lines,
+    };
   })
-  .join('\n\n')
-  .trim();
+  .filter(Boolean);
 
-const parseEditorTextToSections = (text = '') => {
-  const blocks = text
-    .split(/\n\s*\n/g)
-    .map((block) => block.trim())
-    .filter(Boolean);
+const getSectionEditCardClassName = (type = '') => {
+  const normalizedType = normalizeSectionType(type);
 
-  return blocks
-    .map((block) => {
-      const lines = block.split('\n').map((line) => line.trim()).filter(Boolean);
-      if (lines.length === 0) {
-        return null;
-      }
+  if (normalizedType === 'CHRS') {
+    return 'rounded-xl border border-border/70 border-dashed bg-muted/40 p-3';
+  }
 
-      const headerMatch = lines[0].match(/^\[(.+)]$/);
-      const type = headerMatch ? headerMatch[1].trim() : 'VRS';
-      const bodyLines = headerMatch ? lines.slice(1) : lines;
-      if (bodyLines.length === 0) {
-        return null;
-      }
+  if (normalizedType === 'INTR') {
+    return 'rounded-xl border border-border/70 bg-card/80 p-3';
+  }
 
-      return { type, lines: bodyLines };
-    })
-    .filter(Boolean);
+  if (normalizedType === 'BRDG') {
+    return 'rounded-xl border-2 border-border/70 bg-background p-3';
+  }
+
+  if (normalizedType === 'OUTR' || normalizedType === 'TAG') {
+    return 'rounded-xl border border-border/70 bg-muted/20 p-3';
+  }
+
+  return 'rounded-xl border border-border/70 bg-background p-3';
 };
 
 const SongDetail = () => {
@@ -57,7 +85,7 @@ const SongDetail = () => {
   const [editForm, setEditForm] = useState({
     title: '',
     category: '',
-    lyricsText: '',
+    sections: [{ type: 'VRS', linesText: '' }],
     changeNotes: '',
   });
 
@@ -86,7 +114,7 @@ const SongDetail = () => {
         setEditForm({
           title: response.data.title || '',
           category: response.data.category || '',
-          lyricsText: sectionsToEditorText(songSections),
+          sections: sectionsToEditableSections(songSections),
           changeNotes: '',
         });
       } catch (err) {
@@ -104,12 +132,57 @@ const SongDetail = () => {
     setEditForm((previous) => ({ ...previous, [name]: value }));
   };
 
+  const handleSectionTypeChange = (index, value) => {
+    setEditForm((previous) => ({
+      ...previous,
+      sections: previous.sections.map((section, sectionIndex) => (
+        sectionIndex === index
+          ? { ...section, type: normalizeSectionType(value) }
+          : section
+      )),
+    }));
+  };
+
+  const handleSectionLinesChange = (index, value) => {
+    setEditForm((previous) => ({
+      ...previous,
+      sections: previous.sections.map((section, sectionIndex) => (
+        sectionIndex === index
+          ? { ...section, linesText: value }
+          : section
+      )),
+    }));
+  };
+
+  const handleAddSection = () => {
+    setEditForm((previous) => ({
+      ...previous,
+      sections: [...previous.sections, { type: 'VRS', linesText: '' }],
+    }));
+  };
+
+  const handleRemoveSection = (index) => {
+    setEditForm((previous) => {
+      if (previous.sections.length <= 1) {
+        return {
+          ...previous,
+          sections: [{ type: 'VRS', linesText: '' }],
+        };
+      }
+
+      return {
+        ...previous,
+        sections: previous.sections.filter((_, sectionIndex) => sectionIndex !== index),
+      };
+    });
+  };
+
   const handleSubmitEdit = async (event) => {
     event.preventDefault();
     setActionError('');
     setActionInfo('');
 
-    const sectionsPayload = parseEditorTextToSections(editForm.lyricsText);
+    const sectionsPayload = editableSectionsToPayload(editForm.sections);
     if (sectionsPayload.length === 0) {
       setActionError('Lyrics must contain at least one section with lines.');
       return;
@@ -266,17 +339,51 @@ const SongDetail = () => {
                 </div>
               </div>
               <div>
-                <label htmlFor="lyricsText" className="mb-1 block text-sm font-medium">Lyrics Sections</label>
-                <textarea
-                  id="lyricsText"
-                  name="lyricsText"
-                  value={editForm.lyricsText}
-                  onChange={handleEditChange}
-                  rows={14}
-                  className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-                  placeholder="[VRS]\nline 1\nline 2\n\n[CHR]\nline 1"
-                  required
-                />
+                <div className="mb-2 flex items-center justify-between gap-2">
+                  <label className="block text-sm font-medium">Lyrics Sections</label>
+                  <Button type="button" variant="outline" onClick={handleAddSection}>Add Section</Button>
+                </div>
+                <div className="space-y-3">
+                  {editForm.sections.map((section, index) => {
+                    const sectionType = normalizeSectionType(section.type);
+                    return (
+                      <div key={`edit-section-${index}`} className={getSectionEditCardClassName(sectionType)}>
+                        <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
+                          <div className="flex items-center gap-2">
+                            <label htmlFor={`section-type-${index}`} className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                              Section Type
+                            </label>
+                            <Input
+                              id={`section-type-${index}`}
+                              list="section-types"
+                              value={sectionType}
+                              onChange={(event) => handleSectionTypeChange(index, event.target.value)}
+                              className="h-8 w-24 text-sm"
+                            />
+                          </div>
+                          <Button type="button" variant="outline" onClick={() => handleRemoveSection(index)}>
+                            Remove
+                          </Button>
+                        </div>
+                        <textarea
+                          value={section.linesText}
+                          onChange={(event) => handleSectionLinesChange(index, event.target.value)}
+                          rows={4}
+                          className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                          placeholder="Enter lines for this section, one per line"
+                        />
+                      </div>
+                    );
+                  })}
+                </div>
+                <datalist id="section-types">
+                  {SECTION_TYPE_OPTIONS.map((sectionType) => (
+                    <option key={sectionType} value={sectionType} />
+                  ))}
+                </datalist>
+                <p className="mt-2 text-xs text-muted-foreground">
+                  Edit each section separately (for example: VRS, CHRS, INTR). Empty sections are ignored when submitting.
+                </p>
               </div>
               <div>
                 <label htmlFor="changeNotes" className="mb-1 block text-sm font-medium">Change Notes (optional)</label>

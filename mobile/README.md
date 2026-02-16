@@ -7,28 +7,37 @@
 
 ## Features
 
-- **📖 Extensive Hymn Collection**: Browse a vast library of hymns organized by categories.
-- **🔍 Smart Search**: Quickly find songs by title or hymn number.
+- **📖 Extensive Hymn Collection**: Browse a library of 300+ hymns organized by categories.
+- **🔄 Live Synchronization**: Automatically syncs with the backend to receive song updates and deletions.
+- **🔍 Smart Search**: Quickly find songs by title, hymn number, or content.
 - **❤️ Favorites**: Mark hymns as favorites for quick access.
 - **📂 Categorized Views**: Explore songs grouped by themes or occasions.
-- **🌓 Dark & Light Mode**: Seamlessly switch between light and dark themes for comfortable reading in any environment.
-- **📱 Responsive Design**: Optimized for both Android and iOS devices.
+- **🌓 Dark & Light Mode**: Seamlessly switch between light and dark themes for comfortable reading.
+- **📱 Responsive UI**: Optimized for both Android and iOS devices using Flutter.
 
-## Screenshots
+## Project Structure
 
-| Home (Light) | Home (Dark) | Category |
-|:---:|:---:|:---:|
-| ![Home Light](screenshots/home_light.jpg) | ![Home Dark](screenshots/home_dark.jpg) | ![Category](screenshots/category.jpg) |
-
+```
+lib/
+├── main.dart           # Entry point & App configuration
+├── theme.dart          # App Theme definition (Material 3)
+├── models/             # Data models (Hymn, Category, Reports)
+├── providers/          # State management (ChangeNotifier/Provider)
+├── screens/            # UI Screens (Home, Explore, Detail, Settings)
+├── services/           # Logic services (SongService, API Sync, Persistence)
+└── l10n/               # Localization strings (Oromo/English)
+assets/
+└── songs/              # Bundled JSON data files for offline access
+```
 
 ## Getting Started
 
-Follow these instructions to get a copy of the project up and running on your local machine for development or testing purposes.
+Follow these instructions to get a copy of the project up and running on your local machine.
 
 ### Prerequisites
 
-- [Flutter SDK](https://flutter.dev/docs/get-started/install) installed.
-- An IDE (VS Code or Android Studio) with Flutter execution capabilities.
+- [Flutter SDK](https://flutter.dev/docs/get-started/install) (3.10+).
+- An IDE (VS Code or Android Studio) with Flutter & Dart extensions.
 - [Git](https://git-scm.com/) installed.
 
 ### Installation
@@ -36,7 +45,7 @@ Follow these instructions to get a copy of the project up and running on your lo
 1. **Clone the repository:**
    ```bash
    git clone https://github.com/lati-tibabu/faarfannaa_galata_waaqayyoo.git
-   cd faarfannaa_galata_waaqayyoo
+   cd faarfannaa_galata_waaqayyoo/mobile
    ```
 
 2. **Install dependencies:**
@@ -44,23 +53,17 @@ Follow these instructions to get a copy of the project up and running on your lo
     flutter pub get
     ```
 
-3. **Run the application:**
+3. **Configure API (Optional):**
+    For synchronization features, provide the backend URL during run/build:
+    ```bash
+    flutter run --dart-define=API_BASE_URL=https://your-api.com
+    ```
+
+4. **Run the application:**
     ```bash
     flutter run
     ```
 
-## Project Structure
-
-```
-lib/
-├── main.dart           # Entry point
-├── theme.dart          # App Theme definition
-├── models/             # Data models (Hymn, Category)
-├── screens/            # UI Screens (Home, Category, Detail, Splash)
-└── services/           # Logic services (SongService, JSON parsing)
-assets/
-└── songs/              # JSON data files for hymns
-```
 
 ## Contributing
 
