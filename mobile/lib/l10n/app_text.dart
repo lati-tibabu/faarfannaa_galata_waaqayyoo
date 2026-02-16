@@ -137,9 +137,9 @@ class AppText {
 
 extension AppTextX on BuildContext {
   String tr(String key) {
-    // We use read instead of watch here because tr is often called in 
+    // We use read instead of watch here because tr is often called in
     // situations where listening is not allowed (handlers, builders).
-    // Reactivity is still maintained because the root MaterialApp 
+    // Reactivity is still maintained because the root MaterialApp
     // rebuilds when SettingsProvider changes.
     final languageCode = read<SettingsProvider>().languageCode;
     return AppText.translate(key, languageCode);

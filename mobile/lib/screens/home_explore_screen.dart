@@ -156,25 +156,33 @@ class _HomeExploreScreenState extends State<HomeExploreScreen> {
                     case 'index':
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (_) => const SongIndexScreen()),
+                        MaterialPageRoute(
+                          builder: (_) => const SongIndexScreen(),
+                        ),
                       );
                       break;
                     case 'recent':
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (_) => const RecentlyViewedScreen()),
+                        MaterialPageRoute(
+                          builder: (_) => const RecentlyViewedScreen(),
+                        ),
                       );
                       break;
                     case 'collections':
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (_) => const CollectionsScreen()),
+                        MaterialPageRoute(
+                          builder: (_) => const CollectionsScreen(),
+                        ),
                       );
                       break;
                     case 'now_playing':
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (_) => const NowPlayingScreen()),
+                        MaterialPageRoute(
+                          builder: (_) => const NowPlayingScreen(),
+                        ),
                       );
                       break;
                   }
