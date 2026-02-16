@@ -96,6 +96,50 @@ class _SongDetailScreenState extends State<SongDetailScreen> {
     }
   }
 
+  Future<void> _deleteMusic() async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Delete Music'),
+        content: const Text(
+          'Are you sure you want to remove the downloaded audio for this song from your device?',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(context, true),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Theme.of(context).colorScheme.error,
+              foregroundColor: Theme.of(context).colorScheme.onError,
+            ),
+            child: const Text('Delete'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true) {
+      try {
+        await _songService.deleteDownloadedMusic(widget.song.number);
+        if (!mounted) return;
+        setState(() {
+          _hasLocalMusic = false;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Music deleted from device.')),
+        );
+      } catch (e) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Failed to delete music: $e')));
+      }
+    }
+  }
+
   Future<void> _openAddToCollection() async {
     await context.read<CollectionsProvider>().waitForInit();
     if (!mounted) return;
@@ -181,6 +225,9 @@ class _SongDetailScreenState extends State<SongDetailScreen> {
                     ),
                   );
                   break;
+                case 'delete_music':
+                  _deleteMusic();
+                  break;
                 case 'now_playing':
                   if (!_hasLocalMusic) {
                     if (song.hasMusic) {
@@ -222,6 +269,16 @@ class _SongDetailScreenState extends State<SongDetailScreen> {
                 child: Text('Lyrics settings'),
               ),
               PopupMenuItem(value: 'reader', child: Text('Reader mode')),
+              if (_hasLocalMusic)
+                PopupMenuItem(
+                  value: 'delete_music',
+                  child: Text(
+                    'Delete music',
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.error,
+                    ),
+                  ),
+                ),
               PopupMenuItem(value: 'now_playing', child: Text('Now playing')),
             ],
           ),

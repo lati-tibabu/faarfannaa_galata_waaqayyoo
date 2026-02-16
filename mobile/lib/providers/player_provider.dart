@@ -1,13 +1,14 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:audioplayers/audioplayers.dart';
+import 'package:audio_service/audio_service.dart';
 import '../models/hymn_model.dart';
 import '../services/song_service.dart';
+import '../services/audio_handler.dart';
 
 class PlayerProvider with ChangeNotifier {
   Hymn? _currentSong;
-  final AudioPlayer _audioPlayer = AudioPlayer();
+  final MyAudioHandler audioHandler;
   final SongService _songService = SongService();
   bool _isPlaying = false;
   bool _isPreparing = false;
@@ -18,14 +19,9 @@ class PlayerProvider with ChangeNotifier {
   bool get isPreparing => _isPreparing;
   String? get error => _error;
 
-  PlayerProvider() {
-    _audioPlayer.onPlayerStateChanged.listen((state) {
-      _isPlaying = state == PlayerState.playing;
-      notifyListeners();
-    });
-
-    _audioPlayer.onPlayerComplete.listen((_) {
-      _isPlaying = false;
+  PlayerProvider({required this.audioHandler}) {
+    audioHandler.playbackState.listen((state) {
+      _isPlaying = state.playing;
       notifyListeners();
     });
   }
@@ -56,7 +52,16 @@ class PlayerProvider with ChangeNotifier {
         return;
       }
 
-      await _audioPlayer.play(DeviceFileSource(localPath));
+      final mediaItem = MediaItem(
+        id: localPath,
+        album: 'Faarfannaa Galata Waaqayyoo',
+        title: song.title,
+        artist: 'Hymn ${song.number}',
+        duration: null, // Update if duration is known
+        extras: {'number': song.number},
+      );
+
+      await audioHandler.playFromFile(localPath, mediaItem);
 
       _isPreparing = false;
       _isPlaying = true;
@@ -77,13 +82,10 @@ class PlayerProvider with ChangeNotifier {
     try {
       _error = null;
       if (_isPlaying) {
-        await _audioPlayer.pause();
-        _isPlaying = false;
+        await audioHandler.pause();
       } else {
-        await _audioPlayer.resume();
-        _isPlaying = true;
+        await audioHandler.play();
       }
-      notifyListeners();
     } catch (_) {
       _error = 'Unable to update playback state.';
       notifyListeners();
@@ -91,18 +93,12 @@ class PlayerProvider with ChangeNotifier {
   }
 
   Future<void> stop() async {
-    await _audioPlayer.stop();
+    await audioHandler.stop();
     _currentSong = null;
     _isPlaying = false;
     _isPreparing = false;
     _error = null;
     notifyListeners();
-  }
-
-  @override
-  void dispose() {
-    _audioPlayer.dispose();
-    super.dispose();
   }
 
   void clearError() {

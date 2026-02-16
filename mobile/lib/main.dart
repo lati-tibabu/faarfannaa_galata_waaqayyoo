@@ -1,10 +1,14 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter/services.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
+import 'package:audio_service/audio_service.dart';
+import 'services/audio_handler.dart';
 import 'theme.dart';
 import 'services/song_service.dart';
 import 'screens/splash_screen.dart';
@@ -19,8 +23,22 @@ import 'screens/load_error_screen.dart';
 import 'screens/onboarding_screen.dart';
 import 'screens/whats_new_screen.dart';
 
-void main() {
+late MyAudioHandler _audioHandler;
+
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await _requestAndroidNotificationPermission();
+
+  _audioHandler = await AudioService.init(
+    builder: () => MyAudioHandler(),
+    config: const AudioServiceConfig(
+      androidNotificationChannelId: 'com.lati.faarfannaa.channel.audio',
+      androidNotificationChannelName: 'Hymn Playback',
+      androidNotificationIcon: 'mipmap/launcher_icon',
+      androidStopForegroundOnPause: false,
+    ),
+  );
+
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
@@ -35,11 +53,22 @@ void main() {
         ChangeNotifierProvider(create: (_) => OnboardingProvider()),
         ChangeNotifierProvider(create: (_) => HistoryProvider()),
         ChangeNotifierProvider(create: (_) => CollectionsProvider()),
-        ChangeNotifierProvider(create: (_) => PlayerProvider()),
+        ChangeNotifierProvider(
+          create: (_) => PlayerProvider(audioHandler: _audioHandler),
+        ),
       ],
       child: const MyApp(),
     ),
   );
+}
+
+Future<void> _requestAndroidNotificationPermission() async {
+  if (!Platform.isAndroid) return;
+
+  final status = await Permission.notification.status;
+  if (!status.isGranted) {
+    await Permission.notification.request();
+  }
 }
 
 class MyApp extends StatelessWidget {

@@ -289,6 +289,7 @@ class SongService {
 
       final songMap = <int, Hymn>{for (final song in _songs) song.number: song};
       final deletedIds = await _readDeletedSongIds();
+      final List<Hymn> songsToDownloadMusic = [];
 
       int updatesApplied = 0;
       for (final raw in updatesRaw) {
@@ -296,6 +297,38 @@ class SongService {
         try {
           final hymn = Hymn.fromJson(Map<String, dynamic>.from(raw));
           if (hymn.number <= 0) continue;
+
+          final existing = songMap[hymn.number];
+
+          // Music sync logic: if music is new or updated, queue for download.
+          if (hymn.hasMusic) {
+            bool needsMusicDownload = false;
+            if (existing != null) {
+              final alreadyDownloaded = _downloadedMusicSongIds.contains(
+                hymn.number,
+              );
+
+              if (alreadyDownloaded) {
+                // Check if music timestamp changed (newer)
+                final mNew = hymn.musicUpdatedAt;
+                final mOld = existing.musicUpdatedAt;
+                if (mNew != null && (mOld == null || mNew.isAfter(mOld))) {
+                  needsMusicDownload = true;
+                }
+              } else if (!existing.hasMusic) {
+                // New music added to an existing song
+                needsMusicDownload = true;
+              }
+            } else {
+              // Entirely new song with music
+              needsMusicDownload = true;
+            }
+
+            if (needsMusicDownload) {
+              songsToDownloadMusic.add(hymn);
+            }
+          }
+
           songMap[hymn.number] = hymn;
           deletedIds.remove(hymn.number);
           updatesApplied++;
@@ -331,6 +364,20 @@ class SongService {
         deletedSongIds: deletedIds,
         syncedAt: _lastSyncedAt!,
       );
+
+      // Auto-sync music files if metadata indicated updates
+      if (songsToDownloadMusic.isNotEmpty) {
+        for (final song in songsToDownloadMusic) {
+          try {
+            await downloadSongMusic(song);
+          } catch (e) {
+            debugPrint('Music sync failed for song ${song.number}: $e');
+          }
+        }
+        // Metadata might have changed during download (e.g. extension)
+        // Refresh downloaded IDs set
+        _downloadedMusicSongIds = await _readDownloadedMusicSongIds();
+      }
 
       _lastSyncReport = SongSyncReport(
         success: true,
@@ -498,6 +545,28 @@ class SongService {
       await _persistDownloadedMusicSongIds(_downloadedMusicSongIds);
     }
     return exists;
+  }
+
+  Future<void> deleteDownloadedMusic(int songNumber) async {
+    final dir = await _musicDirectory();
+    final existingFiles = dir.listSync().whereType<File>().where(
+      (file) => path.basename(file.path).startsWith('$songNumber.'),
+    );
+
+    for (final file in existingFiles) {
+      try {
+        if (file.existsSync()) {
+          file.deleteSync();
+        }
+      } catch (e) {
+        debugPrint('Failed to delete local music file ${file.path}: $e');
+      }
+    }
+
+    if (_downloadedMusicSongIds.remove(songNumber)) {
+      await _persistDownloadedMusicSongIds(_downloadedMusicSongIds);
+      _notifyCatalogListeners();
+    }
   }
 
   Future<String> downloadSongMusic(Hymn song) async {
