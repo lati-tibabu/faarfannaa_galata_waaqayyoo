@@ -42,6 +42,7 @@ router.post('/changes/:changeId/review', authMiddleware, roleMiddleware('admin')
 router.get('/', songController.getAllSongs);
 router.get('/:id/music', songController.downloadSongMusic);
 router.post('/:id/music', authMiddleware, roleMiddleware('editor'), musicUploadMiddleware, songController.uploadSongMusic);
+router.delete('/:id/music', authMiddleware, roleMiddleware('editor'), songController.removeSongMusic);
 router.get('/:id', songController.getSongById);
 router.put('/:id', authMiddleware, roleMiddleware('editor'), songController.updateSong);
 router.delete('/:id', authMiddleware, roleMiddleware('admin'), adminSetupMiddleware, songController.deleteSong);

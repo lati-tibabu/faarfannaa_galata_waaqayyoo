@@ -44,11 +44,6 @@ const Header = () => {
           <NavLink to="/songs" className={navLinkClass}>
             Songs
           </NavLink>
-          {sessionUser?.role === 'admin' && sessionUser.first_login && (
-            <NavLink to="/admin/first-login" className={navLinkClass}>
-              Setup
-            </NavLink>
-          )}
           {sessionUser?.role === 'admin' && !sessionUser.first_login && (
             <NavLink to="/admin/dashboard" className={navLinkClass}>
               Dashboard
@@ -62,6 +57,16 @@ const Header = () => {
           {sessionUser?.role === 'admin' && !sessionUser.first_login && (
             <NavLink to="/admin/song-changes" className={navLinkClass}>
               Song Reviews
+            </NavLink>
+          )}
+          {isLoggedIn && (
+            <NavLink to="/profile" className={navLinkClass}>
+              Profile
+            </NavLink>
+          )}
+          {sessionUser?.role === 'admin' && sessionUser.first_login && (
+            <NavLink to="/admin/first-login" className={navLinkClass}>
+              Setup
             </NavLink>
           )}
         </div>

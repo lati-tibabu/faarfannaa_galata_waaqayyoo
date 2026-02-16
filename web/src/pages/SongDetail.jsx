@@ -255,6 +255,23 @@ const SongDetail = () => {
     }
   };
 
+  const handleRemoveMusic = async (fileName) => {
+    setActionError('');
+    setActionInfo('');
+
+    const confirmed = window.confirm('Remove this music track?');
+    if (!confirmed) return;
+
+    try {
+      const response = await songService.removeSongMusic(id, fileName);
+      setSong(response.data.song);
+      setActionInfo(response.data.message || 'Music removed successfully.');
+    } catch (err) {
+      console.error(err);
+      setActionError(err?.response?.data?.error || 'Failed to remove music.');
+    }
+  };
+
   if (loading) return <div className="mx-auto w-full max-w-6xl px-4 py-10 sm:px-6 lg:px-8">Loading song...</div>;
   if (error) return <div className="mx-auto w-full max-w-6xl px-4 py-10 text-red-500 sm:px-6 lg:px-8">{error}</div>;
   if (!song) return <div className="mx-auto w-full max-w-6xl px-4 py-10 sm:px-6 lg:px-8">Song not found.</div>;
@@ -291,9 +308,49 @@ const SongDetail = () => {
             </div>
             <div>
               <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Music</p>
-              <p className="mt-1 font-medium">{song.hasMusic ? 'Available' : 'Not uploaded'}</p>
+              <p className="mt-1 font-medium">
+                {song.hasMusic 
+                  ? `${Array.isArray(song.musicFiles) ? song.musicFiles.length : 1} Track(s) Available` 
+                  : 'Not uploaded'}
+              </p>
             </div>
           </div>
+
+          {song.hasMusic && (
+            <div className="space-y-4 rounded-xl border border-border/70 bg-muted/30 p-4">
+              <h2 className="text-lg font-semibold">Music Playback</h2>
+              <div className="grid gap-4">
+                {(Array.isArray(song.musicFiles) && song.musicFiles.length > 0 ? song.musicFiles : (song.musicFileName ? [{ fileName: song.musicFileName, originalName: 'Original Track' }] : [])).map((file, idx) => (
+                  <div key={file.fileName} className="flex flex-col gap-2 rounded-lg bg-card p-3 shadow-sm sm:flex-row sm:items-center sm:justify-between">
+                    <div className="flex flex-col">
+                      <span className="text-sm font-medium">{file.originalName || `Track ${idx + 1}`}</span>
+                      <span className="text-xs text-muted-foreground">Uploaded: {file.uploadedAt ? new Date(file.uploadedAt).toLocaleDateString() : 'N/A'}</span>
+                    </div>
+                    <div className="flex flex-wrap items-center gap-3">
+                      <audio 
+                        controls 
+                        className="h-8 max-w-[200px] sm:max-w-xs"
+                        src={songService.getMusicUrl(id, file.fileName)}
+                      >
+                        Your browser does not support the audio element.
+                      </audio>
+                      {(user?.role === 'editor' || user?.role === 'admin') && (
+                        <Button 
+                          variant="ghost" 
+                          size="sm" 
+                          className="text-destructive hover:bg-destructive/10 hover:text-destructive"
+                          onClick={() => handleRemoveMusic(file.fileName)}
+                        >
+                          Remove
+                        </Button>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
           {(user?.role === 'editor' || user?.role === 'admin') && (
             <div className="flex flex-wrap items-center gap-3">
               {(user?.role === 'editor' || user?.role === 'admin') && (

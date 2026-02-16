@@ -282,21 +282,29 @@ const songController = {
       const extension = path.extname(req.file.originalname || '') || '.mp3';
       const nextFileName = `${song.id}-${Date.now()}${extension}`;
       const nextFilePath = path.join(MUSIC_UPLOAD_DIR, nextFileName);
-      const previousFileName = song.musicFileName;
 
       fs.renameSync(req.file.path, nextFilePath);
 
       const now = new Date();
+      const newTrack = {
+        fileName: nextFileName,
+        originalName: req.file.originalname,
+        mimeType: req.file.mimetype || null,
+        uploadedAt: now,
+      };
+
+      const currentFiles = Array.isArray(song.musicFiles) ? song.musicFiles : [];
+      const updatedFiles = [...currentFiles, newTrack];
+
       await song.update({
         hasMusic: true,
         musicFileName: nextFileName,
         musicMimeType: req.file.mimetype || null,
         musicUpdatedAt: now,
+        musicFiles: updatedFiles,
         version: bumpSongVersion(song.version),
         lastPublishedAt: now,
       });
-
-      deleteMusicFile(previousFileName);
 
       return res.status(200).json({
         message: 'Music uploaded successfully.',
@@ -314,20 +322,104 @@ const songController = {
     }
   },
 
+  removeSongMusic: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { fileName } = req.body;
+
+      if (!fileName) {
+        return res.status(400).json({ error: 'File name is required to remove music.' });
+      }
+
+      const song = await Song.findByPk(id);
+      if (!song) {
+        return res.status(404).json({ error: 'Song not found' });
+      }
+
+      const currentFiles = Array.isArray(song.musicFiles) ? song.musicFiles : [];
+      const fileToRemove = currentFiles.find(f => f.fileName === fileName);
+
+      if (!fileToRemove) {
+        return res.status(404).json({ error: 'Music file not found in song records.' });
+      }
+
+      const updatedFiles = currentFiles.filter(f => f.fileName !== fileName);
+
+      deleteMusicFile(fileName);
+
+      const now = new Date();
+      const hasAnyMusic = updatedFiles.length > 0;
+
+      const updates = {
+        musicFiles: updatedFiles,
+        hasMusic: hasAnyMusic,
+        version: bumpSongVersion(song.version),
+        lastPublishedAt: now,
+      };
+
+      // Update legacy fields if necessary
+      if (song.musicFileName === fileName) {
+        if (hasAnyMusic) {
+          const lastTrack = updatedFiles[updatedFiles.length - 1];
+          updates.musicFileName = lastTrack.fileName;
+          updates.musicMimeType = lastTrack.mimeType;
+          updates.musicUpdatedAt = lastTrack.uploadedAt;
+        } else {
+          updates.musicFileName = null;
+          updates.musicMimeType = null;
+          updates.musicUpdatedAt = null;
+        }
+      }
+
+      await song.update(updates);
+
+      return res.json({
+        message: 'Music removed successfully.',
+        song,
+      });
+    } catch (error) {
+      console.error('Error removing music:', error);
+      return res.status(500).json({ error: error.message });
+    }
+  },
+
   downloadSongMusic: async (req, res) => {
     try {
-      const song = await Song.findByPk(req.params.id);
-      if (!song || !song.hasMusic || !song.musicFileName) {
+      const { id } = req.params;
+      const { fileName } = req.query;
+
+      const song = await Song.findByPk(id);
+      if (!song) {
+        return res.status(404).json({ error: 'Song not found.' });
+      }
+
+      let selectedFileName = fileName;
+      let mimeType = song.musicMimeType;
+
+      if (!selectedFileName) {
+        // Default to legacy field or first track
+        selectedFileName = song.musicFileName;
+        if (!selectedFileName && Array.isArray(song.musicFiles) && song.musicFiles.length > 0) {
+          selectedFileName = song.musicFiles[0].fileName;
+          mimeType = song.musicFiles[0].mimeType;
+        }
+      } else {
+        // Find mimetype in tracks
+        const track = (song.musicFiles || []).find(f => f.fileName === selectedFileName);
+        if (track) mimeType = track.mimeType;
+      }
+
+      if (!selectedFileName) {
         return res.status(404).json({ error: 'Music not found for this song.' });
       }
 
-      const absolutePath = path.join(MUSIC_UPLOAD_DIR, song.musicFileName);
+      const absolutePath = path.join(MUSIC_UPLOAD_DIR, selectedFileName);
       if (!fs.existsSync(absolutePath)) {
         return res.status(404).json({ error: 'Music file is missing on server.' });
       }
 
-      if (song.musicMimeType) {
-        res.setHeader('Content-Type', song.musicMimeType);
+      if (mimeType) {
+        res.setHeader('Content-Type', mimeType);
       }
       return res.sendFile(absolutePath);
     } catch (error) {

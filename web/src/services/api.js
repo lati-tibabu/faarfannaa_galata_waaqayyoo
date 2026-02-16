@@ -37,6 +37,12 @@ export const songService = {
     formData.append('music', file);
     return api.post(`/songs/${id}/music`, formData);
   },
+  removeSongMusic: (id, fileName) => api.delete(`/songs/${id}/music`, { data: { fileName } }),
+  getMusicUrl: (id, fileName) => {
+    const baseUrl = API_BASE_URL;
+    const url = `${baseUrl}/songs/${id}/music`;
+    return fileName ? `${url}?fileName=${fileName}` : url;
+  },
   deleteSong: (id) => api.delete(`/songs/${id}`),
   getSyncChanges: (since) => api.get('/songs/sync', { params: since ? { since } : {} }),
 };

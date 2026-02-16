@@ -45,6 +45,12 @@ const Song = sequelize.define('Song', {
     allowNull: true,
     field: 'music_updated_at',
   },
+  musicFiles: {
+    type: DataTypes.JSONB,
+    allowNull: false,
+    defaultValue: [],
+    field: 'music_files',
+  },
   lastPublishedAt: {
     type: DataTypes.DATE,
     allowNull: false,

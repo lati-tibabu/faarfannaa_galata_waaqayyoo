@@ -11,6 +11,7 @@ import UsersList from './pages/UsersList';
 import AdminDashboard from './pages/AdminDashboard';
 import AdminFirstLoginSetup from './pages/AdminFirstLoginSetup';
 import AdminSongChanges from './pages/AdminSongChanges';
+import Profile from './pages/Profile';
 import { authService } from './services/api';
 import { clearSession, getToken, getUser, setSession } from './lib/session';
 
@@ -52,6 +53,14 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/songs" element={<SongsList />} />
             <Route path="/songs/:id" element={<SongDetail />} />
+            <Route
+              path="/profile"
+              element={(
+                <ProtectedRoute>
+                  <Profile />
+                </ProtectedRoute>
+              )}
+            />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route
