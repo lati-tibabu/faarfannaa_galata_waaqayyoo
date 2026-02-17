@@ -24,6 +24,7 @@ app.use(express.urlencoded({ extended: true }));
 // Routes
 app.use('/api/users', require('./routes/users'));
 app.use('/api/songs', require('./routes/songs'));
+app.use('/api/feedback', require('./routes/feedback'));
 
 // Root route
 app.get('/', (req, res) => {

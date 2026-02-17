@@ -8,6 +8,7 @@ const DeviceConnection = require('./DeviceConnection');
 const SongChange = require('./SongChange');
 const SongDeletion = require('./SongDeletion');
 const UserLibrarySong = require('./UserLibrarySong');
+const AnonymousFeedback = require('./AnonymousFeedback');
 
 // Initialize models
 const models = {
@@ -17,6 +18,7 @@ const models = {
   SongChange,
   SongDeletion,
   UserLibrarySong,
+  AnonymousFeedback,
 };
 
 User.hasMany(DeviceConnection, { foreignKey: 'userId', as: 'deviceConnections' });

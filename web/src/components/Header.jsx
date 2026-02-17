@@ -144,6 +144,9 @@ const Header = () => {
           <NavLink to="/songs" className={navLinkClass}>
             Songs
           </NavLink>
+          <NavLink to="/feedback" className={navLinkClass}>
+            Feedback
+          </NavLink>
           {isLoggedIn && (
             <NavLink to="/my-library" className={navLinkClass}>
               My Library
@@ -162,6 +165,11 @@ const Header = () => {
           {sessionUser?.role === 'admin' && !sessionUser.first_login && (
             <NavLink to="/admin/song-changes" className={navLinkClass}>
               Song Reviews
+            </NavLink>
+          )}
+          {sessionUser?.role === 'admin' && !sessionUser.first_login && (
+            <NavLink to="/admin/feedback" className={navLinkClass}>
+              Feedback Inbox
             </NavLink>
           )}
           {isLoggedIn && (

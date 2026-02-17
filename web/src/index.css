@@ -136,6 +136,11 @@ body {
   color: var(--foreground);
 }
 
+.dark ::selection {
+  background: color-mix(in oklch, var(--primary) 35%, black);
+  color: var(--foreground);
+}
+
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);

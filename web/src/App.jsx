@@ -11,8 +11,10 @@ import UsersList from './pages/UsersList';
 import AdminDashboard from './pages/AdminDashboard';
 import AdminFirstLoginSetup from './pages/AdminFirstLoginSetup';
 import AdminSongChanges from './pages/AdminSongChanges';
+import AdminFeedback from './pages/AdminFeedback';
 import Profile from './pages/Profile';
 import MyLibrary from './pages/MyLibrary';
+import Feedback from './pages/Feedback';
 import { authService } from './services/api';
 import { clearSession, getToken, getUser, setSession } from './lib/session';
 
@@ -54,6 +56,7 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/songs" element={<SongsList />} />
             <Route path="/songs/:id" element={<SongDetail />} />
+            <Route path="/feedback" element={<Feedback />} />
             <Route
               path="/profile"
               element={(
@@ -101,6 +104,14 @@ function App() {
               element={(
                 <ProtectedRoute allowedRoles={['admin']}>
                   <AdminSongChanges />
+                </ProtectedRoute>
+              )}
+            />
+            <Route
+              path="/admin/feedback"
+              element={(
+                <ProtectedRoute allowedRoles={['admin']}>
+                  <AdminFeedback />
                 </ProtectedRoute>
               )}
             />

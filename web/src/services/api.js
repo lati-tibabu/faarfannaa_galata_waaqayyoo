@@ -82,4 +82,10 @@ export const userService = {
   removeSongFromMyLibrary: (songId) => api.delete(`/users/me/library/${songId}`),
 };
 
+export const feedbackService = {
+  submitAnonymousFeedback: (data) => api.post('/feedback', data),
+  getAllFeedback: (status) => api.get('/feedback', { params: status ? { status } : {} }),
+  markFeedbackReviewed: (id) => api.patch(`/feedback/${id}/review`),
+};
+
 export default api;
