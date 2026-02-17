@@ -9,12 +9,16 @@ const isProduction = process.env.NODE_ENV === 'production';
 // Initialize Supabase Client (Only if in production)
 let supabase = null;
 if (isProduction) {
-  supabase = createClient(
-    process.env.SUPABASE_URL || '',
-    process.env.SUPABASE_SERVICE_ROLE_KEY || ''
-  );
+  const supabaseUrl = process.env.SUPABASE_URL;
+  const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+  if (supabaseUrl && supabaseKey) {
+    supabase = createClient(supabaseUrl, supabaseKey);
+  } else {
+    console.warn('Supabase credentials missing. Music upload/download will not work in production.');
+  }
 }
-const STORAGE_BUCKET = 'music-assets';
+const STORAGE_BUCKET = process.env.SUPABASE_BUCKET || 'music-assets';
 const MUSIC_UPLOAD_DIR = path.join(__dirname, '..', 'upload');
 
 if (!isProduction) {
@@ -69,6 +73,10 @@ const deleteMusicFile = async (fileName) => {
   }
   if (isProduction) {
     try {
+      if (!supabase) {
+        console.error('Supabase client not initialized. Cannot delete file:', fileName);
+        return;
+      }
       await supabase.storage.from(STORAGE_BUCKET).remove([fileName]);
     } catch (error) {
       console.error('Error deleting file from Supabase:', error.message);
@@ -301,6 +309,9 @@ const songController = {
       const nextFileName = `${song.id}-${Date.now()}${extension}`;
 
       if (isProduction) {
+        if (!supabase) {
+          throw new Error('Supabase client not initialized. Ensure SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are set.');
+        }
         // Upload to Supabase Storage
         const { error: uploadError } = await supabase.storage
           .from(STORAGE_BUCKET)
@@ -433,6 +444,9 @@ const songController = {
       }
 
       if (isProduction) {
+        if (!supabase) {
+          return res.status(500).json({ error: 'Supabase client not initialized for music retrieval.' });
+        }
         const { data } = supabase.storage
           .from(STORAGE_BUCKET)
           .getPublicUrl(selectedFileName);
