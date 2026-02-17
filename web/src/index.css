@@ -249,3 +249,9 @@ body {
 .reveal {
   animation: rise-in 0.5s ease-out both;
 }
+
+.rich-editor:empty::before {
+  content: attr(data-placeholder);
+  color: color-mix(in oklch, var(--foreground) 45%, transparent);
+  pointer-events: none;
+}

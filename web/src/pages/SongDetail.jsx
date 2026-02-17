@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { BookMarked, Check, Copy, Image, Music2, Pause, Play, Upload } from 'lucide-react';
+import { BookMarked, Check, Copy, Heart, Image, Music2, Pause, Play, Upload } from 'lucide-react';
 import { parseBlob } from 'music-metadata-browser';
 import { songService, userService } from '../services/api';
 import placeholderDiskArtwork from '../assets/placeholder-disk.svg';
@@ -122,6 +122,9 @@ const SongDetail = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
   const [duration, setDuration] = useState(0);
+  const [likesCount, setLikesCount] = useState(0);
+  const [likedByUser, setLikedByUser] = useState(false);
+  const [updatingLike, setUpdatingLike] = useState(false);
 
   const artworkObjectUrlRef = useRef('');
   const audioRef = useRef(null);
@@ -202,6 +205,19 @@ const SongDetail = () => {
     };
 
     fetchLibraryStatus();
+  }, [id, userId]);
+
+  useEffect(() => {
+    const fetchLikes = async () => {
+      try {
+        const response = await songService.getSongLikes(id);
+        setLikesCount(Number(response.data?.likesCount || 0));
+        setLikedByUser(Boolean(response.data?.likedByUser));
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    fetchLikes();
   }, [id, userId]);
 
   useEffect(() => {
@@ -482,6 +498,30 @@ const SongDetail = () => {
     }
   };
 
+  const handleToggleLike = async () => {
+    if (!userId) {
+      const shouldRegister = window.confirm('Create an account to like songs and build your favorites playlist. Go to register now?');
+      if (shouldRegister) {
+        navigate('/register');
+      }
+      return;
+    }
+
+    setUpdatingLike(true);
+    try {
+      const response = likedByUser
+        ? await songService.unlikeSong(id)
+        : await songService.likeSong(id);
+      setLikedByUser(Boolean(response.data?.likedByUser));
+      setLikesCount(Number(response.data?.likesCount || 0));
+    } catch (err) {
+      console.error(err);
+      setActionError(err?.response?.data?.error || 'Failed to update like.');
+    } finally {
+      setUpdatingLike(false);
+    }
+  };
+
   const handleTimeUpdate = () => {
     if (!audioRef.current) {
       return;
@@ -536,11 +576,24 @@ const SongDetail = () => {
     <div className="mx-auto w-full max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
       <Card className="border-border/70 bg-card/90 shadow-sm dark:border-white/10 dark:bg-zinc-950/65">
         <CardHeader className="gap-2 border-b border-border/60 pb-6">
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-            {song.category || 'Uncategorized'}
-          </p>
-          <CardTitle className="font-display text-3xl tracking-tight sm:text-4xl">{song.title}</CardTitle>
-          <p className="text-sm text-muted-foreground">{sections.length} sections | {lineCount} lines</p>
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+                {song.category || 'Uncategorized'}
+              </p>
+              <CardTitle className="font-display text-3xl tracking-tight sm:text-4xl">{song.title}</CardTitle>
+              <p className="mt-1 text-sm text-muted-foreground">{sections.length} sections | {lineCount} lines</p>
+            </div>
+            <Button
+              variant={likedByUser ? 'default' : 'outline'}
+              onClick={handleToggleLike}
+              disabled={updatingLike}
+              className="shrink-0"
+            >
+              <Heart className={`size-4 ${likedByUser ? 'fill-current' : ''}`} />
+              {likedByUser ? 'Liked' : 'Like'} ({likesCount})
+            </Button>
+          </div>
         </CardHeader>
 
         <CardContent className="space-y-6 pt-6">
@@ -750,6 +803,13 @@ const SongDetail = () => {
               <Button asChild variant="ghost">
                 <Link to="/my-library">Open My Library</Link>
               </Button>
+            </div>
+          )}
+          {!user && (
+            <div className="flex flex-wrap items-center gap-3">
+              <p className="text-sm text-muted-foreground">
+                Create an account to save favorites, like songs, and comment on lyrics.
+              </p>
             </div>
           )}
 

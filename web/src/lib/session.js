@@ -1,6 +1,7 @@
 const TOKEN_KEY = 'token';
 const USER_KEY = 'auth_user';
 const DEVICE_KEY = 'device_id';
+const VISITOR_KEY = 'visitor_profile';
 export const AUTH_CHANGED_EVENT = 'auth:changed';
 
 export const getToken = () => localStorage.getItem(TOKEN_KEY);
@@ -29,6 +30,27 @@ export const clearSession = () => {
   localStorage.removeItem(TOKEN_KEY);
   localStorage.removeItem(USER_KEY);
   window.dispatchEvent(new Event(AUTH_CHANGED_EVENT));
+};
+
+export const getVisitor = () => {
+  const raw = localStorage.getItem(VISITOR_KEY);
+  if (!raw) {
+    return null;
+  }
+  try {
+    return JSON.parse(raw);
+  } catch {
+    localStorage.removeItem(VISITOR_KEY);
+    return null;
+  }
+};
+
+export const setVisitor = (visitor) => {
+  localStorage.setItem(VISITOR_KEY, JSON.stringify(visitor));
+};
+
+export const clearVisitor = () => {
+  localStorage.removeItem(VISITOR_KEY);
 };
 
 export const getOrCreateDeviceId = () => {

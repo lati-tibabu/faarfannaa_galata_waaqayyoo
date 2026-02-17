@@ -5,6 +5,7 @@ const path = require('path');
 const fs = require('fs');
 const songController = require('../controllers/songController');
 const authMiddleware = require('../middleware/authMiddleware');
+const optionalAuthMiddleware = require('../middleware/optionalAuthMiddleware');
 const roleMiddleware = require('../middleware/roleMiddleware');
 const adminSetupMiddleware = require('../middleware/adminSetupMiddleware');
 
@@ -46,6 +47,9 @@ router.get('/recent', songController.getRecentUpdates);
 router.get('/changes', authMiddleware, roleMiddleware('admin'), adminSetupMiddleware, songController.getSongChanges);
 router.post('/changes/:changeId/review', authMiddleware, roleMiddleware('admin'), adminSetupMiddleware, songController.reviewSongChange);
 router.get('/', songController.getAllSongs);
+router.get('/:id/likes', optionalAuthMiddleware, songController.getSongLikes);
+router.post('/:id/likes', authMiddleware, songController.likeSong);
+router.delete('/:id/likes', authMiddleware, songController.unlikeSong);
 router.get('/:id/music', songController.downloadSongMusic);
 router.post('/:id/music', authMiddleware, roleMiddleware('editor'), musicUploadMiddleware, songController.uploadSongMusic);
 router.delete('/:id/music', authMiddleware, roleMiddleware('editor'), songController.removeSongMusic);

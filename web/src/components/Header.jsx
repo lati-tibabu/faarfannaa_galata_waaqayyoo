@@ -144,15 +144,23 @@ const Header = () => {
           <NavLink to="/songs" className={navLinkClass}>
             Songs
           </NavLink>
+          <NavLink to="/community" className={navLinkClass}>
+            Community
+          </NavLink>
           <NavLink to="/feedback" className={navLinkClass}>
             Feedback
           </NavLink>
+          {!isLoggedIn && (
+            <NavLink to="/visitor" className={navLinkClass}>
+              Visitor
+            </NavLink>
+          )}
           {isLoggedIn && (
             <NavLink to="/my-library" className={navLinkClass}>
               My Library
             </NavLink>
           )}
-          {sessionUser?.role === 'admin' && !sessionUser.first_login && (
+          {(sessionUser?.role === 'admin' || sessionUser?.role === 'editor') && !sessionUser.first_login && (
             <NavLink to="/admin/dashboard" className={navLinkClass}>
               Dashboard
             </NavLink>

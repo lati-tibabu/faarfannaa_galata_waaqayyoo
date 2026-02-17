@@ -15,6 +15,8 @@ import AdminFeedback from './pages/AdminFeedback';
 import Profile from './pages/Profile';
 import MyLibrary from './pages/MyLibrary';
 import Feedback from './pages/Feedback';
+import VisitorAccount from './pages/VisitorAccount';
+import Community from './pages/Community';
 import { authService } from './services/api';
 import { clearSession, getToken, getUser, setSession } from './lib/session';
 
@@ -57,6 +59,8 @@ function App() {
             <Route path="/songs" element={<SongsList />} />
             <Route path="/songs/:id" element={<SongDetail />} />
             <Route path="/feedback" element={<Feedback />} />
+            <Route path="/visitor" element={<VisitorAccount />} />
+            <Route path="/community" element={<Community />} />
             <Route
               path="/profile"
               element={(
@@ -86,7 +90,7 @@ function App() {
             <Route
               path="/admin/dashboard"
               element={(
-                <ProtectedRoute allowedRoles={['admin']}>
+                <ProtectedRoute allowedRoles={['admin', 'editor']}>
                   <AdminDashboard />
                 </ProtectedRoute>
               )}
