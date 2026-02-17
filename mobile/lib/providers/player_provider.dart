@@ -101,6 +101,10 @@ class PlayerProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> seek(Duration position) async {
+    await audioHandler.seek(position);
+  }
+
   void clearError() {
     _error = null;
     notifyListeners();

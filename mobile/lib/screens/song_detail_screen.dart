@@ -10,6 +10,7 @@ import '../services/song_service.dart';
 import 'lyrics_settings_screen.dart';
 import 'now_playing_screen.dart';
 import 'reader_mode_screen.dart';
+import '../widgets/mini_player.dart';
 
 class SongDetailScreen extends StatefulWidget {
   final Hymn song;
@@ -79,20 +80,68 @@ class _SongDetailScreenState extends State<SongDetailScreen> {
   }
 
   Future<void> _downloadMusic() async {
+    final ValueNotifier<double> progressNotifier = ValueNotifier(0.0);
+
+    // Show progress dialog
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+        title: const Text('Downloading Music'),
+        content: ValueListenableBuilder<double>(
+          valueListenable: progressNotifier,
+          builder: (context, value, child) {
+            return Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                LinearProgressIndicator(value: value),
+                const SizedBox(height: 16),
+                Text('${(value * 100).toStringAsFixed(0)}%'),
+              ],
+            );
+          },
+        ),
+      ),
+    );
+
     try {
-      await _songService.downloadSongMusic(widget.song);
+      await _songService.downloadSongMusic(
+        widget.song,
+        onProgress: (p) => progressNotifier.value = p,
+      );
+
       if (!mounted) return;
+      Navigator.pop(context); // Close dialog
+
       setState(() {
         _hasLocalMusic = true;
       });
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Music downloaded successfully.')),
+
+      // Show success confirmation
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Icon(Icons.check_circle, color: Colors.green, size: 48),
+          content: const Text(
+            'Music downloaded successfully and is ready to play!',
+            textAlign: TextAlign.center,
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('OK'),
+            ),
+          ],
+        ),
       );
     } catch (e) {
       if (!mounted) return;
+      Navigator.pop(context); // Close dialog
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text('Failed to download music: $e')));
+    } finally {
+      progressNotifier.dispose();
     }
   }
 
@@ -137,6 +186,32 @@ class _SongDetailScreenState extends State<SongDetailScreen> {
           context,
         ).showSnackBar(SnackBar(content: Text('Failed to delete music: $e')));
       }
+    }
+  }
+
+  Future<void> _redownloadMusic() async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Redownload Music'),
+        content: const Text(
+          'This will replace the existing music file. Continue?',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Redownload'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true) {
+      await _downloadMusic();
     }
   }
 
@@ -225,6 +300,9 @@ class _SongDetailScreenState extends State<SongDetailScreen> {
                     ),
                   );
                   break;
+                case 'redownload_music':
+                  _redownloadMusic();
+                  break;
                 case 'delete_music':
                   _deleteMusic();
                   break;
@@ -269,7 +347,11 @@ class _SongDetailScreenState extends State<SongDetailScreen> {
                 child: Text('Lyrics settings'),
               ),
               PopupMenuItem(value: 'reader', child: Text('Reader mode')),
-              if (_hasLocalMusic)
+              if (_hasLocalMusic) ...[
+                PopupMenuItem(
+                  value: 'redownload_music',
+                  child: Text('Redownload music'),
+                ),
                 PopupMenuItem(
                   value: 'delete_music',
                   child: Text(
@@ -279,42 +361,50 @@ class _SongDetailScreenState extends State<SongDetailScreen> {
                     ),
                   ),
                 ),
+              ],
               PopupMenuItem(value: 'now_playing', child: Text('Now playing')),
             ],
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Lyrics
-            if (song.sections.isEmpty)
-              const Padding(
-                padding: EdgeInsets.symmetric(vertical: 20),
-                child: Text(
-                  'No lyrics available.',
-                  style: TextStyle(color: Colors.white54),
-                ),
-              )
-            else
-              ...song.sections.map((section) {
-                return _LyricSection(
-                  label: section.typeLabel,
-                  isChorus: section.type == 'CHR',
-                  content: section.lines,
-                  fontSize: fontSizeScale,
-                  fontFamily: settings.fontFamily,
-                  fontWeightValue: settings.fontWeight,
-                );
-              }),
+      body: Stack(
+        children: [
+          SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Lyrics
+                if (song.sections.isEmpty)
+                  const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 20),
+                    child: Text(
+                      'No lyrics available.',
+                      style: TextStyle(color: Colors.white54),
+                    ),
+                  )
+                else
+                  ...song.sections.map((section) {
+                    return _LyricSection(
+                      label: section.typeLabel,
+                      isChorus: section.type == 'CHR',
+                      content: section.lines,
+                      fontSize: fontSizeScale,
+                      fontFamily: settings.fontFamily,
+                      fontWeightValue: settings.fontWeight,
+                    );
+                  }),
 
-            const SizedBox(height: 100), // Bottom padding
-          ],
-        ),
+                const SizedBox(height: 120), // Bottom padding
+              ],
+            ),
+          ),
+          const Positioned(left: 0, right: 0, bottom: 0, child: MiniPlayer()),
+        ],
       ),
-      floatingActionButton: (!_checkingMusicState && _hasLocalMusic)
+      floatingActionButton:
+          context.watch<PlayerProvider>().currentSong == null &&
+              (!_checkingMusicState && _hasLocalMusic)
           ? FloatingActionButton(
               onPressed: () async {
                 final player = context.read<PlayerProvider>();
@@ -326,10 +416,6 @@ class _SongDetailScreenState extends State<SongDetailScreen> {
                   ).showSnackBar(SnackBar(content: Text(player.error!)));
                   return;
                 }
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const NowPlayingScreen()),
-                );
               },
               backgroundColor: Theme.of(context).colorScheme.primary,
               child: const Icon(Icons.play_arrow, color: Colors.white),

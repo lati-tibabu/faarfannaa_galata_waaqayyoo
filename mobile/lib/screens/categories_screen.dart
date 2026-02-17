@@ -98,6 +98,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                       ),
                     )
                   : ListView.builder(
+                      padding: const EdgeInsets.only(bottom: 120),
                       itemCount: categories.length,
                       itemBuilder: (context, index) {
                         final category = categories[index];

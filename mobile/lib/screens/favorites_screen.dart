@@ -112,7 +112,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
       body: favoriteSongs.isEmpty
           ? _buildEmptyState(context)
           : ListView.builder(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 120),
               itemCount: favoriteSongs.length,
               itemBuilder: (context, index) {
                 final song = favoriteSongs[index];

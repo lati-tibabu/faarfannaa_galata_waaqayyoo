@@ -1,8 +1,8 @@
 {
-  "name": "faarfannaa_galata_waaqayyoo_backend",
+  "name": "faarfannaa-galata-waaqayyoo-backend",
   "version": "1.0.0",
-  "description": "This is a backend application for Faarfannaa Galata Waaqayyoo app",
-  "license": "MIT",
+  "description": "Centralized backend API for the Faarfannaa Galata Waaqayyoo hymn platform, managing hymns, user synchronization, and administrative tasks.",
+  "license": "GPL-3.0",
   "author": "Lati and Dani",
   "type": "commonjs",
   "main": "index.js",
