@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../models/hymn_model.dart';
 import '../providers/collections_provider.dart';
@@ -26,6 +27,41 @@ class _SongDetailScreenState extends State<SongDetailScreen> {
   bool _hasLocalMusic = false;
   bool _checkingMusicState = true;
   bool _downloadPromptShown = false;
+
+  String _buildLyricsText(Hymn song) {
+    final buffer = StringBuffer();
+    buffer.writeln(song.title);
+    buffer.writeln('Hymn ${song.number}');
+    buffer.writeln();
+
+    for (final section in song.sections) {
+      if (section.typeLabel.isNotEmpty) {
+        buffer.writeln(section.typeLabel.toUpperCase());
+      }
+      for (final line in section.lines) {
+        buffer.writeln(line);
+      }
+      buffer.writeln();
+    }
+
+    return buffer.toString().trim();
+  }
+
+  Future<void> _copyLyrics(Hymn song) async {
+    if (song.sections.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('No lyrics available to copy.')),
+      );
+      return;
+    }
+
+    final lyricsText = _buildLyricsText(song);
+    await Clipboard.setData(ClipboardData(text: lyricsText));
+    if (!mounted) return;
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text('Lyrics copied.')));
+  }
 
   @override
   void initState() {
@@ -292,6 +328,9 @@ class _SongDetailScreenState extends State<SongDetailScreen> {
                     ),
                   );
                   break;
+                case 'copy_lyrics':
+                  await _copyLyrics(song);
+                  break;
                 case 'lyrics_settings':
                   Navigator.push(
                     context,
@@ -346,6 +385,7 @@ class _SongDetailScreenState extends State<SongDetailScreen> {
                 value: 'lyrics_settings',
                 child: Text('Lyrics settings'),
               ),
+              PopupMenuItem(value: 'copy_lyrics', child: Text('Copy lyrics')),
               PopupMenuItem(value: 'reader', child: Text('Reader mode')),
               if (_hasLocalMusic) ...[
                 PopupMenuItem(

@@ -7,6 +7,8 @@ import 'package:http/http.dart' as http;
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:ffmpeg_kit_flutter_new_audio/ffmpeg_kit.dart';
+import 'package:ffmpeg_kit_flutter_new_audio/return_code.dart';
 
 import '../models/hymn_model.dart';
 import 'storage_keys.dart';
@@ -87,6 +89,9 @@ class SongService {
   SongService._internal();
 
   static const int totalExpectedSongs = 329;
+
+  // simple in-memory cache for extracted artwork bytes
+  final Map<int, Uint8List?> _artworkCache = {};
   static const String _apiBaseUrlFromEnv = String.fromEnvironment(
     'API_BASE_URL',
     defaultValue: '',
@@ -538,6 +543,67 @@ class SongService {
     return files.first.path;
   }
 
+  Future<Directory> _musicArtworkDirectory() async {
+    final rootDir = await getTemporaryDirectory();
+    final dir = Directory(
+      '${rootDir.path}${Platform.pathSeparator}music_artwork',
+    );
+    if (!dir.existsSync()) {
+      dir.createSync(recursive: true);
+    }
+    return dir;
+  }
+
+  /// Return embedded artwork bytes for the downloaded music file if available.
+  /// Returns null when no artwork is present or extraction fails.
+  Future<Uint8List?> getMusicArtwork(int songNumber) async {
+    // return cached result if available
+    if (_artworkCache.containsKey(songNumber)) return _artworkCache[songNumber];
+
+    final localPath = await getLocalMusicPath(songNumber);
+    if (localPath == null) {
+      _artworkCache[songNumber] = null;
+      return null;
+    }
+
+    try {
+      final artworkDir = await _musicArtworkDirectory();
+      final artworkPath =
+          '${artworkDir.path}${Platform.pathSeparator}$songNumber.jpg';
+
+      final escapedInput = localPath.replaceAll('"', '\\"');
+      final escapedOutput = artworkPath.replaceAll('"', '\\"');
+      final session = await FFmpegKit.execute(
+        '-y -i "$escapedInput" -an -map 0:v:0 -frames:v 1 "$escapedOutput"',
+      );
+
+      final returnCode = await session.getReturnCode();
+      if (!ReturnCode.isSuccess(returnCode)) {
+        _artworkCache[songNumber] = null;
+        return null;
+      }
+
+      final artworkFile = File(artworkPath);
+      if (!await artworkFile.exists()) {
+        _artworkCache[songNumber] = null;
+        return null;
+      }
+
+      final bytes = await artworkFile.readAsBytes();
+      if (bytes.isEmpty) {
+        _artworkCache[songNumber] = null;
+        return null;
+      }
+
+      _artworkCache[songNumber] = bytes;
+      return bytes;
+    } catch (e) {
+      debugPrint('Failed to extract artwork for $songNumber: $e');
+      _artworkCache[songNumber] = null;
+      return null;
+    }
+  }
+
   Future<bool> hasDownloadedMusic(int songNumber) async {
     if (_downloadedMusicSongIds.contains(songNumber)) {
       return true;
@@ -565,6 +631,19 @@ class SongService {
       } catch (e) {
         debugPrint('Failed to delete local music file ${file.path}: $e');
       }
+    }
+
+    _artworkCache.remove(songNumber);
+    try {
+      final artworkDir = await _musicArtworkDirectory();
+      final artworkFile = File(
+        '${artworkDir.path}${Platform.pathSeparator}$songNumber.jpg',
+      );
+      if (artworkFile.existsSync()) {
+        artworkFile.deleteSync();
+      }
+    } catch (_) {
+      // Ignore artwork cleanup failures.
     }
 
     if (_downloadedMusicSongIds.remove(songNumber)) {

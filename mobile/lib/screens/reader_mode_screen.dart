@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../models/hymn_model.dart';
 import '../providers/settings_provider.dart';
@@ -9,6 +10,40 @@ class ReaderModeScreen extends StatelessWidget {
   final Hymn song;
 
   const ReaderModeScreen({super.key, required this.song});
+
+  String _buildLyricsText() {
+    final buffer = StringBuffer();
+    buffer.writeln(song.title);
+    buffer.writeln('Hymn ${song.number}');
+    buffer.writeln();
+
+    for (final section in song.sections) {
+      if (section.typeLabel.isNotEmpty) {
+        buffer.writeln(section.typeLabel.toUpperCase());
+      }
+      for (final line in section.lines) {
+        buffer.writeln(line);
+      }
+      buffer.writeln();
+    }
+
+    return buffer.toString().trim();
+  }
+
+  Future<void> _copyLyrics(BuildContext context) async {
+    if (song.sections.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('No lyrics available to copy.')),
+      );
+      return;
+    }
+
+    await Clipboard.setData(ClipboardData(text: _buildLyricsText()));
+    if (!context.mounted) return;
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text('Lyrics copied.')));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,6 +61,11 @@ class ReaderModeScreen extends StatelessWidget {
           onPressed: () => Navigator.pop(context),
         ),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.copy),
+            tooltip: 'Copy lyrics',
+            onPressed: () => _copyLyrics(context),
+          ),
           IconButton(
             icon: const Icon(Icons.tune),
             tooltip: 'Lyrics settings',

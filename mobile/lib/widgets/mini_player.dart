@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:audio_service/audio_service.dart';
+import 'dart:typed_data';
+
 import '../providers/player_provider.dart';
 import '../screens/now_playing_screen.dart';
+import '../services/song_service.dart';
 
 class MiniPlayer extends StatelessWidget {
   const MiniPlayer({super.key});
@@ -50,12 +53,28 @@ class MiniPlayer extends StatelessWidget {
                       child: Container(
                         width: 48,
                         height: 48,
-                        color: Theme.of(
-                          context,
-                        ).colorScheme.primary.withValues(alpha: 0.1),
-                        child: Icon(
-                          Icons.music_note,
-                          color: Theme.of(context).colorScheme.primary,
+                        decoration: BoxDecoration(
+                          color: Theme.of(
+                            context,
+                          ).colorScheme.primary.withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: FutureBuilder<Uint8List?>(
+                          future: SongService().getMusicArtwork(song.number),
+                          builder: (context, snapshot) {
+                            final bytes = snapshot.data;
+                            if (bytes != null) {
+                              return ClipRRect(
+                                borderRadius: BorderRadius.circular(8),
+                                child: Image.memory(bytes, fit: BoxFit.cover),
+                              );
+                            }
+
+                            return Icon(
+                              Icons.music_note,
+                              color: Theme.of(context).colorScheme.primary,
+                            );
+                          },
                         ),
                       ),
                     ),
@@ -88,15 +107,11 @@ class MiniPlayer extends StatelessWidget {
                     // Controls
                     IconButton(
                       icon: Icon(
-                        playerProvider.isPreparing
-                            ? Icons.hourglass_empty
-                            : (playerProvider.isPlaying
-                                  ? Icons.pause
-                                  : Icons.play_arrow),
+                        playerProvider.isPlaying
+                            ? Icons.pause
+                            : Icons.play_arrow,
                       ),
-                      onPressed: playerProvider.isPreparing
-                          ? null
-                          : () => playerProvider.togglePlayPause(),
+                      onPressed: () => playerProvider.togglePlayPause(),
                     ),
                     IconButton(
                       icon: const Icon(Icons.open_in_full, size: 20),
