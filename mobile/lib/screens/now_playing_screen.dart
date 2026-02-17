@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:audio_service/audio_service.dart';
+import 'dart:typed_data';
+
 import '../providers/player_provider.dart';
+import '../services/song_service.dart';
 
 class NowPlayingScreen extends StatelessWidget {
   const NowPlayingScreen({super.key});
@@ -56,29 +59,58 @@ class NowPlayingScreen extends StatelessWidget {
         child: Column(
           children: [
             const Spacer(flex: 2),
-            // Artwork (Placeholder)
+            // Artwork (use embedded artwork from downloaded music when available)
             AspectRatio(
               aspectRatio: 1,
-              child: Container(
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  color: Theme.of(
-                    context,
-                  ).colorScheme.primary.withValues(alpha: 0.1),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.3),
-                      blurRadius: 20,
-                      offset: const Offset(0, 10),
+              child: FutureBuilder<Uint8List?>(
+                future: SongService().getMusicArtwork(song.number),
+                builder: (context, snapshot) {
+                  final artBytes = snapshot.data;
+                  if (artBytes != null) {
+                    return ClipRRect(
+                      borderRadius: BorderRadius.circular(12),
+                      child: Container(
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: MemoryImage(artBytes),
+                            fit: BoxFit.cover,
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withValues(alpha: 0.3),
+                              blurRadius: 20,
+                              offset: const Offset(0, 10),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  }
+
+                  // fallback placeholder (existing style)
+                  return Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.primary.withValues(alpha: 0.1),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.3),
+                          blurRadius: 20,
+                          offset: const Offset(0, 10),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-                child: Icon(
-                  Icons.music_note,
-                  size: 120,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
+                    child: Icon(
+                      Icons.music_note,
+                      size: 120,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                  );
+                },
               ),
             ),
             const Spacer(flex: 2),
@@ -130,15 +162,14 @@ class NowPlayingScreen extends StatelessWidget {
                             overlayShape: const RoundSliderOverlayShape(
                               overlayRadius: 14,
                             ),
-                            activeTrackColor: isDark
-                                ? Colors.white
-                                : Theme.of(context).colorScheme.primary,
+                            // Always use app primary color for active track & thumb
+                            activeTrackColor: Theme.of(
+                              context,
+                            ).colorScheme.primary,
                             inactiveTrackColor: isDark
                                 ? Colors.white12
                                 : Colors.black12,
-                            thumbColor: isDark
-                                ? Colors.white
-                                : Theme.of(context).colorScheme.primary,
+                            thumbColor: Theme.of(context).colorScheme.primary,
                           ),
                           child: Slider(
                             min: 0,
@@ -187,57 +218,97 @@ class NowPlayingScreen extends StatelessWidget {
               },
             ),
             const SizedBox(height: 16),
-            // Main Controls
+            // Main Controls (larger central button + circular side buttons)
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                IconButton(
-                  icon: const Icon(Icons.replay_10),
-                  iconSize: 32,
-                  color: isDark ? Colors.white : Colors.black,
-                  onPressed: () {
-                    final current = playerProvider
-                        .audioHandler
-                        .playbackState
-                        .value
-                        .position;
-                    playerProvider.seek(current - const Duration(seconds: 10));
-                  },
+                // Back 10s — circular
+                Container(
+                  width: 52,
+                  height: 52,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: isDark ? Colors.white10 : Colors.white,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.06),
+                        blurRadius: 8,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: IconButton(
+                    icon: const Icon(Icons.replay_10),
+                    iconSize: 20,
+                    color: isDark ? Colors.white : Colors.black,
+                    onPressed: () {
+                      final current = playerProvider
+                          .audioHandler
+                          .playbackState
+                          .value
+                          .position;
+                      playerProvider.seek(
+                        current - const Duration(seconds: 10),
+                      );
+                    },
+                  ),
                 ),
+
+                // Main play/pause — bigger with shadow (no hourglass)
                 GestureDetector(
-                  onTap: playerProvider.isPreparing
-                      ? null
-                      : () => playerProvider.togglePlayPause(),
+                  onTap: () => playerProvider.togglePlayPause(),
                   child: Container(
-                    width: 72,
-                    height: 72,
+                    width: 88,
+                    height: 88,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       color: isDark ? Colors.white : Colors.black,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.25),
+                          blurRadius: 30,
+                          offset: const Offset(0, 12),
+                        ),
+                      ],
                     ),
                     child: Icon(
-                      playerProvider.isPreparing
-                          ? Icons.hourglass_empty
-                          : (playerProvider.isPlaying
-                                ? Icons.pause
-                                : Icons.play_arrow),
-                      size: 42,
+                      playerProvider.isPlaying ? Icons.pause : Icons.play_arrow,
+                      size: 44,
                       color: isDark ? Colors.black : Colors.white,
                     ),
                   ),
                 ),
-                IconButton(
-                  icon: const Icon(Icons.forward_10),
-                  iconSize: 32,
-                  color: isDark ? Colors.white : Colors.black,
-                  onPressed: () {
-                    final current = playerProvider
-                        .audioHandler
-                        .playbackState
-                        .value
-                        .position;
-                    playerProvider.seek(current + const Duration(seconds: 10));
-                  },
+
+                // Forward 10s — circular
+                Container(
+                  width: 52,
+                  height: 52,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: isDark ? Colors.white10 : Colors.white,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.06),
+                        blurRadius: 8,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: IconButton(
+                    icon: const Icon(Icons.forward_10),
+                    iconSize: 20,
+                    color: isDark ? Colors.white : Colors.black,
+                    onPressed: () {
+                      final current = playerProvider
+                          .audioHandler
+                          .playbackState
+                          .value
+                          .position;
+                      playerProvider.seek(
+                        current + const Duration(seconds: 10),
+                      );
+                    },
+                  ),
                 ),
               ],
             ),

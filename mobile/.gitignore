@@ -1,4 +1,6 @@
+# --------------------------
 # Miscellaneous
+# --------------------------
 *.class
 *.log
 *.pyc
@@ -13,37 +15,68 @@
 migrate_working_dir/
 .env
 
-# IntelliJ related
+# --------------------------
+# IDEs
+# --------------------------
+# IntelliJ / Android Studio
 *.iml
 *.ipr
 *.iws
 .idea/
 
-# The .vscode folder contains launch configuration and tasks you configure in
-# VS Code which you may wish to be included in version control, so this line
-# is commented out by default.
-#.vscode/
+# VSCode settings (usually should be ignored)
+.vscode/
 
-# Flutter/Dart/Pub related
+# --------------------------
+# Flutter / Dart / Pub
+# --------------------------
 **/doc/api/
 **/ios/Flutter/.last_build_id
 .dart_tool/
+.flutter-plugins
 .flutter-plugins-dependencies
 .pub-cache/
 .pub/
-/build/
-/coverage/
+build/
+coverage/
 
-# Symbolication related
+# Flutter-generated platform files
+# iOS / macOS
+macos/Flutter/GeneratedPluginRegistrant.*
+ios/Flutter/GeneratedPluginRegistrant.*
+
+# Android
+android/app/debug/
+android/app/profile/
+android/app/release/
+
+# Linux / Windows
+linux/flutter/generated_plugin_registrant.*
+windows/flutter/generated_plugin_registrant.*
+
+# Web
+/web/.dart_tool/
+web/build/
+
+# --------------------------
+# Node / Backend
+# --------------------------
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Package lock (keep if you want deterministic builds)
+# package-lock.json
+# yarn.lock
+
+# --------------------------
+# Symbolication / Obfuscation
+# --------------------------
 app.*.symbols
-
-# Obfuscation related
 app.*.map.json
 
-# Android Studio will place build artifacts here
-/android/app/debug
-/android/app/profile
-/android/app/release
-
-# Stitch UI made
+# --------------------------
+# Project-specific
+# --------------------------
 screen_stitch/

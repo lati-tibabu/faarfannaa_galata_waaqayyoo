@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap");
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
@@ -5,7 +6,8 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+  font-family: "Manrope", "Segoe UI", sans-serif;
+  --font-display: "Space Grotesk", "Manrope", sans-serif;
   line-height: 1.5;
   font-weight: 400;
   font-synthesis: none;
@@ -13,24 +15,26 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
+  --background: oklch(0.98 0.004 250);
+  --foreground: oklch(0.24 0.01 255);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
+  --primary: oklch(0.5 0.01 255);
+  --primary-foreground: oklch(0.98 0.002 255);
+  --secondary: oklch(0.93 0.004 255);
+  --secondary-foreground: oklch(0.28 0.01 255);
+  --muted: oklch(0.95 0.003 255);
+  --muted-foreground: oklch(0.52 0.01 255);
+  --accent: oklch(0.9 0.004 255);
+  --accent-foreground: oklch(0.3 0.01 255);
   --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
+  --border: oklch(0.88 0.004 255);
+  --input: oklch(0.88 0.004 255);
+  --ring: oklch(0.6 0.01 255);
+  --bg-grad-a: oklch(0.86 0.004 255 / 45%);
+  --bg-grad-b: oklch(0.8 0.008 255 / 35%);
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
@@ -46,6 +50,72 @@
   --sidebar-ring: oklch(0.708 0 0);
 }
 
+:root[data-theme="ocean"] {
+  --primary: oklch(0.53 0.11 214);
+  --primary-foreground: oklch(0.98 0.01 245);
+  --secondary: oklch(0.92 0.03 220);
+  --muted: oklch(0.95 0.02 220);
+  --accent: oklch(0.88 0.06 200);
+  --ring: oklch(0.63 0.08 215);
+  --bg-grad-a: oklch(0.86 0.08 215 / 45%);
+  --bg-grad-b: oklch(0.79 0.09 232 / 35%);
+}
+
+:root[data-theme="forest"] {
+  --primary: oklch(0.52 0.1 150);
+  --primary-foreground: oklch(0.98 0.01 155);
+  --secondary: oklch(0.92 0.03 155);
+  --muted: oklch(0.95 0.02 150);
+  --accent: oklch(0.88 0.08 140);
+  --ring: oklch(0.62 0.07 150);
+  --bg-grad-a: oklch(0.84 0.08 145 / 45%);
+  --bg-grad-b: oklch(0.8 0.07 170 / 35%);
+}
+
+:root[data-theme="amber"] {
+  --primary: oklch(0.6 0.12 65);
+  --primary-foreground: oklch(0.98 0.01 90);
+  --secondary: oklch(0.93 0.05 72);
+  --muted: oklch(0.95 0.03 74);
+  --accent: oklch(0.88 0.09 40);
+  --ring: oklch(0.67 0.09 58);
+  --bg-grad-a: oklch(0.89 0.09 76 / 50%);
+  --bg-grad-b: oklch(0.84 0.1 48 / 32%);
+}
+
+:root[data-theme="rose"] {
+  --primary: oklch(0.57 0.12 15);
+  --primary-foreground: oklch(0.99 0.01 20);
+  --secondary: oklch(0.93 0.04 8);
+  --muted: oklch(0.95 0.02 8);
+  --accent: oklch(0.88 0.08 350);
+  --ring: oklch(0.64 0.08 10);
+  --bg-grad-a: oklch(0.88 0.09 8 / 45%);
+  --bg-grad-b: oklch(0.82 0.09 355 / 35%);
+}
+
+:root[data-theme="indigo"] {
+  --primary: oklch(0.5 0.11 275);
+  --primary-foreground: oklch(0.98 0.01 282);
+  --secondary: oklch(0.92 0.03 270);
+  --muted: oklch(0.95 0.02 272);
+  --accent: oklch(0.88 0.07 300);
+  --ring: oklch(0.6 0.08 280);
+  --bg-grad-a: oklch(0.83 0.09 280 / 45%);
+  --bg-grad-b: oklch(0.79 0.08 305 / 35%);
+}
+
+:root[data-theme="sunset"] {
+  --primary: oklch(0.58 0.13 32);
+  --primary-foreground: oklch(0.99 0.01 40);
+  --secondary: oklch(0.93 0.05 25);
+  --muted: oklch(0.95 0.03 22);
+  --accent: oklch(0.87 0.1 5);
+  --ring: oklch(0.66 0.09 28);
+  --bg-grad-a: oklch(0.87 0.11 35 / 45%);
+  --bg-grad-b: oklch(0.81 0.1 8 / 35%);
+}
+
 html,
 body,
 #root {
@@ -55,6 +125,10 @@ body,
 body {
   margin: 0;
   min-width: 320px;
+  background:
+    radial-gradient(circle at 15% -5%, var(--bg-grad-a), transparent 40%),
+    radial-gradient(circle at 85% -15%, var(--bg-grad-b), transparent 36%),
+    linear-gradient(180deg, color-mix(in oklch, var(--background) 90%, white) 0%, var(--background) 100%);
 }
 
 ::selection {
@@ -144,6 +218,9 @@ body {
   body {
     @apply bg-background text-foreground;
   }
+  .font-display {
+    font-family: var(--font-display);
+  }
   a {
     color: inherit;
     text-decoration: none;
@@ -151,4 +228,19 @@ body {
   a:hover {
     color: inherit;
   }
+}
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.reveal {
+  animation: rise-in 0.5s ease-out both;
 }

@@ -7,6 +7,7 @@ const Song = require('./Song');
 const DeviceConnection = require('./DeviceConnection');
 const SongChange = require('./SongChange');
 const SongDeletion = require('./SongDeletion');
+const UserLibrarySong = require('./UserLibrarySong');
 
 // Initialize models
 const models = {
@@ -15,6 +16,7 @@ const models = {
   DeviceConnection,
   SongChange,
   SongDeletion,
+  UserLibrarySong,
 };
 
 User.hasMany(DeviceConnection, { foreignKey: 'userId', as: 'deviceConnections' });
@@ -27,6 +29,23 @@ User.hasMany(SongChange, { foreignKey: 'requestedBy', as: 'requestedSongChanges'
 User.hasMany(SongChange, { foreignKey: 'reviewedBy', as: 'reviewedSongChanges' });
 SongChange.belongsTo(User, { foreignKey: 'requestedBy', as: 'requestedByUser' });
 SongChange.belongsTo(User, { foreignKey: 'reviewedBy', as: 'reviewedByUser' });
+
+User.belongsToMany(Song, {
+  through: UserLibrarySong,
+  foreignKey: 'userId',
+  otherKey: 'songId',
+  as: 'librarySongs',
+});
+Song.belongsToMany(User, {
+  through: UserLibrarySong,
+  foreignKey: 'songId',
+  otherKey: 'userId',
+  as: 'savedByUsers',
+});
+User.hasMany(UserLibrarySong, { foreignKey: 'userId', as: 'libraryEntries' });
+Song.hasMany(UserLibrarySong, { foreignKey: 'songId', as: 'libraryEntries' });
+UserLibrarySong.belongsTo(User, { foreignKey: 'userId', as: 'user' });
+UserLibrarySong.belongsTo(Song, { foreignKey: 'songId', as: 'song' });
 
 // Run associations if any
 Object.keys(models).forEach(modelName => {

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { getOrCreateDeviceId, getToken } from '../lib/session';
+import { clearSession, getOrCreateDeviceId, getToken } from '../lib/session';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 
@@ -16,6 +16,23 @@ api.interceptors.request.use((config) => {
   }
   return config;
 });
+
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    const status = error?.response?.status;
+    const hasSession = Boolean(getToken());
+
+    if (status === 401 && hasSession) {
+      clearSession();
+      if (window.location.pathname !== '/login') {
+        window.location.assign('/login');
+      }
+    }
+
+    return Promise.reject(error);
+  },
+);
 
 export const authService = {
   register: (userData) => api.post('/users/register', userData),
@@ -37,7 +54,10 @@ export const songService = {
     formData.append('music', file);
     return api.post(`/songs/${id}/music`, formData);
   },
-  removeSongMusic: (id, fileName) => api.delete(`/songs/${id}/music`, { data: { fileName } }),
+  removeSongMusic: (id, fileName) => api.delete(`/songs/${id}/music`, {
+    params: fileName ? { fileName } : {},
+    data: fileName ? { fileName } : {},
+  }),
   getMusicUrl: (id, fileName) => {
     const baseUrl = API_BASE_URL;
     const url = `${baseUrl}/songs/${id}/music`;
@@ -56,6 +76,10 @@ export const userService = {
   createUser: (userData) => api.post('/users', userData),
   updateUser: (id, data) => api.put(`/users/${id}`, data),
   deleteUser: (id) => api.delete(`/users/${id}`),
+  getMyLibrary: () => api.get('/users/me/library'),
+  getMyLibrarySongStatus: (songId) => api.get(`/users/me/library/${songId}`),
+  addSongToMyLibrary: (songId) => api.post(`/users/me/library/${songId}`),
+  removeSongFromMyLibrary: (songId) => api.delete(`/users/me/library/${songId}`),
 };
 
 export default api;

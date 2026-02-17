@@ -1,7 +1,7 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { Op } = require('sequelize');
-const { User, DeviceConnection, SongChange } = require('../models');
+const { User, DeviceConnection, SongChange, Song, UserLibrarySong } = require('../models');
 const { trackDeviceConnection } = require('../services/deviceTracker');
 
 const jwtSecret = process.env.JWT_SECRET;
@@ -29,6 +29,14 @@ const sanitizeUser = (user) => ({
   updatedAt: user.updatedAt,
 });
 
+const parseSongId = (value) => {
+  const songId = Number(value);
+  if (!Number.isInteger(songId) || songId <= 0) {
+    return null;
+  }
+  return songId;
+};
+
 const userController = {
   // Get all users (admin)
   getAllUsers: async (req, res) => {
@@ -53,6 +61,108 @@ const userController = {
         return res.status(404).json({ error: 'User not found' });
       }
       res.json({ user });
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  },
+
+  getMyLibrary: async (req, res) => {
+    try {
+      const entries = await UserLibrarySong.findAll({
+        where: { userId: req.user.id },
+        include: [
+          {
+            model: Song,
+            as: 'song',
+          },
+        ],
+        order: [['createdAt', 'DESC']],
+      });
+
+      const library = entries
+        .filter((entry) => entry.song)
+        .map((entry) => ({
+          song: entry.song,
+          addedAt: entry.createdAt,
+        }));
+
+      res.json(library);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  },
+
+  getMyLibrarySongStatus: async (req, res) => {
+    try {
+      const songId = parseSongId(req.params.songId);
+      if (!songId) {
+        return res.status(400).json({ error: 'Invalid song ID.' });
+      }
+
+      const entry = await UserLibrarySong.findOne({
+        where: {
+          userId: req.user.id,
+          songId,
+        },
+      });
+
+      res.json({ inLibrary: Boolean(entry) });
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  },
+
+  addSongToMyLibrary: async (req, res) => {
+    try {
+      const songId = parseSongId(req.params.songId);
+      if (!songId) {
+        return res.status(400).json({ error: 'Invalid song ID.' });
+      }
+
+      const song = await Song.findByPk(songId);
+      if (!song) {
+        return res.status(404).json({ error: 'Song not found.' });
+      }
+
+      const [entry] = await UserLibrarySong.findOrCreate({
+        where: {
+          userId: req.user.id,
+          songId,
+        },
+      });
+
+      res.status(201).json({
+        message: 'Song added to My Library.',
+        inLibrary: true,
+        addedAt: entry.createdAt,
+      });
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  },
+
+  removeSongFromMyLibrary: async (req, res) => {
+    try {
+      const songId = parseSongId(req.params.songId);
+      if (!songId) {
+        return res.status(400).json({ error: 'Invalid song ID.' });
+      }
+
+      const deleted = await UserLibrarySong.destroy({
+        where: {
+          userId: req.user.id,
+          songId,
+        },
+      });
+
+      if (!deleted) {
+        return res.status(404).json({ error: 'Song is not in your library.' });
+      }
+
+      res.json({
+        message: 'Song removed from My Library.',
+        inLibrary: false,
+      });
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
