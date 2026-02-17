@@ -72,7 +72,7 @@ const seedSongs = async () => {
 const seedAll = async () => {
   try {
     await sequelize.authenticate();
-    await sequelize.sync();
+    await sequelize.sync({ alter: true });
 
     const adminResult = await seedAdmin();
     const songsResult = await seedSongs();

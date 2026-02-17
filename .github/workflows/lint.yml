@@ -1,0 +1,58 @@
+name: Lint
+
+on:
+  push:
+    branches: [ master, feat/backend ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  web-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: web/package-lock.json
+      - name: Install dependencies
+        run: npm ci
+        working-directory: web
+      - name: Run lint
+        run: npm run lint
+        working-directory: web
+
+  mobile-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.10.8'
+          channel: 'stable'
+          cache: true
+      - name: Install dependencies
+        run: flutter pub get
+        working-directory: mobile
+      - name: Run analyze
+        run: flutter analyze
+        working-directory: mobile
+
+  backend-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: backend/package-lock.json
+      - name: Install dependencies
+        run: npm ci
+        working-directory: backend
+      - name: Run lint
+        run: npm run lint
+        working-directory: backend
