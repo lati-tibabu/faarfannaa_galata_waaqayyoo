@@ -96,7 +96,10 @@ class _PrimaryColorPickerSheetState extends State<PrimaryColorPickerSheet> {
                     ),
                     const Text(
                       'Primary Color',
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     const Spacer(),
                     TextButton(
@@ -105,112 +108,114 @@ class _PrimaryColorPickerSheetState extends State<PrimaryColorPickerSheet> {
                     ),
                   ],
                 ),
-              const SizedBox(height: 8),
-              Container(
-                padding: const EdgeInsets.all(14),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(
-                    color: isDark
-                        ? Colors.white.withValues(alpha: 0.08)
-                        : Colors.black.withValues(alpha: 0.06),
+                const SizedBox(height: 8),
+                Container(
+                  padding: const EdgeInsets.all(14),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(
+                      color: isDark
+                          ? Colors.white.withValues(alpha: 0.08)
+                          : Colors.black.withValues(alpha: 0.06),
+                    ),
+                    color: isDark ? const Color(0xFF1C1C1E) : Colors.white,
                   ),
-                  color: isDark ? const Color(0xFF1C1C1E) : Colors.white,
-                ),
-                child: Row(
-                  children: [
-                    Container(
-                      width: 22,
-                      height: 22,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: _color,
-                        border: Border.all(
-                          color: isDark
-                              ? Colors.white.withValues(alpha: 0.12)
-                              : Colors.black.withValues(alpha: 0.12),
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 22,
+                        height: 22,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: _color,
+                          border: Border.all(
+                            color: isDark
+                                ? Colors.white.withValues(alpha: 0.12)
+                                : Colors.black.withValues(alpha: 0.12),
+                          ),
                         ),
                       ),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Text(
-                        colorToHex(_color, enableAlpha: false),
-                        style: TextStyle(
-                          fontWeight: FontWeight.w700,
-                          color: isDark ? Colors.white70 : Colors.black87,
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Text(
+                          colorToHex(_color, enableAlpha: false),
+                          style: TextStyle(
+                            fontWeight: FontWeight.w700,
+                            color: isDark ? Colors.white70 : Colors.black87,
+                          ),
                         ),
                       ),
-                    ),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 6,
-                      ),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(999),
-                        color: primary.withValues(alpha: isDark ? 0.18 : 0.12),
-                      ),
-                      child: Text(
-                        'Live preview',
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w700,
-                          color: primary,
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 6,
+                        ),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(999),
+                          color: primary.withValues(
+                            alpha: isDark ? 0.18 : 0.12,
+                          ),
+                        ),
+                        child: Text(
+                          'Live preview',
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w700,
+                            color: primary,
+                          ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-              const SizedBox(height: 18),
-              Text(
-                'Presets',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: isDark ? Colors.white70 : Colors.black54,
+                const SizedBox(height: 18),
+                Text(
+                  'Presets',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: isDark ? Colors.white70 : Colors.black54,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 10),
-              BlockPicker(
-                pickerColor: _color,
-                onColorChanged: (c) => _setColor(c),
-                availableColors: _presetColors,
-                layoutBuilder: (context, colors, child) {
-                  final crossAxisCount = width >= 430 ? 8 : 6;
-                  return GridView.count(
-                    crossAxisCount: crossAxisCount,
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    crossAxisSpacing: 10,
-                    mainAxisSpacing: 10,
-                    children: [for (final c in colors) child(c)],
-                  );
-                },
-              ),
-              const SizedBox(height: 18),
-              Text(
-                'Custom',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: isDark ? Colors.white70 : Colors.black54,
+                const SizedBox(height: 10),
+                BlockPicker(
+                  pickerColor: _color,
+                  onColorChanged: (c) => _setColor(c),
+                  availableColors: _presetColors,
+                  layoutBuilder: (context, colors, child) {
+                    final crossAxisCount = width >= 430 ? 8 : 6;
+                    return GridView.count(
+                      crossAxisCount: crossAxisCount,
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      crossAxisSpacing: 10,
+                      mainAxisSpacing: 10,
+                      children: [for (final c in colors) child(c)],
+                    );
+                  },
                 ),
-              ),
-              const SizedBox(height: 10),
-              ColorPicker(
-                pickerColor: _color,
-                onColorChanged: (c) => _setColor(c, updateHex: false),
-                paletteType: PaletteType.hueWheel,
-                enableAlpha: false,
-                displayThumbColor: true,
-                hexInputBar: true,
-                hexInputController: _hexController,
-                labelTypes: const [ColorLabelType.hex],
-                colorPickerWidth: width - 32,
-                pickerAreaHeightPercent: 0.7,
-                portraitOnly: true,
-                pickerAreaBorderRadius: BorderRadius.circular(18),
-              ),
+                const SizedBox(height: 18),
+                Text(
+                  'Custom',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: isDark ? Colors.white70 : Colors.black54,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                ColorPicker(
+                  pickerColor: _color,
+                  onColorChanged: (c) => _setColor(c, updateHex: false),
+                  paletteType: PaletteType.hueWheel,
+                  enableAlpha: false,
+                  displayThumbColor: true,
+                  hexInputBar: true,
+                  hexInputController: _hexController,
+                  labelTypes: const [ColorLabelType.hex],
+                  colorPickerWidth: width - 32,
+                  pickerAreaHeightPercent: 0.7,
+                  portraitOnly: true,
+                  pickerAreaBorderRadius: BorderRadius.circular(18),
+                ),
               ],
             ),
           ),

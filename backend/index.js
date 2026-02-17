@@ -37,7 +37,7 @@ app.get('/health', (req, res) => {
 
 // Sync database and start server (Only if not running on Vercel/serverless)
 if (process.env.NODE_ENV !== 'production') {
-  models.sequelize.sync({ alter: false }).then(async () => {
+  models.sequelize.sync({ alter: true }).then(async () => {
     console.log('Database synced successfully');
     await seedAdmin();
     app.listen(PORT, () => {
