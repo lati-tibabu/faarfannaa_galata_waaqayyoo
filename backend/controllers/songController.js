@@ -362,11 +362,9 @@ const songController = {
   removeSongMusic: async (req, res) => {
     try {
       const { id } = req.params;
-      const { fileName } = req.body;
-
-      if (!fileName) {
-        return res.status(400).json({ error: 'File name is required to remove music.' });
-      }
+      const bodyFileName = req.body?.fileName;
+      const queryFileName = req.query?.fileName;
+      const requestedFileName = bodyFileName || queryFileName || null;
 
       const song = await Song.findByPk(id);
       if (!song) {
@@ -374,15 +372,29 @@ const songController = {
       }
 
       const currentFiles = Array.isArray(song.musicFiles) ? song.musicFiles : [];
-      const fileToRemove = currentFiles.find(f => f.fileName === fileName);
+      const normalizedFiles = currentFiles.map((track) => ({
+        ...track,
+        fileName: track?.fileName || track?.filename || null,
+      }));
 
-      if (!fileToRemove) {
+      const legacyFileName = song.musicFileName || null;
+      const resolvedFileName = requestedFileName
+        || normalizedFiles[0]?.fileName
+        || legacyFileName;
+
+      if (!resolvedFileName) {
+        return res.status(400).json({ error: 'File name is required to remove music.' });
+      }
+
+      const fileToRemove = normalizedFiles.find((f) => f.fileName === resolvedFileName);
+
+      if (!fileToRemove && legacyFileName !== resolvedFileName) {
         return res.status(404).json({ error: 'Music file not found in song records.' });
       }
 
-      const updatedFiles = currentFiles.filter(f => f.fileName !== fileName);
+      const updatedFiles = normalizedFiles.filter((f) => f.fileName !== resolvedFileName);
 
-      await deleteMusicFile(fileName);
+      await deleteMusicFile(resolvedFileName);
 
       const now = new Date();
       const hasAnyMusic = updatedFiles.length > 0;
@@ -395,7 +407,7 @@ const songController = {
       };
 
       // Update legacy fields if necessary
-      if (song.musicFileName === fileName) {
+      if (song.musicFileName === resolvedFileName) {
         if (hasAnyMusic) {
           const lastTrack = updatedFiles[updatedFiles.length - 1];
           updates.musicFileName = lastTrack.fileName;

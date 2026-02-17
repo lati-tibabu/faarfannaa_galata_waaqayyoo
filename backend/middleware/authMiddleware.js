@@ -13,7 +13,7 @@ const authMiddleware = (req, res, next) => {
     trackDeviceConnection(req, decoded.id);
     next();
   } catch (err) {
-    res.status(400).json({ error: `Invalid token: ${err.message}` });
+    res.status(401).json({ error: `Invalid token: ${err.message}` });
   }
 };
 

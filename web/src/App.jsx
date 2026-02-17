@@ -12,6 +12,7 @@ import AdminDashboard from './pages/AdminDashboard';
 import AdminFirstLoginSetup from './pages/AdminFirstLoginSetup';
 import AdminSongChanges from './pages/AdminSongChanges';
 import Profile from './pages/Profile';
+import MyLibrary from './pages/MyLibrary';
 import { authService } from './services/api';
 import { clearSession, getToken, getUser, setSession } from './lib/session';
 
@@ -46,7 +47,7 @@ function App() {
 
   return (
     <Router>
-      <div className="min-h-screen bg-[radial-gradient(circle_at_top,_#f1f5f9_0,_#ffffff_40%)]">
+      <div className="min-h-screen bg-[radial-gradient(circle_at_10%_-10%,rgba(255,204,128,0.2),transparent_35%),radial-gradient(circle_at_90%_-20%,rgba(84,155,255,0.2),transparent_35%)]">
         <Header />
         <main className="pb-12">
           <Routes>
@@ -58,6 +59,14 @@ function App() {
               element={(
                 <ProtectedRoute>
                   <Profile />
+                </ProtectedRoute>
+              )}
+            />
+            <Route
+              path="/my-library"
+              element={(
+                <ProtectedRoute>
+                  <MyLibrary />
                 </ProtectedRoute>
               )}
             />
