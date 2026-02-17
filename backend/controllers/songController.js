@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const { Op } = require('sequelize');
 const { createClient } = require('@supabase/supabase-js');
-const { Song, SongChange, SongDeletion, User } = require('../models');
+const { Song, SongChange, SongDeletion, SongLike, User } = require('../models');
 
 const isProduction = process.env.NODE_ENV === 'production';
 
@@ -179,6 +179,66 @@ const songController = {
       res.json(song);
     } catch (error) {
       res.status(500).json({ error: error.message });
+    }
+  },
+
+  getSongLikes: async (req, res) => {
+    try {
+      const song = await Song.findByPk(req.params.id);
+      if (!song) {
+        return res.status(404).json({ error: 'Song not found' });
+      }
+
+      const likesCount = await SongLike.count({ where: { songId: song.id } });
+      const likedByUser = req.user
+        ? Boolean(await SongLike.findOne({ where: { songId: song.id, userId: req.user.id } }))
+        : false;
+
+      return res.json({ likesCount, likedByUser });
+    } catch (error) {
+      return res.status(500).json({ error: error.message });
+    }
+  },
+
+  likeSong: async (req, res) => {
+    try {
+      const song = await Song.findByPk(req.params.id);
+      if (!song) {
+        return res.status(404).json({ error: 'Song not found' });
+      }
+
+      await SongLike.findOrCreate({
+        where: {
+          songId: song.id,
+          userId: req.user.id,
+        },
+      });
+
+      const likesCount = await SongLike.count({ where: { songId: song.id } });
+      return res.json({ message: 'Song liked.', likesCount, likedByUser: true });
+    } catch (error) {
+      return res.status(500).json({ error: error.message });
+    }
+  },
+
+  unlikeSong: async (req, res) => {
+    try {
+      const song = await Song.findByPk(req.params.id);
+      if (!song) {
+        return res.status(404).json({ error: 'Song not found' });
+      }
+
+      await SongLike.destroy({
+        where: {
+          songId: song.id,
+          userId: req.user.id,
+        },
+      });
+
+      const likesCount = await SongLike.count({ where: { songId: song.id } });
+      return res.json({ message: 'Song unliked.', likesCount, likedByUser: false });
+    } catch (error) {
+      return res.status(500).json({ error: error.message });
     }
   },
 

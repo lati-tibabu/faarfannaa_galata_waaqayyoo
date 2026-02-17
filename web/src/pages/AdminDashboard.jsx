@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { userService } from '../services/api';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Button } from '../components/ui/button';
+import { getUser } from '../lib/session';
 
 const metricConfig = [
   { label: 'Total Users', key: 'totalUsers' },
@@ -15,6 +16,8 @@ const metricConfig = [
 ];
 
 const AdminDashboard = () => {
+  const user = getUser();
+  const isAdmin = user?.role === 'admin';
   const [stats, setStats] = useState(null);
   const [recentDevices, setRecentDevices] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -49,18 +52,22 @@ const AdminDashboard = () => {
     <div className="mx-auto w-full max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
       <div className="mb-7 flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-3xl font-semibold tracking-tight">Admin Dashboard</h1>
+          <h1 className="text-3xl font-semibold tracking-tight">{isAdmin ? 'Admin Dashboard' : 'Editor Dashboard'}</h1>
           <p className="mt-1 text-sm text-muted-foreground">
             User management controls and connected-device visibility.
           </p>
         </div>
         <div className="flex gap-2">
-          <Button asChild variant="outline">
-            <Link to="/admin/song-changes">Song Reviews</Link>
-          </Button>
-          <Button asChild variant="outline">
-            <Link to="/users">Manage Users</Link>
-          </Button>
+          {isAdmin && (
+            <Button asChild variant="outline">
+              <Link to="/admin/song-changes">Song Reviews</Link>
+            </Button>
+          )}
+          {isAdmin && (
+            <Button asChild variant="outline">
+              <Link to="/users">Manage Users</Link>
+            </Button>
+          )}
           <Button asChild>
             <Link to="/songs">Browse Songs</Link>
           </Button>

@@ -65,6 +65,9 @@ export const songService = {
   },
   deleteSong: (id) => api.delete(`/songs/${id}`),
   getSyncChanges: (since) => api.get('/songs/sync', { params: since ? { since } : {} }),
+  getSongLikes: (id) => api.get(`/songs/${id}/likes`),
+  likeSong: (id) => api.post(`/songs/${id}/likes`),
+  unlikeSong: (id) => api.delete(`/songs/${id}/likes`),
 };
 
 export const userService = {
@@ -80,6 +83,26 @@ export const userService = {
   getMyLibrarySongStatus: (songId) => api.get(`/users/me/library/${songId}`),
   addSongToMyLibrary: (songId) => api.post(`/users/me/library/${songId}`),
   removeSongFromMyLibrary: (songId) => api.delete(`/users/me/library/${songId}`),
+};
+
+export const feedbackService = {
+  submitAnonymousFeedback: (data) => api.post('/feedback', data),
+  getAllFeedback: (status) => api.get('/feedback', { params: status ? { status } : {} }),
+  markFeedbackReviewed: (id) => api.patch(`/feedback/${id}/review`),
+};
+
+export const visitorService = {
+  registerVisitor: (username) => api.post('/visitors/register', { username }),
+};
+
+export const communityService = {
+  getPosts: () => api.get('/community/posts'),
+  createPost: (data) => api.post('/community/posts', data),
+  addComment: (postId, content) => api.post(`/community/posts/${postId}/comments`, { content }),
+  likePost: (postId) => api.post(`/community/posts/${postId}/likes`),
+  unlikePost: (postId) => api.delete(`/community/posts/${postId}/likes`),
+  deletePost: (postId) => api.delete(`/community/posts/${postId}`),
+  deleteComment: (commentId) => api.delete(`/community/comments/${commentId}`),
 };
 
 export default api;

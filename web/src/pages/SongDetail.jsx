@@ -1,14 +1,24 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { BookMarked, Image, Music2, Upload } from 'lucide-react';
+import { BookMarked, Check, Copy, Heart, Image, Music2, Pause, Play, Upload } from 'lucide-react';
 import { parseBlob } from 'music-metadata-browser';
 import { songService, userService } from '../services/api';
+import placeholderDiskArtwork from '../assets/placeholder-disk.svg';
 import { getUser } from '../lib/session';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 
 const SECTION_TYPE_OPTIONS = ['VRS', 'CHRS', 'INTR', 'BRDG', 'PRE', 'OUTR', 'TAG'];
+const SECTION_LABELS = {
+  VRS: 'Verse',
+  CHRS: 'Chorus',
+  INTR: 'Intro',
+  BRDG: 'Bridge',
+  PRE: 'Pre-Chorus',
+  OUTR: 'Outro',
+  TAG: 'Tag',
+};
 
 const normalizeSectionType = (type = '') => {
   const normalized = String(type).trim().toUpperCase();
@@ -90,6 +100,7 @@ const SongDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const user = getUser();
+  const userId = user?.id || null;
 
   const [song, setSong] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -107,8 +118,16 @@ const SongDetail = () => {
   const [inLibrary, setInLibrary] = useState(false);
   const [checkingLibrary, setCheckingLibrary] = useState(false);
   const [updatingLibrary, setUpdatingLibrary] = useState(false);
+  const [copiedKey, setCopiedKey] = useState('');
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [duration, setDuration] = useState(0);
+  const [likesCount, setLikesCount] = useState(0);
+  const [likedByUser, setLikedByUser] = useState(false);
+  const [updatingLike, setUpdatingLike] = useState(false);
 
   const artworkObjectUrlRef = useRef('');
+  const audioRef = useRef(null);
 
   const [editForm, setEditForm] = useState({
     title: '',
@@ -131,14 +150,18 @@ const SongDetail = () => {
     return total + section.lines.length;
   }, 0);
 
-  const lyrics = sections
-    .map((section) => {
-      const sectionType = section?.type ? `[${section.type}]` : '';
-      const lines = Array.isArray(section?.lines) ? section.lines.join('\n') : '';
-      return [sectionType, lines].filter(Boolean).join('\n');
-    })
-    .filter(Boolean)
-    .join('\n\n');
+  const fullLyricsForCopy = useMemo(
+    () => sections
+      .map((section) => {
+        const sectionType = normalizeSectionType(section?.type);
+        const label = SECTION_LABELS[sectionType] || sectionType;
+        const lines = Array.isArray(section?.lines) ? section.lines.join('\n') : '';
+        return `${label}\n${lines}`.trim();
+      })
+      .filter(Boolean)
+      .join('\n\n'),
+    [sections],
+  );
 
   useEffect(() => {
     const fetchSong = async () => {
@@ -165,7 +188,7 @@ const SongDetail = () => {
 
   useEffect(() => {
     const fetchLibraryStatus = async () => {
-      if (!user) {
+      if (!userId) {
         setInLibrary(false);
         return;
       }
@@ -182,7 +205,20 @@ const SongDetail = () => {
     };
 
     fetchLibraryStatus();
-  }, [id, user]);
+  }, [id, userId]);
+
+  useEffect(() => {
+    const fetchLikes = async () => {
+      try {
+        const response = await songService.getSongLikes(id);
+        setLikesCount(Number(response.data?.likesCount || 0));
+        setLikedByUser(Boolean(response.data?.likedByUser));
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    fetchLikes();
+  }, [id, userId]);
 
   useEffect(() => {
     if (!activeTrackName && musicFiles.length > 0) {
@@ -258,6 +294,16 @@ const SongDetail = () => {
       cancelled = true;
     };
   }, [activeTrack, id]);
+
+  useEffect(() => {
+    setIsPlaying(false);
+    setProgress(0);
+    setDuration(0);
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+    }
+  }, [activeTrackName]);
 
   useEffect(() => () => {
     if (artworkObjectUrlRef.current) {
@@ -438,6 +484,82 @@ const SongDetail = () => {
     }
   };
 
+  const handleCopyText = async (text, key) => {
+    if (!text) {
+      return;
+    }
+
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopiedKey(key);
+      setTimeout(() => setCopiedKey(''), 1600);
+    } catch {
+      setActionError('Failed to copy text to clipboard.');
+    }
+  };
+
+  const handleToggleLike = async () => {
+    if (!userId) {
+      const shouldRegister = window.confirm('Create an account to like songs and build your favorites playlist. Go to register now?');
+      if (shouldRegister) {
+        navigate('/register');
+      }
+      return;
+    }
+
+    setUpdatingLike(true);
+    try {
+      const response = likedByUser
+        ? await songService.unlikeSong(id)
+        : await songService.likeSong(id);
+      setLikedByUser(Boolean(response.data?.likedByUser));
+      setLikesCount(Number(response.data?.likesCount || 0));
+    } catch (err) {
+      console.error(err);
+      setActionError(err?.response?.data?.error || 'Failed to update like.');
+    } finally {
+      setUpdatingLike(false);
+    }
+  };
+
+  const handleTimeUpdate = () => {
+    if (!audioRef.current) {
+      return;
+    }
+    const current = Number(audioRef.current.currentTime) || 0;
+    const total = Number(audioRef.current.duration) || 0;
+    setDuration(total);
+    setProgress(total > 0 ? (current / total) * 100 : 0);
+  };
+
+  const handleSeek = (event) => {
+    if (!audioRef.current || !duration) {
+      return;
+    }
+    const nextProgress = Number(event.target.value);
+    audioRef.current.currentTime = (nextProgress / 100) * duration;
+    setProgress(nextProgress);
+  };
+
+  const togglePlayback = async () => {
+    if (!audioRef.current || !activeTrack) {
+      return;
+    }
+
+    if (isPlaying) {
+      audioRef.current.pause();
+      setIsPlaying(false);
+      return;
+    }
+
+    try {
+      await audioRef.current.play();
+      setIsPlaying(true);
+    } catch {
+      setIsPlaying(false);
+    }
+  };
+
   if (loading) {
     return <div className="mx-auto w-full max-w-6xl px-4 py-10 sm:px-6 lg:px-8">Loading song...</div>;
   }
@@ -452,17 +574,30 @@ const SongDetail = () => {
 
   return (
     <div className="mx-auto w-full max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
-      <Card className="border-border/70 bg-card/90">
+      <Card className="border-border/70 bg-card/90 shadow-sm dark:border-white/10 dark:bg-zinc-950/65">
         <CardHeader className="gap-2 border-b border-border/60 pb-6">
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-            {song.category || 'Uncategorized'}
-          </p>
-          <CardTitle className="font-display text-3xl tracking-tight sm:text-4xl">{song.title}</CardTitle>
-          <p className="text-sm text-muted-foreground">{sections.length} sections | {lineCount} lines</p>
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+                {song.category || 'Uncategorized'}
+              </p>
+              <CardTitle className="font-display text-3xl tracking-tight sm:text-4xl">{song.title}</CardTitle>
+              <p className="mt-1 text-sm text-muted-foreground">{sections.length} sections | {lineCount} lines</p>
+            </div>
+            <Button
+              variant={likedByUser ? 'default' : 'outline'}
+              onClick={handleToggleLike}
+              disabled={updatingLike}
+              className="shrink-0"
+            >
+              <Heart className={`size-4 ${likedByUser ? 'fill-current' : ''}`} />
+              {likedByUser ? 'Liked' : 'Like'} ({likesCount})
+            </Button>
+          </div>
         </CardHeader>
 
         <CardContent className="space-y-6 pt-6">
-          <div className="grid gap-3 rounded-xl bg-muted/40 p-4 text-sm sm:grid-cols-2 md:grid-cols-3">
+          <div className="grid gap-3 rounded-xl bg-muted/40 p-4 text-sm sm:grid-cols-2 md:grid-cols-3 dark:bg-white/[0.05]">
             <div>
               <p className="text-xs uppercase tracking-wide text-muted-foreground">Song Number</p>
               <p className="mt-1 font-semibold">#{song.id}</p>
@@ -479,69 +614,185 @@ const SongDetail = () => {
             </div>
           </div>
 
-          {musicFiles.length > 0 && (
-            <section className="space-y-4 rounded-2xl border border-border/70 bg-card/80 p-4">
+          <div className="grid gap-6 lg:grid-cols-2">
+            <section className="space-y-4 rounded-2xl border border-border/70 bg-card/80 p-4 dark:border-white/10 dark:bg-zinc-900/40">
               <h2 className="text-lg font-semibold">Music Playback</h2>
-
-              <div className="grid gap-4 lg:grid-cols-[220px_1fr]">
-                <div className="overflow-hidden rounded-xl border border-border/70 bg-muted/30">
-                  {artworkLoading ? (
-                    <div className="flex h-[220px] items-center justify-center text-xs text-muted-foreground">
-                      Extracting artwork...
-                    </div>
-                  ) : artworkUrl ? (
-                    <img src={artworkUrl} alt="Track artwork" className="h-[220px] w-full object-cover" />
-                  ) : (
-                    <div className="flex h-[220px] flex-col items-center justify-center gap-2 text-muted-foreground">
-                      <Image className="size-8 opacity-60" />
-                      <p className="text-xs">No embedded artwork</p>
-                    </div>
-                  )}
+              {musicFiles.length === 0 ? (
+                <div className="rounded-xl border border-dashed border-border/70 bg-background p-4 text-sm text-muted-foreground dark:border-white/10 dark:bg-black/20">
+                  No music uploaded for this song yet.
                 </div>
-
-                <div className="space-y-3">
-                  {musicFiles.map((file, index) => (
-                    <div
-                      key={file.fileName}
-                      className={`rounded-lg border p-3 ${activeTrack?.fileName === file.fileName ? 'border-primary/50 bg-primary/5' : 'border-border/70 bg-background'}`}
-                    >
-                      <div className="mb-2 flex items-center justify-between gap-3">
-                        <button
-                          type="button"
-                          className="text-left"
-                          onClick={() => setActiveTrackName(file.fileName)}
-                        >
-                          <p className="text-sm font-medium">{file.originalName || `Track ${index + 1}`}</p>
-                          <p className="text-xs text-muted-foreground">
-                            Uploaded: {file.uploadedAt ? new Date(file.uploadedAt).toLocaleDateString() : 'N/A'}
-                          </p>
-                        </button>
-                        {(user?.role === 'editor' || user?.role === 'admin') && (
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="text-destructive hover:bg-destructive/10 hover:text-destructive"
-                            onClick={() => handleRemoveMusic(file.fileName)}
-                          >
-                            Remove
-                          </Button>
-                        )}
-                      </div>
-
-                      <audio
-                        controls
-                        className="h-8 w-full"
-                        src={songService.getMusicUrl(id, file.fileName)}
-                        onPlay={() => setActiveTrackName(file.fileName)}
+              ) : (
+                <div className="grid gap-4 lg:grid-cols-[220px_1fr]">
+                  <div className="flex flex-col items-center justify-center rounded-xl border border-border/70 bg-muted/30 p-4 dark:border-white/10 dark:bg-white/[0.04]">
+                    {artworkLoading ? (
+                      <div className="text-xs text-muted-foreground">Extracting artwork...</div>
+                    ) : (
+                      <div
+                        className={`relative flex size-44 items-center justify-center rounded-full bg-black/70 shadow-2xl ${isPlaying ? 'animate-spin [animation-duration:4s]' : ''}`}
                       >
-                        Your browser does not support the audio element.
-                      </audio>
-                    </div>
-                  ))}
+                        <div className="absolute inset-3 rounded-full border border-white/8" />
+                        <div className="absolute inset-7 rounded-full border border-white/8" />
+                        <div className="absolute inset-11 rounded-full border border-white/8" />
+                        <div
+                          className="absolute inset-5 rounded-full bg-cover bg-center"
+                          style={{ backgroundImage: `url(${artworkUrl || placeholderDiskArtwork})` }}
+                        >
+                          {!artworkUrl && (
+                            <div className="sr-only">
+                              <Image className="size-7 opacity-70" />
+                            </div>
+                          )}
+                        </div>
+                        <div className="z-10 size-5 rounded-full border border-white/30 bg-black/80" />
+                      </div>
+                    )}
+                    {!artworkUrl && !artworkLoading && (
+                      <p className="mt-3 text-xs text-muted-foreground">No embedded artwork</p>
+                    )}
+                  </div>
+
+                  <div className="space-y-3">
+                    {activeTrack && (
+                      <div className="rounded-xl border border-border/70 bg-background p-3 dark:border-white/10 dark:bg-black/30">
+                        <p className="mb-2 truncate text-sm font-medium">
+                          Now Playing: {activeTrack.originalName || activeTrack.fileName}
+                        </p>
+                        <div className="space-y-3">
+                          <div className="flex items-center justify-center">
+                            <Button
+                              type="button"
+                              variant="default"
+                              size="icon-lg"
+                              className="size-16 rounded-full border border-white/25 bg-gradient-to-br from-emerald-300 to-emerald-500 text-emerald-950 shadow-[0_8px_24px_rgba(16,185,129,0.35)] transition hover:brightness-105 dark:border-emerald-200/30 dark:from-emerald-200 dark:to-emerald-400 dark:text-emerald-950"
+                              onClick={togglePlayback}
+                            >
+                              {isPlaying ? (
+                                <Pause className="size-6 fill-current" />
+                              ) : (
+                                <Play className="ml-0.5 size-6 fill-current" />
+                              )}
+                            </Button>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <span className="w-8 text-[10px] tabular-nums text-muted-foreground">
+                              {Math.floor((audioRef.current?.currentTime || 0) / 60)}:{String(Math.floor((audioRef.current?.currentTime || 0) % 60)).padStart(2, '0')}
+                            </span>
+                            <input
+                              type="range"
+                              className="h-1.5 flex-1 cursor-pointer appearance-none rounded-full bg-muted accent-primary"
+                              value={progress}
+                              onChange={handleSeek}
+                            />
+                            <span className="w-8 text-[10px] tabular-nums text-muted-foreground">
+                              {Math.floor(duration / 60)}:{String(Math.floor(duration % 60)).padStart(2, '0')}
+                            </span>
+                          </div>
+                        </div>
+                        <audio
+                          ref={audioRef}
+                          src={songService.getMusicUrl(id, activeTrack.fileName)}
+                          onTimeUpdate={handleTimeUpdate}
+                          onLoadedMetadata={handleTimeUpdate}
+                          onEnded={() => setIsPlaying(false)}
+                          className="hidden"
+                        />
+                      </div>
+                    )}
+                    {musicFiles.map((file, index) => (
+                      <div
+                        key={file.fileName}
+                        className={`rounded-lg border p-3 ${activeTrack?.fileName === file.fileName ? 'border-primary/50 bg-primary/5' : 'border-border/70 bg-background dark:border-white/10 dark:bg-black/20'}`}
+                      >
+                        <div className="mb-2 flex items-center justify-between gap-3">
+                          <button
+                            type="button"
+                            className="text-left transition hover:opacity-85"
+                            onClick={() => setActiveTrackName(file.fileName)}
+                          >
+                            <p className="text-sm font-medium">{file.originalName || `Track ${index + 1}`}</p>
+                            <p className="text-xs text-muted-foreground">
+                              Uploaded: {file.uploadedAt ? new Date(file.uploadedAt).toLocaleDateString() : 'N/A'}
+                            </p>
+                          </button>
+                          {(user?.role === 'editor' || user?.role === 'admin') && (
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="text-destructive hover:bg-destructive/10 hover:text-destructive"
+                              onClick={() => handleRemoveMusic(file.fileName)}
+                            >
+                              Remove
+                            </Button>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </div>
+              )}
             </section>
-          )}
+
+            <div>
+              <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+                <h2 className="flex items-center gap-2 text-lg font-semibold">
+                  <Music2 className="size-5" />
+                  Lyrics
+                </h2>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => handleCopyText(fullLyricsForCopy, 'all')}
+                  disabled={!fullLyricsForCopy}
+                >
+                  {copiedKey === 'all' ? <Check className="size-4" /> : <Copy className="size-4" />}
+                  {copiedKey === 'all' ? 'Copied' : 'Copy All'}
+                </Button>
+              </div>
+              {sections.length === 0 ? (
+                <div className="rounded-xl border border-border/70 bg-background p-4 text-sm leading-7">
+                  No lyrics available for this song.
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {sections.map((section, index) => {
+                    const rawType = normalizeSectionType(section?.type);
+                    const label = SECTION_LABELS[rawType] || rawType;
+                    const lines = Array.isArray(section?.lines) ? section.lines : [];
+
+                    return (
+                      <div key={`lyrics-section-${index}`} className="rounded-xl border border-border/70 bg-background p-4 dark:border-white/10 dark:bg-black/20">
+                        <div className="mb-3 flex items-center justify-between">
+                          <span className="rounded-full bg-primary/10 px-2.5 py-1 text-xs font-semibold uppercase tracking-wide text-primary">
+                            {label}
+                          </span>
+                          <div className="flex items-center gap-2">
+                            <span className="text-xs text-muted-foreground">Section {index + 1}</span>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => handleCopyText(lines.join('\n'), `section-${index}`)}
+                              disabled={lines.length === 0}
+                            >
+                              {copiedKey === `section-${index}` ? <Check className="size-4" /> : <Copy className="size-4" />}
+                            </Button>
+                          </div>
+                        </div>
+                        <div className="space-y-1.5 text-sm leading-7">
+                          {lines.length > 0 ? (
+                            lines.map((line, lineIndex) => (
+                              <p key={`lyrics-line-${index}-${lineIndex}`}>{line}</p>
+                            ))
+                          ) : (
+                            <p className="text-muted-foreground">No lines in this section.</p>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          </div>
 
           {user && (
             <div className="flex flex-wrap items-center gap-3">
@@ -552,6 +803,13 @@ const SongDetail = () => {
               <Button asChild variant="ghost">
                 <Link to="/my-library">Open My Library</Link>
               </Button>
+            </div>
+          )}
+          {!user && (
+            <div className="flex flex-wrap items-center gap-3">
+              <p className="text-sm text-muted-foreground">
+                Create an account to save favorites, like songs, and comment on lyrics.
+              </p>
             </div>
           )}
 
@@ -664,7 +922,7 @@ const SongDetail = () => {
           )}
 
           {(user?.role === 'editor' || user?.role === 'admin') && (
-            <div className="space-y-3 rounded-xl border border-border/70 bg-card p-4">
+            <div className="space-y-3 rounded-xl border border-border/70 bg-card p-4 dark:border-white/10 dark:bg-zinc-900/35">
               <h2 className="flex items-center gap-2 text-lg font-semibold">
                 <Upload className="size-4" />
                 Music Upload
@@ -682,15 +940,6 @@ const SongDetail = () => {
           {actionError && <p className="rounded-md bg-destructive/10 p-2 text-sm text-destructive">{actionError}</p>}
           {actionInfo && <p className="rounded-md bg-muted p-2 text-sm">{actionInfo}</p>}
 
-          <div>
-            <h2 className="mb-3 flex items-center gap-2 text-lg font-semibold">
-              <Music2 className="size-5" />
-              Lyrics
-            </h2>
-            <div className="rounded-xl border border-border/70 bg-background p-4 text-sm leading-7 whitespace-pre-wrap">
-              {lyrics || 'No lyrics available for this song.'}
-            </div>
-          </div>
         </CardContent>
       </Card>
     </div>
