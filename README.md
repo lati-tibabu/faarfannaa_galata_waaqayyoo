@@ -1,80 +1,72 @@
-# Faarfannaa Galata Waaqayyoo
+# Faarfannaa Galata Waaqayyoo (Universal Hymn Platform)
 
 ![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)
 ![Flutter](https://img.shields.io/badge/Flutter-3.10+-02569B?logo=flutter)
+![React](https://img.shields.io/badge/React-19-61DAFB?logo=react)
+![Node.js](https://img.shields.io/badge/Node.js-20+-339933?logo=node.js)
 
-**Faarfannaa Galata Waaqayyoo** (Praise Songs of God) is a spiritually enriching mobile application designed for browsing, reading, and meditating on hymns in the Oromo language. Featuring a comprehensive collection of traditional "Faarfannaa", the app offers an intuitive interface with robust tools for navigation, search, and personal customization.
+**Faarfannaa Galata Waaqayyoo** is a comprehensive digital ecosystem for Afaan Oromoo hymns. It includes a mobile application for believers to access songs, an admin portal for editors to manage the content, and a robust backend to keep everything synchronized.
 
-## Features
+## Repository Overview
 
-- **📖 Extensive Hymn Collection**: Browse a vast library of hymns organized by categories.
-- **🔍 Smart Search**: Quickly find songs by title or hymn number.
-- **❤️ Favorites**: Mark hymns as favorites for quick access.
-- **📂 Categorized Views**: Explore songs grouped by themes or occasions.
-- **🌓 Dark & Light Mode**: Seamlessly switch between light and dark themes for comfortable reading in any environment.
-- **📱 Responsive Design**: Optimized for both Android and iOS devices.
+This repository is organized as a monorepo containing three main components:
 
-## Screenshots
+### 1. [Mobile App](./mobile) (Flutter)
+A beautiful, feature-rich mobile application for Android and iOS.
+- **Key Features**: Offline access, smart search, favorites, dark mode, and cloud synchronization.
+- **Tech**: Flutter, Provider, SQLite (via shared preferences/file storage).
 
-| Home (Light) | Home (Dark) | Category |
-|:---:|:---:|:---:|
-| ![Home Light](screenshots/home_light.jpg) | ![Home Dark](screenshots/home_dark.jpg) | ![Category](screenshots/category.jpg) |
+### 2. [Web Admin Portal](./web) (React + Vite)
+A modern web interface for managing the hymn database.
+- **Key Features**: Song CRUD, change auditing, user management, and admin initialization.
+- **Tech**: React 19, Tailwind CSS 4, Radix UI, TanStack Router-compatible logic.
 
+### 3. [Backend API](./backend) (Node.js + Express)
+The central hub that powers both the mobile app and the web portal.
+- **Key Features**: JWT authentication, song management API, file upload handling, and database change tracking.
+- **Tech**: Node.js, Express, Sequelize ORM, PostgreSQL.
+
+---
 
 ## Getting Started
 
-Follow these instructions to get a copy of the project up and running on your local machine for development or testing purposes.
-
 ### Prerequisites
+- [Node.js](https://nodejs.org/) (v20+)
+- [Flutter SDK](https://flutter.dev/) (3.10+)
+- [PostgreSQL](https://www.postgresql.org/)
 
-- [Flutter SDK](https://flutter.dev/docs/get-started/install) installed.
-- An IDE (VS Code or Android Studio) with Flutter execution capabilities.
-- [Git](https://git-scm.com/) installed.
+### Local Development Setup
 
-### Installation
-
-1. **Clone the repository:**
+1. **Clone the Repository:**
    ```bash
    git clone https://github.com/lati-tibabu/faarfannaa_galata_waaqayyoo.git
    cd faarfannaa_galata_waaqayyoo
    ```
 
-2. **Install dependencies:**
-    ```bash
-    flutter pub get
-    ```
+2. **Setup Backend:**
+   Navigate to `/backend`, install dependencies, configure your `.env` and run:
+   ```bash
+   npm run seed  # To initialize the database with songs and admin
+   npm run dev
+   ```
 
-3. **Run the application:**
-    ```bash
-    flutter run
-    ```
+3. **Setup Admin Portal:**
+   Navigate to `/web`, install dependencies and run:
+   ```bash
+   npm run dev
+   ```
 
-## Project Structure
+4. **Setup Mobile App:**
+   Navigate to `/mobile`, install dependencies and run:
+   ```bash
+   flutter run --dart-define=API_BASE_URL=http://localhost:3000
+   ```
 
-```
-lib/
-├── main.dart           # Entry point
-├── theme.dart          # App Theme definition
-├── models/             # Data models (Hymn, Category)
-├── screens/            # UI Screens (Home, Category, Detail, Splash)
-└── services/           # Logic services (SongService, JSON parsing)
-assets/
-└── songs/              # JSON data files for hymns
-```
-
-## Contributing
-
-Contributions are welcome! If you have suggestions or improvements, please fork the repository and create a pull request.
-
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-## License
-
-Distributed under the GNU General Public License v3. See `LICENSE` for more information.
+## Documentation
+For detailed information on each component, please refer to their respective README files:
+- [Backend Documentation](./backend/README.md)
+- [Web Admin Documentation](./web/README.md)
+- [Mobile App Documentation](./mobile/README.md)
 
 ---
-Developed by **Lati & Dani**
+Developed with ❤️ by **Lati & Dani**

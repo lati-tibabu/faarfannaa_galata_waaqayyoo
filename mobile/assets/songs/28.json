@@ -1,0 +1,71 @@
+{
+  "number": 28,
+  "title": "Kiristos Gooftaan fayyinaa,",
+  "category": "salvation",
+  "sections": [
+    {
+      "type": "VRS1",
+      "lines": [
+        "Kiristos Gooftaan fayyinaa,",
+        "Dhalatee kunoo asi jira,",
+        "Fayyina fidee waaqa irraa.",
+        "Araara fide Gooftaan fayyinaa,",
+        "Kiristos Gooftan fayyinaa,",
+        "Nagaa nuuf buuse Gooftan fayyinaa,",
+        "Kiristos Gooftan fayyinaa,",
+        "Cubbuu balleesse Gooftan fayyinaa,",
+        "Kiristos Gooftan fayyinaa,",
+        "Jaalala fide Gooftaan fayyinaa,",
+        "Kiristos Gooftan fayyinaa"
+      ]
+    },
+    {
+      "type": "VRS2",
+      "lines": [
+        "Kiristos Gooftaa garramii,",
+        "Nu kufnee siif sagadnaatii,",
+        "Adaraa nuuf araarami.",
+        "Addaamiin badne Gooftaa garraamii,",
+        "Kiristos dhufee asi jira,",
+        "Fayyisaan lubbuu keessanii,",
+        "Himadhaa cubbuu keessan.",
+        "Ilmi Waaqayyoo dhufee asi jira,",
+        "Kiristoos dhufee asi jira,",
+        "Fayyina fidee dhufee asi jira,",
+        "Araara buusee dhufee asi jira,",
+        "Lubbuu fayyisuuf dhufee asi jira"
+      ]
+    },
+    {
+      "type": "CHR",
+      "lines": [
+        "Kiristos Gooftaa garraamii ..."
+      ]
+    },
+    {
+      "type": "VRS3",
+      "lines": [
+        "Kiristos dhufee asi jira,",
+        "Fayyisaan lubbuu keessanii.",
+        "Himadhaa cubbuu keessan.",
+        "Ilmi Waaqayyoo dhufee asi jira,",
+        "Kiristoos dhufee asi jira,",
+        "Fayyina fidee dhufee asi jira,",
+        "Araara buusee dhufee asi jira,",
+        "Lubbuu fayyisuuf  dhufee asi jira,"
+      ]
+    },
+    {
+      "type": "CHR",
+      "lines": [
+        "Kiristos Gooftaa garraamii ..."
+      ]
+    },
+    {
+      "type": "OTR",
+      "lines": [
+        "Kiristos dhufee asi jira ..."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "number": 322,
+  "title": "Yaa Waaqayyoo kan nu uumte,",
+  "category": "worship",
+  "sections": [
+    {
+      "type": "VRS1",
+      "lines": [
+        "Yaa Waaqayyoo kan nu uumte,",
+        "Dubiin kee attaam mi'aa'aa,",
+        "Nadhii dammaaa irra mi'aa'a,",
+        "Namummaa koo hundumattuu."
+      ]
+    },
+    {
+      "type": "VRS2",
+      "lines": [
+        "Isaan dhugummaa keen arga,",
+        "Isaan jamummaa koon beeka,",
+        "Isaan firdii kee nan arga,",
+        "Isaan ayyaana keen arga."
+      ]
+    },
+    {
+      "type": "VRS3",
+      "lines": [
+        "Kanaafis dubbii kee kana,",
+        "Garaa koo keessa naaf kaa'i,",
+        "Hamman biyyaa qulqullaa'atti,",
+        "Dhfee sibira jiradhutti."
+      ]
+    }
+  ]
+}

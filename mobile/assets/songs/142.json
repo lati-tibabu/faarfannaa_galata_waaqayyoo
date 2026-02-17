@@ -1,0 +1,65 @@
+{
+  "number": 142,
+  "title": "Lubbuu ko Waaqayyoon eebbisi,",
+  "category": "salvation",
+  "sections": [
+    {
+      "type": "VRS1",
+      "lines": [
+        "Lubbuu ko Waaqayyoon eebbisi,",
+        "Fayyisaa kee galateeffadhu,",
+        "Arjumma isaaa hundaa odeessi,",
+        "Hin irraanfatinii yaadadhu.",
+        "Waaqayyoon eebbisi,",
+        "Lubbuu ko Waaqayyoon eebbisi,",
+        "Tola isaas mul'isi,",
+        "Gaarummaa isaa hundaa beeksisi."
+      ]
+    },
+    {
+      "type": "VRS2",
+      "lines": [
+        "Cubbuu kee hundumaa siif dhiisee",
+        "Dhukkuba keettis si fayyise,",
+        "Jireenya kee bades deebisee,",
+        "Ayyaanaa fi araaraan si marse."
+      ]
+    },
+    {
+      "type": "CHR",
+      "lines": [
+        "Waaqayyoon..."
+      ]
+    },
+    {
+      "type": "VRS3",
+      "lines": [
+        "Garaa kee gammachuu dhaan guutee,",
+        "Namummaa kee hundaa haaressee,",
+        "karaa qajeelaa irra si geessee,",
+        "Dheekkamsa isaa sirraa fageesse."
+      ]
+    },
+    {
+      "type": "CHR",
+      "lines": [
+        "Waaqayyoon..."
+      ]
+    },
+    {
+      "type": "VRS4",
+      "lines": [
+        "Akka cubbuu keenyaa nuuf hin goone",
+        "Yakka keenyas nutti hin lakkoofne,",
+        "Tokkicha ilma isaa nuuf kenne,",
+        "isaan jaalala isaa hubanne."
+      ]
+    },
+    {
+      "type": "CHR",
+      "lines": [
+        "Waaqayyoon..."
+      ]
+    }
+  ]
+}

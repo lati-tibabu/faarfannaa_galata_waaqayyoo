@@ -1,0 +1,43 @@
+{
+  "number": 12,
+  "title": "Sabni lafa irraa hundinuu",
+  "category": "praise",
+  "sections": [
+    {
+      "type": "VRS1",
+      "lines": [
+        "Sabni lafa irraa hundinuu",
+        "Gammachuudhaan faarfadhaa,",
+        "Eebba Waaqayyoos himaa,",
+        "Fuula isaa duratti gammadaa."
+      ]
+    },
+    {
+      "type": "VRS2",
+      "lines": [
+        "Gooftummaa Isaa dhugaa beekaa,",
+        "Isatu nu uume nus miti,",
+        "Nu hoolota bobaa isaa ti,",
+        "Akka horii isatti nu geessa"
+      ]
+    },
+    {
+      "type": "VRS3",
+      "lines": [
+        "Gammachuun karra isaatti galaa,",
+        "Waldaa isaatti eebba isaa himaa,",
+        "Maqaa isaa galateeffadhaa,",
+        "Ulfinaanis faarfadhaa."
+      ]
+    },
+    {
+      "type": "VRS4",
+      "lines": [
+        "Gooftaa keenya arjaadha'oo,",
+        "Tolli isaas bara-baraani,",
+        "Dhugaan isaas dhuma hin qabu,",
+        "Dhalootaa hamma dhalootaatti."
+      ]
+    }
+  ]
+}

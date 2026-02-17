@@ -1,0 +1,50 @@
+{
+  "number": 149,
+  "title": "Yaa uumaa keenyaa toliin fi",
+  "category": "praise",
+  "sections": [
+    {
+      "type": "VRS1",
+      "lines": [
+        "Yaa uumaa keenyaa toliin fi",
+        "Araarri kee baay'ee dha,",
+        "Ayyaanni keeyis guddaa dha,",
+        "Daftee hin dheekkamtu.",
+        "Yaa Gooftaa yaa Gootaa,",
+        "Kan akka kee hin jiru",
+        "Yaa Gooftaa tokko illee",
+        "Siin hin qixxaatu,"
+      ]
+    },
+    {
+      "type": "VRS2",
+      "lines": [
+        "Ati soonaan arjaa guddaa dha,",
+        "Cubbuu dhiisuuf qophaa'aa dha,",
+        "Kan si waammatu hundumaa,",
+        "Oo'a keetiin in gargaarta."
+      ]
+    },
+    {
+      "type": "CHR",
+      "lines": [
+        "Yaa Gooftaa..."
+      ]
+    },
+    {
+      "type": "VRS3",
+      "lines": [
+        "Yaa Gooftaa ko garaa kootiin,",
+        "Ulfina kee nan mul'isa,",
+        "Maqaa keetti bara-baraan,",
+        "Guddisee nan gammada."
+      ]
+    },
+    {
+      "type": "CHR",
+      "lines": [
+        "Yaa Gooftaa..."
+      ]
+    }
+  ]
+}

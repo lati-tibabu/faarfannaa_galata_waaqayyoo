@@ -1,0 +1,81 @@
+{
+  "number": 67,
+  "title": "anis si yakkeera yaa Waaqayyoo ko,",
+  "category": "salvation",
+  "sections": [
+    {
+      "type": "VRS1",
+      "lines": [
+        "anis si yakkeera yaa Waaqayyoo ko,",
+        "seera kee dhiiseen kaadhe karaa koo",
+        "deebi'een dhufaa naaf dhiisi cubbuu koo,",
+        "ani si yakkeera yaa Waaqayyoo ko,",
+        "jannata keessatti, yaa Waaqayyoo ko,",
+        "ani si yakkeera, yaa Waaqayyoo ko,",
+        "hawwiin na mo'ee, yaa Waaqayyoo ko,",
+        "ani si yakkeera yaa Waaqayyoo ko,",
+        "seera keen dhiise, yaa Waaqayyoo ko,",
+        "qullaa koon ta'e, yaa Waaqayyoo ko,",
+        "Jannataan ba'e, Yaa Waaqayyoo koo"
+      ]
+    },
+    {
+      "type": "CHR",
+      "lines": [
+        "Ani si yakkeera yaa..."
+      ]
+    },
+    {
+      "type": "VRS2",
+      "lines": [
+        "Ani si yakkeera Goofta fayyinaa,",
+        "cubbuuttti kufuun guddaa salphina,",
+        "Na hin iraanfatin yeroo srakkinaa,",
+        "Ani si yakkeera, Gooftaa fayyinaa",
+        "Gidiraa baattee, Goofta fayyinaa",
+        "Ani si yakkeera, Goofta fayyinaa",
+        "Naaf fannifamtee, Gooftaa fayyinaa",
+        "Duutee awwaalamtee, Gooftaa fayyinaa",
+        "Kaate na furte, Gooftaa fayyinaa"
+      ]
+    },
+    {
+      "type": "CHR",
+      "lines": [
+        "Ani si yakkeera yaa..."
+      ]
+    },
+    {
+      "type": "VRS3",
+      "lines": [
+        "Ani si yakkeera Gooftaa..."
+      ]
+    },
+    {
+      "type": "CHR",
+      "lines": [
+        "Ani si yakkeera yaa..."
+      ]
+    },
+    {
+      "type": "OTR",
+      "lines": [
+        "Hafuura Gooftaa yaa qulqulleessaa,",
+        "Cubbuu koo baasi qalbii koo keessaa,",
+        "Qooda koo hin gatin toloota keessaa.",
+        "Hafuura Goofta yaa qulqulluusaa,",
+        "Siinis yakkeera, yaa qulqulluusaa",
+        "Hafuura Gooftaa, yaa qulqulluusaa",
+        "Keessa garaa koo, yaa qulqulluusaa",
+        "Naaf jiraadhutii, yaa qulqulluusaa",
+        "Dhiqi cubbuu koo, yaa qulqulluusaa"
+      ]
+    },
+    {
+      "type": "OTR",
+      "lines": [
+        "Hafuura Gooftaa yaa..."
+      ]
+    }
+  ]
+}

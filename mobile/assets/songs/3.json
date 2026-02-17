@@ -1,0 +1,31 @@
+{
+  "number": 3,
+  "title": "Yaa garraamii gooftaa koottu,",
+  "category": "worship",
+  "sections": [
+    {
+      "type": "VRS1",
+      "lines": [
+        "Yaa garraamii gooftaa koottu,",
+        "Ati kan hoolotaa tikseen",
+        "Nu wallaaltuu raatuu gee'ssi",
+        "Gara burqaa madda keetti,",
+        "Gara gaara Xiyoonittis,",
+        "Iddoo jaalalaa fi tokkummaan,",
+        "Amantoonni jiranuutti."
+      ]
+    },
+    {
+      "type": "VRS2",
+      "lines": [
+        "Saba kee irratti hafuura kee",
+        "Baayiftee dhangalaasi",
+        "Inni lola'e dhiigni kee",
+        "diinummaa haa fageessu,",
+        "Yaa irkoo nama hundumaa",
+        "Aduu keetiin qorra keenya",
+        "Ho'attis nuuf diddiiri."
+      ]
+    }
+  ]
+}

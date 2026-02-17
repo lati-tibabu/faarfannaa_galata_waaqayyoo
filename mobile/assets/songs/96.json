@@ -1,0 +1,34 @@
+{
+  "number": 96,
+  "title": "Yaa namaa amma dhaga'i",
+  "category": "worship",
+  "sections": [
+    {
+      "type": "VRS1",
+      "lines": [
+        "Yaa namaa amma dhaga'i",
+        "Isa Waaqayyo siin jedhu,",
+        "Deebi'ii gara koo kottu,",
+        "Cubbuu kee siifan balleessaa."
+      ]
+    },
+    {
+      "type": "VRS2",
+      "lines": [
+        "Yoo didde garuu beekkadhu,",
+        "Booddee kan si hordofanuu",
+        "Isaanis firdii fi badiisa",
+        "Bowwaattis darbatamuudha."
+      ]
+    },
+    {
+      "type": "VRS3",
+      "lines": [
+        "Amma yeroodhaan deebi'i,",
+        "Si waamaa lakkii deebi'i,",
+        "Har'a inni si barbaada,",
+        "Kan achi bor si hin simu'oo."
+      ]
+    }
+  ]
+}

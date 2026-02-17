@@ -1,0 +1,46 @@
+{
+  "number": 325,
+  "title": "Waaqayyoon eebbisaa,",
+  "category": "worship",
+  "sections": [
+    {
+      "type": "VRS1",
+      "lines": [
+        "Waaqayyoon eebbisaa,",
+        "Garaa keessan hundumaan.",
+        "Arjummaa isaa hundaa",
+        "Isa nu argisiise,",
+        "Jalqabaa jalqabee",
+        "Guddaa tola isaatiin,",
+        "Hamma yeroo kanatti",
+        "Isa kan nu eege."
+      ]
+    },
+    {
+      "type": "VRS2",
+      "lines": [
+        "Yaa Gooftaa ayyaanaa",
+        "Araara kee nuuf kenni,",
+        "Nu soonaan gammadnee,",
+        "Hojii kee akka hojjennuu,",
+        "Yaa Waaqayyoo araar",
+        "Gaafa hundaa nu maari",
+        "Nu wajjinis ta'i",
+        "Ammaa fi bara hundumaa."
+      ]
+    },
+    {
+      "type": "VRS3",
+      "lines": [
+        "Galatni Abbaadhaaf",
+        "Ilmaafis Hafuuraafis,",
+        "Gaafa hundaa haa ta'u",
+        "Hunduma keenya biraa,",
+        "Tokkumma sadanuuf",
+        "Bara hundumaafuu,",
+        "Kan ture kan jiru",
+        "Dhufuufis kan jiru"
+      ]
+    }
+  ]
+}

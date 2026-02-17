@@ -1,0 +1,25 @@
+{
+  "number": 329,
+  "title": "Yaa Abbaa nu eebbisi,",
+  "category": "worship",
+  "sections": [
+    {
+      "type": "VRS1",
+      "lines": [
+        "Yaa Abbaa nu eebbisi,",
+        "Hafuura kee olii nuuf buusi,",
+        "Hunda keenya eebbisi,",
+        "Waldaa keetif nagaa kee buusi."
+      ]
+    },
+    {
+      "type": "CHR",
+      "lines": [
+        "Nu eebbisi nu eegisi",
+        "Yaa Yesus nu eebbisi,",
+        "Yaa Hafuura Qulqulluu",
+        "Nu eebbisi nu qulqulleessi."
+      ]
+    }
+  ]
+}

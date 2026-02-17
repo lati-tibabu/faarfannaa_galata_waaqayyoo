@@ -1,0 +1,43 @@
+{
+  "number": 14,
+  "title": "Waaqayyo nu jaallateera",
+  "category": "salvation",
+  "sections": [
+    {
+      "type": "VRS1",
+      "lines": [
+        "Waaqayyo nu jaallateera",
+        "Ilma isaa hamma nuuf kennutti,",
+        "Warri isa amanatanuu,",
+        "In fayyu hundinuu"
+      ]
+    },
+    {
+      "type": "VRS2",
+      "lines": [
+        "Kan isaa jaalalli guddaadha,",
+        "Nama hundaaf kan ga'udha,",
+        "Warri isa amanatanuu,",
+        "Amma nagaa qabu."
+      ]
+    },
+    {
+      "type": "VRS3",
+      "lines": [
+        "Waaqayyo nu jaallateera,",
+        "Utuma diina isaa jirruu,",
+        "Nu marseera araara isaan,",
+        "Bal'isee harka isaa."
+      ]
+    },
+    {
+      "type": "VRS4",
+      "lines": [
+        "Inni Ilma isaa nuuf erge,",
+        "Nu'i isatti akka amannu,",
+        "Isaan immoo akka fayyinu,",
+        "Akka isa jaallannu."
+      ]
+    }
+  ]
+}
