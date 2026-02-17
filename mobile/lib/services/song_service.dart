@@ -416,16 +416,20 @@ class SongService {
       return fromEnv;
     }
 
-    if (kIsWeb) {
+    if (kDebugMode) {
+      if (kIsWeb) {
+        return 'http://localhost:3000/api';
+      }
+
+      // Android emulator cannot reach host machine via localhost.
+      if (Platform.isAndroid) {
+        return 'http://10.0.2.2:3000/api';
+      }
+
       return 'http://localhost:3000/api';
     }
 
-    // Android emulator cannot reach host machine via localhost.
-    if (Platform.isAndroid) {
-      return 'http://10.0.2.2:3000/api';
-    }
-
-    return 'http://localhost:3000/api';
+    return 'https://faarfannaa-galata-waaqayyoo.vercel.app/api';
   }
 
   String _toFriendlySyncError(String error, String baseUrl) {
@@ -569,55 +573,98 @@ class SongService {
     }
   }
 
-  Future<String> downloadSongMusic(Hymn song) async {
+  Future<String> downloadSongMusic(
+    Hymn song, {
+    ValueChanged<double>? onProgress,
+  }) async {
     final baseUrl = _resolveApiBaseUrl();
     final uri = Uri.parse('$baseUrl/songs/${song.number}/music');
-    final response = await http.get(uri).timeout(const Duration(seconds: 20));
-    if (response.statusCode != 200) {
-      throw Exception('Failed to download music: ${response.statusCode}');
-    }
+    final client = http.Client();
 
-    final contentType = response.headers['content-type'] ?? 'audio/mpeg';
-    final normalizedContentType = contentType.toLowerCase();
-    if (!normalizedContentType.startsWith('audio/')) {
-      throw Exception('Invalid music response content-type: $contentType');
-    }
-    if (response.bodyBytes.isEmpty) {
-      throw Exception('Downloaded music file is empty.');
-    }
+    try {
+      final request = http.Request('GET', uri);
+      final streamedResponse = await client
+          .send(request)
+          .timeout(const Duration(seconds: 60));
 
-    String extension = '.mp3';
-    if (normalizedContentType.contains('wav')) {
-      extension = '.wav';
-    } else if (normalizedContentType.contains('ogg')) {
-      extension = '.ogg';
-    } else if (normalizedContentType.contains('aac')) {
-      extension = '.aac';
-    } else if (normalizedContentType.contains('m4a') ||
-        normalizedContentType.contains('mp4')) {
-      extension = '.m4a';
-    }
-
-    final dir = await _musicDirectory();
-    final existingFiles = dir.listSync().whereType<File>().where(
-      (file) => path.basename(file.path).startsWith('${song.number}.'),
-    );
-    for (final file in existingFiles) {
-      try {
-        file.deleteSync();
-      } catch (_) {
-        // Ignore cleanup failures.
+      if (streamedResponse.statusCode != 200) {
+        throw Exception(
+          'Failed to download music: ${streamedResponse.statusCode}',
+        );
       }
+
+      final contentLength = streamedResponse.contentLength;
+      final contentType =
+          streamedResponse.headers['content-type'] ?? 'audio/mpeg';
+      final normalizedContentType = contentType.toLowerCase();
+      if (!normalizedContentType.startsWith('audio/')) {
+        throw Exception('Invalid music response content-type: $contentType');
+      }
+
+      String extension = '.mp3';
+      if (normalizedContentType.contains('wav')) {
+        extension = '.wav';
+      } else if (normalizedContentType.contains('ogg')) {
+        extension = '.ogg';
+      } else if (normalizedContentType.contains('aac')) {
+        extension = '.aac';
+      } else if (normalizedContentType.contains('m4a') ||
+          normalizedContentType.contains('mp4')) {
+        extension = '.m4a';
+      }
+
+      final dir = await _musicDirectory();
+      final existingFiles = dir.listSync().whereType<File>().where(
+        (file) => path.basename(file.path).startsWith('${song.number}.'),
+      );
+      for (final file in existingFiles) {
+        try {
+          file.deleteSync();
+        } catch (_) {
+          // Ignore cleanup failures.
+        }
+      }
+
+      final targetPath =
+          '${dir.path}${Platform.pathSeparator}${song.number}$extension';
+      final targetFile = File(targetPath);
+      final sink = targetFile.openWrite();
+
+      try {
+        int bytesDownloaded = 0;
+        final Stream<List<int>> stream = streamedResponse.stream.map((chunk) {
+          bytesDownloaded += chunk.length;
+          if (contentLength != null && contentLength > 0) {
+            onProgress?.call(bytesDownloaded / contentLength);
+          }
+          return chunk;
+        });
+
+        await sink.addStream(stream);
+        await sink.flush();
+      } finally {
+        await sink.close();
+      }
+
+      final actualSize = await targetFile.length();
+      if (actualSize == 0) {
+        throw Exception('Downloaded music file is empty.');
+      }
+
+      if (contentLength != null &&
+          contentLength > 0 &&
+          actualSize < contentLength) {
+        throw Exception(
+          'Download incomplete: expected $contentLength bytes but got $actualSize.',
+        );
+      }
+
+      _downloadedMusicSongIds.add(song.number);
+      await _persistDownloadedMusicSongIds(_downloadedMusicSongIds);
+      return targetPath;
+    } finally {
+      client.close();
     }
-
-    final targetPath =
-        '${dir.path}${Platform.pathSeparator}${song.number}$extension';
-    final targetFile = File(targetPath);
-    await targetFile.writeAsBytes(response.bodyBytes, flush: true);
-
-    _downloadedMusicSongIds.add(song.number);
-    await _persistDownloadedMusicSongIds(_downloadedMusicSongIds);
-    return targetPath;
   }
 
   Future<Set<int>> _readDeletedSongIds() async {

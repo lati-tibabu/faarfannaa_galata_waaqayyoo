@@ -1,12 +1,34 @@
 import 'package:audio_service/audio_service.dart';
+import 'package:audio_session/audio_session.dart';
 import 'package:just_audio/just_audio.dart';
 
 class MyAudioHandler extends BaseAudioHandler with SeekHandler {
   final _player = AudioPlayer();
 
   MyAudioHandler() {
+    _init();
     // Forward playback state from just_audio to audio_service
     _player.playbackEventStream.map(_transformEvent).pipe(playbackState);
+
+    // Update mediaItem with duration when it's available
+    _player.durationStream.listen((duration) {
+      final item = mediaItem.value;
+      if (item != null && duration != null) {
+        mediaItem.add(item.copyWith(duration: duration));
+      }
+    });
+
+    // Listen for completion
+    _player.processingStateStream.listen((state) {
+      if (state == ProcessingState.completed) {
+        stop();
+      }
+    });
+  }
+
+  Future<void> _init() async {
+    final session = await AudioSession.instance;
+    await session.configure(const AudioSessionConfiguration.music());
   }
 
   @override
@@ -21,9 +43,11 @@ class MyAudioHandler extends BaseAudioHandler with SeekHandler {
   @override
   Future<void> seek(Duration position) => _player.seek(position);
 
+  Stream<Duration> get positionStream => _player.positionStream;
+
   Future<void> playFromFile(String path, MediaItem item) async {
     mediaItem.add(item);
-    await _player.setAudioSource(AudioSource.file(path));
+    await _player.setAudioSource(AudioSource.file(path), preload: true);
     await _player.play();
   }
 

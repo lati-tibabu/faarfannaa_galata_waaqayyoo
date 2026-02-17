@@ -8,6 +8,7 @@ import 'categories_screen.dart';
 import 'collections_screen.dart';
 import 'favorites_screen.dart';
 import 'settings_screen.dart';
+import '../widgets/mini_player.dart';
 
 class MainLayout extends StatefulWidget {
   const MainLayout({super.key});
@@ -41,7 +42,18 @@ class _MainLayoutState extends State<MainLayout> {
     );
 
     return Scaffold(
-      body: IndexedStack(index: _selectedIndex, children: _screens),
+      body: Stack(
+        children: [
+          IndexedStack(index: _selectedIndex, children: _screens),
+          const Positioned(
+            left: 0,
+            right: 0,
+            bottom:
+                0, // It will be above bottom nav because it's inside Scaffold body
+            child: MiniPlayer(),
+          ),
+        ],
+      ),
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
           border: Border(
