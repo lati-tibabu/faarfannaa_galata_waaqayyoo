@@ -18,7 +18,7 @@ if (isProduction) {
     console.warn('Supabase credentials missing. Music upload/download will not work in production.');
   }
 }
-const STORAGE_BUCKET = 'music-assets';
+const STORAGE_BUCKET = process.env.SUPABASE_BUCKET || 'music-assets';
 const MUSIC_UPLOAD_DIR = path.join(__dirname, '..', 'upload');
 
 if (!isProduction) {

@@ -3,6 +3,7 @@ const cors = require('cors');
 const dotenv = require('dotenv');
 const models = require('./models');
 const seedAdmin = require('./scripts/seedAdmin');
+const { getGatewayHtml } = require('./utils/htmlTemplates');
 
 // Load environment variables
 dotenv.config();
@@ -23,6 +24,11 @@ app.use(express.urlencoded({ extended: true }));
 // Routes
 app.use('/api/users', require('./routes/users'));
 app.use('/api/songs', require('./routes/songs'));
+
+// Root route
+app.get('/', (req, res) => {
+  res.send(getGatewayHtml());
+});
 
 // Health check route
 app.get('/health', (req, res) => {
