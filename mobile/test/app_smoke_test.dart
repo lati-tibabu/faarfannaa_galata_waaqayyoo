@@ -9,6 +9,7 @@ import 'package:faarfannaa_galata_waaqayyoo/providers/history_provider.dart';
 import 'package:faarfannaa_galata_waaqayyoo/providers/onboarding_provider.dart';
 import 'package:faarfannaa_galata_waaqayyoo/providers/player_provider.dart';
 import 'package:faarfannaa_galata_waaqayyoo/providers/settings_provider.dart';
+import 'package:faarfannaa_galata_waaqayyoo/services/audio_handler.dart';
 import 'package:faarfannaa_galata_waaqayyoo/screens/settings_screen.dart';
 
 void main() {
@@ -27,7 +28,9 @@ void main() {
           ChangeNotifierProvider(create: (_) => OnboardingProvider()),
           ChangeNotifierProvider(create: (_) => HistoryProvider()),
           ChangeNotifierProvider(create: (_) => CollectionsProvider()),
-          ChangeNotifierProvider(create: (_) => PlayerProvider()),
+          ChangeNotifierProvider(
+            create: (_) => PlayerProvider(audioHandler: MyAudioHandler()),
+          ),
         ],
         child: const MaterialApp(home: SettingsScreen()),
       ),
@@ -61,7 +64,9 @@ void main() {
           ChangeNotifierProvider(create: (_) => OnboardingProvider()),
           ChangeNotifierProvider(create: (_) => HistoryProvider()),
           ChangeNotifierProvider(create: (_) => CollectionsProvider()),
-          ChangeNotifierProvider(create: (_) => PlayerProvider()),
+          ChangeNotifierProvider(
+            create: (_) => PlayerProvider(audioHandler: MyAudioHandler()),
+          ),
         ],
         child: const MaterialApp(home: SettingsScreen()),
       ),
